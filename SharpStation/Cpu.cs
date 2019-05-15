@@ -31,7 +31,7 @@ namespace SharpStation {
 		public void Run(uint pc) {
 			while(true) {
 				var insn = Memory.Load32(pc);
-				WriteLine($"{pc:X}:  {Disassemble(pc, insn)}");
+				//WriteLine($"{pc:X}:  {Disassemble(pc, insn)}");
 
 				BranchTo = NoBranch;
 				RunOne(pc, insn);
@@ -123,7 +123,7 @@ namespace SharpStation {
 		}
 
 		public uint LoadMemory(int size, uint addr, uint pc) {
-			WriteLine($"Load {size/8} bytes from {addr:X8}");
+			//WriteLine($"Load {size/8} bytes from {addr:X8}");
 			switch(size) {
 				case 8: return Memory.Load8(addr);
 				case 16: return Memory.Load16(addr);
@@ -136,7 +136,7 @@ namespace SharpStation {
 			if(IsolateCache)
 				return;
 			
-			WriteLine($"Store {size/8} bytes to {addr:X8} <- {value:X}");
+			//WriteLine($"Store {size/8} bytes to {addr:X8} <- {value:X}");
 			switch(size) {
 				case 8: Memory.Store8(addr, (byte) value); break;
 				case 16: Memory.Store16(addr, (ushort) value); break;

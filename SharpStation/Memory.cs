@@ -1,11 +1,18 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using MoreLinq;
+using PrettyPrinter;
 using static System.Console;
 
 namespace SharpStation {
 	interface IMemory {
-		uint Size { get; }
+		int Size { get; }
 		byte Load8(uint addr);
 		ushort Load16(uint addr);
 		uint Load32(uint addr);
@@ -16,9 +23,10 @@ namespace SharpStation {
 
 	public abstract unsafe class BackedMemory : IMemory {
 		protected readonly byte* Backing;
-		public abstract uint Size { get; } 
+		public abstract int Size { get; } 
 
 		protected BackedMemory(byte* backing) => Backing = backing;
+		protected BackedMemory() => Backing = (byte*) Marshal.AllocHGlobal(Size);
 		
 		public byte Load8(uint addr) => Backing[addr];
 		public void Store8(uint addr, byte value) => Backing[addr] = value;
@@ -28,61 +36,206 @@ namespace SharpStation {
 		public void Store32(uint addr, uint value) => *((uint*) (Backing + addr)) = value;
 	}
 	
-	public unsafe class Ram : BackedMemory {
-		const int _Size = 2 * 1024 * 1024;
-		public override uint Size => _Size;
-		
-		public Ram() : base((byte*) Marshal.AllocHGlobal(_Size)) {}
+	public class Ram : BackedMemory {
+		public override int Size => 2 * 1024 * 1024;
 	}
 
-	public unsafe class Scratchpad : BackedMemory {
-		const int _Size = 1024;
-		public override uint Size => _Size;
-		
-		public Scratchpad() : base((byte*) Marshal.AllocHGlobal(_Size)) {}
+	public class Scratchpad : BackedMemory {
+		public override int Size => 1024;
 	}
 
 	public unsafe class Bios : BackedMemory {
-		const int _Size = 512 * 1024;
-		public override uint Size => _Size;
+		public override int Size => 512 * 1024;
 
-		public Bios() : base((byte*) Marshal.AllocHGlobal(_Size)) {
+		public Bios() {
 			using(var fp = File.OpenRead("SCPH1001.bin")) {
-				var bytes = new byte[_Size];
-				fp.Read(bytes, 0, _Size);
-				Marshal.Copy(bytes, 0, (IntPtr) Backing, _Size);
+				var bytes = new byte[Size];
+				fp.Read(bytes, 0, Size);
+				Marshal.Copy(bytes, 0, (IntPtr) Backing, Size);
 			}
 		}
 	}
 
+	public class Port<T> : IEnumerable where T : struct {
+		public uint Addr { get; }
+		public string Name { get; }
+
+		Func<T> _Load;
+		Action<T> _Store;
+
+		int BitSize => typeof(T).Name switch {
+			"Byte" => 8, 
+			"UInt16" => 16, 
+			"UInt32" => 32, 
+			_ => throw new NotImplementedException($"Unknown type for Port bitsize: {typeof(T).Name}")
+		};
+
+		public Port(uint addr, string name = null) {
+			Addr = addr;
+			Name = name;
+		}
+
+		public void Add(Func<T> load) => _Load = load;
+		
+		public void Add(Action<T> store) => _Store = store;
+
+		public T Load() => _Load?.Invoke() ?? throw new NotImplementedException($"No load{BitSize} for 0x{Addr:X8} ({Name})");
+
+		public void Store(T value) {
+			if(_Store == null) throw new NotImplementedException($"No store{BitSize} for 0x{Addr:X8} ({Name})");
+			_Store(value);
+		}
+
+		public IEnumerator GetEnumerator() => throw new NotImplementedException();
+	}
+
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Method, AllowMultiple = true)]
+	public class PortAttribute : Attribute {
+		public readonly uint Addr, Stride;
+		public readonly int Count;
+		public PortAttribute(uint addr) => Addr = addr;
+		public PortAttribute(uint addr, int count, uint stride) {
+			Addr = addr;
+			Count = count;
+			Debug.Assert(count != 0);
+			Stride = stride;
+			Debug.Assert(stride != 0);
+		}
+	}
+
 	public class IoPorts : IMemory {
-		public uint Size => 8 * 1024;
+		public int Size => 8 * 1024;
+
+		readonly Dictionary<uint, Port<byte>> Ports8 = new Dictionary<uint, Port<byte>>();
+		readonly Dictionary<uint, Port<ushort>> Ports16 = new Dictionary<uint, Port<ushort>>();
+		readonly Dictionary<uint, Port<uint>> Ports32 = new Dictionary<uint, Port<uint>>();
 
 		readonly Cpu Cpu;
 
-		public IoPorts(Cpu cpu) => Cpu = cpu;
+		[Port(0x1F802041)] static void POST(byte value) => WriteLine($"BIOS boot status: {value:X2}");
+
+		void Add(Port<byte> port) {
+			if(Ports8.ContainsKey(port.Addr))
+				throw new Exception($"Port {port.Name} assigned to already-occupied address 0x{port.Addr:X8}");
+			Ports8[port.Addr] = port;
+		}
+		void Add(Port<ushort> port) {
+			if(Ports16.ContainsKey(port.Addr))
+				throw new Exception($"Port {port.Name} assigned to already-occupied address 0x{port.Addr:X8}");
+			Ports16[port.Addr] = port;
+		}
+		void Add(Port<uint> port) {
+			if(Ports32.ContainsKey(port.Addr))
+				throw new Exception($"Port {port.Name} assigned to already-occupied address 0x{port.Addr:X8}");
+			Ports32[port.Addr] = port;
+		}
 		
-		public byte Load8(uint addr) => throw new NotImplementedException();
+		public IoPorts(Cpu cpu) {
+			Port<T> MapProperty<T>(uint addr, string name, PropertyInfo pi) where T : struct {
+				var port = new Port<T>(addr, name);
+				if(pi.GetMethod != null) port.Add(() => (T) pi.GetValue(null));
+				if(pi.SetMethod != null) port.Add(v => pi.SetValue(null, v));
+				return port;
+			}
+			
+			Cpu = cpu;
+
+			AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
+				.SelectMany(x => x.GetMembers(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+				.Where(x => x.GetCustomAttributes(typeof(PortAttribute)).Count() != 0)
+				.ForEach(x => {
+					var attr = x.GetCustomAttribute<PortAttribute>();
+					var addr = attr.Addr;
+					var name = $"{x.DeclaringType.Name}.{x.Name}";
+					if(attr.Count == 0 && x is FieldInfo fi) {
+						if(!fi.IsStatic)
+							throw new Exception($"Port {name} is not static");
+						if(fi.FieldType == typeof(byte))
+							Add(new Port<byte>(addr, name)
+								{ () => (byte) fi.GetValue(null), v => fi.SetValue(null, v) });
+						else if(fi.FieldType == typeof(ushort))
+							Add(new Port<ushort>(addr, name)
+								{ () => (ushort) fi.GetValue(null), v => fi.SetValue(null, v) });
+						else if(fi.FieldType == typeof(uint))
+							Add(new Port<uint>(addr, name)
+								{ () => (uint) fi.GetValue(null), v => fi.SetValue(null, v) });
+						else
+							throw new NotImplementedException($"Field {x.DeclaringType.Name}.{x} not a supported type");
+					} else if(x is FieldInfo f) {
+						if(!f.IsStatic)
+							throw new Exception($"Port {name} is not static");
+						if(f.FieldType == typeof(byte[])) {
+							var arr = new byte[attr.Count];
+							f.SetValue(null, arr);
+							Enumerable.Range(0, attr.Count).ForEach(i => Add(
+								new Port<byte>(addr + (uint) (attr.Stride * i), name) { () => arr[i], v => arr[i] = v }));
+						} else if(f.FieldType == typeof(ushort[])) {
+							var arr = new ushort[attr.Count];
+							f.SetValue(null, arr);
+							Enumerable.Range(0, attr.Count).ForEach(i => Add(
+								new Port<ushort>(addr + (uint) (attr.Stride * i), name) { () => arr[i], v => arr[i] = v }));
+						} else if(f.FieldType == typeof(uint[])) {
+							var arr = new uint[attr.Count];
+							f.SetValue(null, arr);
+							Enumerable.Range(0, attr.Count).ForEach(i => Add(
+								new Port<uint>(addr + (uint) (attr.Stride * i), name) { () => arr[i], v => arr[i] = v }));
+						} else
+							throw new NotImplementedException($"Field {x.DeclaringType.Name}.{x} not a supported type");
+					} else if(x is PropertyInfo pi) {
+						if(pi.GetMethod != null && !pi.GetMethod.IsStatic || pi.SetMethod != null && !pi.SetMethod.IsStatic)
+							throw new Exception($"Port {name} is not static");
+						if(attr.Count != 0)
+							throw new Exception($"Port {name} is multi-port but not a field");
+						if(pi.PropertyType == typeof(byte)) Add(MapProperty<byte>(addr, name, pi));
+						else if(pi.PropertyType == typeof(ushort)) Add(MapProperty<ushort>(addr, name, pi));
+						else if(pi.PropertyType == typeof(uint)) Add(MapProperty<uint>(addr, name, pi));
+						else throw new NotImplementedException($"Property {x.DeclaringType.Name}.{x} not a supported type");
+					} else if(x is MethodInfo mi) {
+						if(!mi.IsStatic)
+							throw new Exception($"Port {name} is not static");
+						if(attr.Count != 0)
+							throw new Exception($"Port {name} is multi-port but not a field");
+						if(mi.ReturnType == typeof(void)) {
+							var t = mi.GetParameters()[0].ParameterType;
+							if(t == typeof(byte)) Add(new Port<byte>(addr, name) { v => mi.Invoke(null, new[] { (object) v }) });
+							else if(t == typeof(ushort)) Add(new Port<ushort>(addr, name) { v => mi.Invoke(null, new[] { (object) v }) });
+							else if(t == typeof(uint)) Add(new Port<uint>(addr, name) { v => mi.Invoke(null, new[] { (object) v }) });
+							else throw new NotImplementedException($"Method {x.DeclaringType.Name}.{x} not a supported type");
+						} else {
+							var t = mi.ReturnType;
+							if(t == typeof(byte)) Add(new Port<byte>(addr, name) { () => (byte) mi.Invoke(null, null) });
+							else if(t == typeof(ushort)) Add(new Port<ushort>(addr, name) { () => (ushort) mi.Invoke(null, null) });
+							else if(t == typeof(uint)) Add(new Port<uint>(addr, name) { () => (uint) mi.Invoke(null, null) });
+							else throw new NotImplementedException($"Method {x.DeclaringType.Name}.{x} not a supported type");
+						}
+					}
+				});
+		}
+
+		public byte Load8(uint addr) => Ports8.ContainsKey(addr) ? Ports8[addr].Load()
+			: throw new NotImplementedException($"Unknown port for load8: 0x{addr:X8}");
 		public void Store8(uint addr, byte value) {
-			WriteLine($"Storing to 8-bit IO port {addr:X8} <- {value:X2}");
-			if(addr == 0x1F802041)
-				WriteLine($"BIOS boot status {value:X2}");
+			if(!Ports8.ContainsKey(addr)) throw new NotImplementedException($"Unknown port for store8: 0x{addr:X8} (0x{value:X2})");
+			Ports8[addr].Store(value);
 		}
 
-		public ushort Load16(uint addr) => throw new NotImplementedException();
+		public ushort Load16(uint addr) => Ports16.ContainsKey(addr) ? Ports16[addr].Load()
+			: throw new NotImplementedException($"Unknown port for load16: 0x{addr:X8}");
 		public void Store16(uint addr, ushort value) {
-			WriteLine($"Storing to 16-bit IO port {addr:X8} <- {value:X4}");
+			if(!Ports16.ContainsKey(addr)) throw new NotImplementedException($"Unknown port for store16: 0x{addr:X8} (0x{value:X4})");
+			Ports16[addr].Store(value);
 		}
 
-		public uint Load32(uint addr) => throw new NotImplementedException();
-
+		public uint Load32(uint addr) => Ports32.ContainsKey(addr) ? Ports32[addr].Load()
+			: throw new NotImplementedException($"Unknown port for load32: 0x{addr:X8}");
 		public void Store32(uint addr, uint value) {
-			WriteLine($"Storing to 32-bit IO port {addr:X8} <- {value:X8}");
+			if(!Ports32.ContainsKey(addr)) throw new NotImplementedException($"Unknown port for store32: 0x{addr:X8} (0x{value:X8})");
+			Ports32[addr].Store(value);
 		}
 	}
 
 	public class Blackhole : IMemory {
-		public uint Size => 0xFFFFFFFF;
+		public int Size => 0x7FFFFFFF;
 		
 		public byte Load8(uint addr) => 0;
 		public ushort Load16(uint addr) => 0;

@@ -1,6 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>8</LangVersion>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="morelinq" Version="3.1.1" />
+    <PackageReference Include="PrettyPrinter" Version="1.0.0" />
+  </ItemGroup>
 </Project>
