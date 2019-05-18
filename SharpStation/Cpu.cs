@@ -13,7 +13,7 @@ namespace SharpStation {
 		public readonly uint[] Gpr = new uint[36];
 		public uint Lo, Hi;
 		public uint LdWhich, LdValue, LdAbsorb;
-		const uint NoBranch = ~0U;
+		public const uint NoBranch = ~0U;
 		public uint BranchTo = NoBranch, DeferBranch = NoBranch;
 
 		public readonly ICoprocessor[] Coprocessors = new ICoprocessor[4];
@@ -28,26 +28,7 @@ namespace SharpStation {
 			Coprocessors[0] = new Cop0(this);
 		}
 
-		public void Run(uint pc) {
-			while(true) {
-				var insn = Memory.Load32(pc);
-				//WriteLine($"{pc:X}:  {Disassemble(pc, insn)}");
-
-				BranchTo = NoBranch;
-				RunOne(pc, insn);
-				
-				pc += 4;
-
-				if(BranchTo != NoBranch && DeferBranch == NoBranch) {
-					DeferBranch = BranchTo;
-				} else if(DeferBranch != NoBranch) {
-					pc = DeferBranch;
-					DeferBranch = NoBranch;
-				}
-			}
-		}
-
-		protected abstract void RunOne(uint pc, uint inst);
+		public abstract void Run(uint pc);
 
 		public void Alignment(uint addr, int size, bool store, uint pc) {
 			if((size == 16 && (addr & 1) != 0) || (size == 32 && (addr & 3) != 0)) {
@@ -123,7 +104,7 @@ namespace SharpStation {
 		}
 
 		public uint LoadMemory(int size, uint addr, uint pc) {
-			//WriteLine($"Load {size/8} bytes from {addr:X8}");
+			WriteLine($"Load {size/8} bytes from {addr:X8}");
 			switch(size) {
 				case 8: return Memory.Load8(addr);
 				case 16: return Memory.Load16(addr);

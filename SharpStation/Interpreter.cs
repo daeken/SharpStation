@@ -21,7 +21,26 @@ namespace SharpStation {
 
 		string TtyBuf = "";
 
-		protected override void RunOne(uint pc, uint inst) {
+		public override void Run(uint pc) {
+			while(true) {
+				var insn = Memory.Load32(pc);
+				//WriteLine($"{pc:X}:  {Disassemble(pc, insn)}");
+
+				BranchTo = NoBranch;
+				RunOne(pc, insn);
+			
+				pc += 4;
+
+				if(BranchTo != NoBranch && DeferBranch == NoBranch) {
+					DeferBranch = BranchTo;
+				} else if(DeferBranch != NoBranch) {
+					pc = DeferBranch;
+					DeferBranch = NoBranch;
+				}
+			}
+		}
+
+		void RunOne(uint pc, uint inst) {
 			if(pc == 0x2C94 && Gpr[4] == 1) {
 				TtyBuf += string.Join("", Enumerable.Range(0, (int) Gpr[6]).Select(i => (char) Memory.Load8((uint) (Gpr[5] + i))));
 				if(TtyBuf.Contains('\n')) {

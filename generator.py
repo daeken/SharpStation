@@ -1,5 +1,4 @@
-import json, re, struct
-import os.path
+import json, os.path, re, struct, sys
 from tblgen import interpret, Dag, TableGenBits
 
 def dag2expr(dag):
@@ -99,7 +98,7 @@ def output(expr, top=True):
 			if '*' in rval:
 				type = 'ulong '
 			else:
-				type = 'uint '
+				type = 'var '
 		return '%s%s %s %s;' % (type, lval, op, rval)
 	elif op == 'if':
 		if len(expr) != 4:
@@ -122,6 +121,8 @@ def output(expr, top=True):
 		return output(gops[op](*expr[1:]), top=top)
 	elif op == 'zeroext':
 		return output(expr[2], top=top)
+	elif op == 'signext':
+		return 'SignExt(%s)%s' % (', '.join(output(x, top=False) for x in expr[1:]), ';' if top else '')
 	elif op == 'cast':
 		return '(%s) (%s)' % ('uint' if expr[1] == 32 else 'ulong', output(expr[2], top=False))
 	elif op == 'signed':
@@ -176,28 +177,27 @@ gops = {
 }
 
 eops = {
-	'add': lambda a, b: ('jit_insn_add', a, b),
-	'sub': lambda a, b: ('jit_insn_sub', a, b),
-	'and': lambda a, b: ('jit_insn_and', a, b),
-	'or': lambda a, b: ('jit_insn_or', a, b),
-	'nor': lambda a, b: ('jit_insn_not', ('jit_insn_or', a, b)),
-	'xor': lambda a, b: ('jit_insn_xor', a, b),
-	'mul': lambda a, b: ('jit_insn_mul', a, b),
-	'mul64': lambda a, b: (
-	'jit_insn_mul', ('cast-signed', 64, ('cast-signed', 32, a)), ('cast-signed', 64, ('cast-signed', 32, b))),
-	'umul64': lambda a, b: ('jit_insn_mul', ('cast', 64, a), ('cast', 64, b)),
-	'div': lambda a, b: ('jit_insn_div', a, b),
-	'mod': lambda a, b: ('jit_insn_rem', a, b),
-	'shl': lambda a, b: ('jit_insn_shl', a, b),
-	'shra': lambda a, b: ('jit_insn_sshr', a, b),
-	'shrl': lambda a, b: ('jit_insn_ushr', a, b),
+	'add': lambda a, b: ('call', 'Add', a, b),
+	'sub': lambda a, b: ('call', 'Sub', a, b),
+	'and': lambda a, b: ('call', 'And', a, b),
+	'or': lambda a, b: ('call', 'Or', a, b),
+	'nor': lambda a, b: ('call', 'Not', ('call', 'Or', a, b)),
+	'xor': lambda a, b: ('call', 'Xor', a, b),
+	'mul': lambda a, b: ('call', 'Mul', a, b),
+	'mul64': lambda a, b: ('call', 'Mul64', ('cast-signed', 64, ('cast-signed', 32, a)), ('cast-signed', 64, ('cast-signed', 32, b))),
+	'umul64': lambda a, b: ('call', 'UMul64', ('cast', 64, a), ('cast', 64, b)),
+	'div': lambda a, b: ('call', 'Div', a, b),
+	'mod': lambda a, b: ('call', 'Mod', a, b),
+	'shl': lambda a, b: ('call', 'Shl', a, b),
+	'shra': lambda a, b: ('call', 'SShr', a, b),
+	'shrl': lambda a, b: ('call', 'UShr', a, b),
 
-	'eq': lambda a, b: ('jit_insn_eq', a, b),
-	'ge': lambda a, b: ('jit_insn_ge', a, b),
-	'gt': lambda a, b: ('jit_insn_gt', a, b),
-	'le': lambda a, b: ('jit_insn_le', a, b),
-	'lt': lambda a, b: ('jit_insn_lt', a, b),
-	'neq': lambda a, b: ('jit_insn_ne', a, b),
+	'eq': lambda a, b: ('call', 'Eq', a, b),
+	'ge': lambda a, b: ('call', 'Ge', a, b),
+	'gt': lambda a, b: ('call', 'Gt', a, b),
+	'le': lambda a, b: ('call', 'Le', a, b),
+	'lt': lambda a, b: ('call', 'Lt', a, b),
+	'neq': lambda a, b: ('call', 'Ne', a, b),
 }
 
 
@@ -284,11 +284,11 @@ def _emitter(sexp, storing=False, locals=None):
 
 	def to_val(val):
 		if val.startswith('jit_') or val.startswith('call_') or val.split('(')[0] in (
-		'RGPR', 'WGPR', 'RPC', 'WPC', 'RHI', 'WHI', 'RLO', 'WLO'):
+		'RGPR', 'WGPR', 'RPC', 'WPC', 'RHI', 'WHI', 'RLO', 'WLO') or val.endswith('Ref'):
 			return val
 		elif '(' in val or val.startswith('temp_') or val in locals:
 			return val
-		return 'make_uint(%s)' % val
+		return 'MakeValue<uint>(%s)' % val
 
 	locals = [] if locals is None else locals
 	if isinstance(sexp, list):
@@ -299,7 +299,7 @@ def _emitter(sexp, storing=False, locals=None):
 				return list(map(emitter, sexp))
 			_, lvalue, rvalue = sexp[0]
 			lvalue = emitter(lvalue)
-			vdef = ['jit_value_t %s = %s;' % (lvalue, emitter(rvalue))]
+			vdef = ['var %s = %s;' % (lvalue, emitter(rvalue))]
 			for elem in sexp[1:]:
 				sub = emitter(elem, _locals=locals + [lvalue])
 				if isinstance(sub, list):
@@ -321,142 +321,148 @@ def _emitter(sexp, storing=False, locals=None):
 		if isinstance(lvalue, list) and len(lvalue) == 1:
 			lvalue = lvalue[0]
 		if lvalue[0] == 'reg':
-			return 'WGPR(%s, %s);' % (emitter(lvalue[1]), to_val(emitter(sexp[2])))
+			return 'Gprs[%s] = %s;' % (emitter(lvalue[1]), to_val(emitter(sexp[2])))
 		elif lvalue[0] == 'pc':
 			return 'WPC(%s);' % to_val(emitter(sexp[2]))
 		elif lvalue[0] == 'hi':
-			return 'WHI(%s)' % to_val(emitter(sexp[2]))
+			return 'HiRef = %s;' % to_val(emitter(sexp[2]))
 		elif lvalue[0] == 'lo':
-			return 'WLO(%s)' % to_val(emitter(sexp[2]))
+			return 'LoRef = %s;' % to_val(emitter(sexp[2]))
 		elif lvalue[0] == 'copreg':
-			return 'call_write_copreg(func, %s, %s, %s);' % (
+			return 'WriteCopreg(%s, %s, %s);' % (
 			emitter(lvalue[1]), emitter(lvalue[2]), to_val(emitter(sexp[2])))
 		elif lvalue[0] == 'copcreg':
-			return 'call_write_copcreg(func, %s, %s, %s);' % (
+			return 'WriteCopcreg(%s, %s, %s);' % (
 			emitter(lvalue[1]), emitter(lvalue[2]), to_val(emitter(sexp[2])))
 		else:
 			print 'Unknown lvalue', lvalue
 			raise False
 	elif op == 'defer_set':
-		return 'defer_set(func, %s, %s);' % (emitter(sexp[1][1]), to_val(emitter(sexp[2])))
+		return 'DeferSet(%s, %s);' % (emitter(sexp[1][1]), to_val(emitter(sexp[2])))
 	elif op == 'reg':
 		return 'RGPR(%s)' % emitter(sexp[1])
 	elif op == 'pc':
 		return 'RPC()'
 	elif op == 'hi':
-		return 'RHI()'
+		return 'HiRef'
 	elif op == 'lo':
-		return 'RLO()'
+		return 'LoRef'
 	elif op == 'copreg':
-		return 'call_read_copreg(func, %s, %s)' % (emitter(sexp[1]), emitter(sexp[2]))
+		return 'GenReadCopreg(%s, %s)' % (emitter(sexp[1]), emitter(sexp[2]))
 	elif op == 'copcreg':
-		return 'call_read_copcreg(func, %s, %s)' % (emitter(sexp[1]), emitter(sexp[2]))
+		return 'GenReadCopcreg(%s, %s)' % (emitter(sexp[1]), emitter(sexp[2]))
 	elif op == 'branch':
-		if (isinstance(sexp[1], str) or isinstance(sexp[1], unicode)) and not sexp[1].startswith('temp_'):
-			return 'if(!branched) call_branch_block(func, rcpu->GetBlockReference(%s));' % emitter(sexp[1])
-		else:
-			return 'if(!branched) call_branch(func, %s);' % (to_val(emitter(sexp[1])))
+		#if (isinstance(sexp[1], str) or isinstance(sexp[1], unicode)) and not sexp[1].startswith('temp_'):
+		#	return 'if(!branched) BranchBlock(GetBlockReference(%s));' % emitter(sexp[1])
+		#else:
+		return 'if(!branched) Branch(%s);' % (to_val(emitter(sexp[1])))
 	elif op == 'branch_default':
-		return 'if(!branched) call_branch_block(func, rcpu->GetBlockReference(pc + 8));'
-	elif op == 'syscall':
-		return 'call_syscall(func, %s, %s, %s);' % (emitter(sexp[1]), emitter(sexp[2]), emitter(sexp[3]))
-	elif op == 'break_':
-		return 'call_break(func, %s, %s, %s);' % (emitter(sexp[1]), emitter(sexp[2]), emitter(sexp[3]))
+		#return 'if(!branched) BranchBlock(GetBlockReference(pc + 8));'
+		return 'if(!branched) Branch(pc + 8);'
+	elif op == 'Syscall':
+		return 'Syscall(%s, %s, %s);' % (emitter(sexp[1]), emitter(sexp[2]), emitter(sexp[3]))
+	elif op == 'Break':
+		return 'Break(%s, %s, %s);' % (emitter(sexp[1]), emitter(sexp[2]), emitter(sexp[3]))
 	elif op == 'copfun':
-		return 'call_copfun(func, %s, %s, %s);' % (emitter(sexp[1]), emitter(sexp[2]), emitter(sexp[3]))
+		return 'GenCopfun(%s, %s, %s);' % (emitter(sexp[1]), emitter(sexp[2]), emitter(sexp[3]))
 	elif op == 'emit':
 		return emitter(sexp[1], _storing=storing)
 	elif op == 'store':
-		return 'call_store_memory(func, %i, %s, %s, pc);' % (
+		return 'Store(%i, %s, %s, pc);' % (
 		sexp[1], to_val(emitter(sexp[2])), to_val(emitter(sexp[3])))
 	elif op == 'load':
-		return 'call_load_memory(func, %i, %s, pc)' % (sexp[1], to_val(emitter(sexp[2])))
+		return 'Load(%i, %s, pc)' % (sexp[1], to_val(emitter(sexp[2])))
 	elif op == 'signed':
-		return 'jit_insn_convert(func, %s, jit_type_int, 0)' % (to_val(emitter(sexp[1])))
+		return 'Signed(%s)' % (to_val(emitter(sexp[1])))
+	elif op == 'unsigned':
+		return 'Unsigned(%s)' % (to_val(emitter(sexp[1])))
 	elif op == 'cast':
 		if sexp[1] == 32:
-			type = 'jit_type_uint'
+			type = 'ToU32'
 		elif sexp[1] == 64:
-			type = 'jit_type_ulong'
-		return 'jit_insn_convert(func, %s, %s, 0)' % (to_val(emitter(sexp[2])), type)
+			type = 'ToU64'
+		return '%s(%s)' % (type, to_val(emitter(sexp[2])))
 	elif op == 'cast-signed':
 		if sexp[1] == 32:
-			type = 'jit_type_int'
+			type = 'ToI32'
 		elif sexp[1] == 64:
-			type = 'jit_type_long'
-		return 'jit_insn_convert(func, %s, %s, 0)' % (to_val(emitter(sexp[2])), type)
+			type = 'ToI64'
+		return '%s(%s)' % (type, to_val(emitter(sexp[2])))
 	elif op == 'if':
 		temp = tempname()
 		end = tempname()
 		return [
-			'jit_label_t %s = jit_label_undefined, %s = jit_label_undefined;' % (temp, end),
-			'jit_insn_branch_if(func, %s, &%s);' % (to_val(emitter(sexp[1])), temp),
+			'Label %s = Ilg.DefineLabel(), %s = Ilg.DefineLabel();' % (temp, end),
+			'BranchIf(%s, %s);' % (to_val(emitter(sexp[1])), temp),
 			emitter(sexp[3]),
-			'jit_insn_branch(func, &%s);' % end,
-			'jit_insn_label(func, &%s);' % temp,
+			'Branch(%s);' % end,
+			'Label(%s);' % temp,
 			emitter(sexp[2]),
-			'jit_insn_label(func, &%s);' % end,
+			'Label(%s);' % end
 		]
 	elif op == 'when':
 		temp = tempname()
 		return [
-			'jit_label_t %s = jit_label_undefined;' % temp,
-			'jit_insn_branch_if_not(func, %s, &%s);' % (to_val(emitter(sexp[1])), temp),
+			'var %s = Ilg.DefineLabel();' % temp,
+			'BranchIfNot(%s, %s);' % (to_val(emitter(sexp[1])), temp),
 			emitter(sexp[2]),
-			'jit_insn_label(func, &%s);' % temp
+			'Label(%s);' % temp
 		]
 	elif op == 'overflow':
 		if sexp[1][0] == 'add':
-			return 'call_overflow(func, %s, %s, 1, pc, inst);' % (
+			return 'Overflow(%s, %s, 1, pc, inst);' % (
 			to_val(emitter(sexp[1][1])), to_val(emitter(sexp[1][2])))
 		else:
-			return 'call_overflow(func, %s, %s, -1, pc, inst);' % (
+			return 'Overflow(%s, %s, -1, pc, inst);' % (
 			to_val(emitter(sexp[1][1])), to_val(emitter(sexp[1][2])))
-	elif op == 'alignment':
-		return 'call_alignment(func, %s, %i, %i, pc);' % (to_val(emitter(sexp[1])), sexp[2], sexp[3])
+	elif op == 'Alignment':
+		return 'Alignment(%s, %i, %s, pc);' % (to_val(emitter(sexp[1])), sexp[2], sexp[3])
 	elif op == 'zeroext':
 		return emitter(sexp[2])
 	elif op == 'signext':
-		return 'call_signext(func, %i, %s)' % (sexp[1], emitter(sexp[2]))
+		return 'SignExt(%i, %s)' % (sexp[1], emitter(sexp[2]))
 	elif op == 'mul_delay':
-		return 'call_mul_delay(func, %s, %s, %s);' % (
+		return 'MulDelay(%s, %s, %s);' % (
 		to_val(emitter(sexp[1])), to_val(emitter(sexp[2])), emitter(sexp[3]))
 	elif op == 'div_delay':
-		return 'call_div_delay(func);'
-	elif op == 'read_absorb':
+		return 'GenDivDelay();'
+	elif op == 'ReadAbsorb':
 		_else, _end = tempname(), tempname()
 		ra, raw = tempname(), tempname()
 		return [
-			'jit_label_t %s = jit_label_undefined, %s = jit_label_undefined;' % (_else, _end),
-			'jit_value_t %s = LOAD(_ReadAbsorbWhich, jit_type_ubyte), %s = RRA(%s);' % (raw, ra, raw),
-			'jit_insn_branch_if(func, %s, &%s);' % (emitter(('eq', ra, 'make_ubyte(0)')), _else),
-			'WRA(%s, jit_insn_sub(func, %s, make_ubyte(1)));' % (raw, ra),
-			'jit_insn_branch(func, &%s);' % _end,
-			'jit_insn_label(func, &%s);' % _else,
-			'call_timestamp_inc(func, 1);',
-			'jit_insn_label(func, &%s);' % _end
+			'Label %s = Ilg.DefineLabel(), %s = Ilg.DefineLabel();' % (_else, _end),
+			'Value %s = ReadAbsorbWhichRef, %s = RRA(%s);' % (raw, ra, raw),
+			'BranchIf(%s, %s);' % (emitter(('eq', ra, 'MakeValue<uint>(0)')), _else),
+			'WRA(%s, Sub(%s, MakeValue<uint>(1)));' % (raw, ra),
+			'Branch(%s);' % _end,
+			'Label(%s);' % _else,
+			'TimestampInc(1);',
+			'Label(%s);' % _end
 		]
 	elif op == 'do_load':
 		reg = to_val(emitter(sexp[1]))
 		return emitter(('if',
-		                ('eq', 'LOAD(LDWhich, jit_type_uint)', reg),
+		                ('eq', 'LDWhichRef', reg),
 		                [
-			                ['STORE(_ReadFudge, make_ubyte(0));'],
-			                ['jit_insn_store(func, %s, LOAD(LDValue, jit_type_uint));' % sexp[2]]
+			                ['ReadFudgeRef = MakeValue<uint>(0);'],
+			                ['Store(%s, LDValueRef);' % sexp[2]]
 		                ],
 		                [('DO_LDS',)]
 		                ))
 	elif op == 'DO_LDS':
-		return 'DO_LDS();'
+		return 'DoLds();'
 	elif op == 'check_irq':
-		return 'call_check_irq(func, pc);'
+		return 'CheckIrq(pc);'
 	elif op in eops:
 		return emitter(eops[op](*sexp[1:]))
-	elif op.startswith('jit_'):
-		return '%s(func, %s)' % (op, ', '.join([to_val(emitter(x)) for x in sexp[1:]]))
+	elif op == 'call':
+		return '%s(%s)' % (sexp[1], ', '.join([to_val(emitter(x)) for x in sexp[2:]]))
+	elif op == 'bool2uint':
+		#return 'BoolToUint(%s)' % emitter(sexp[1])
+		return emitter(sexp[1])
 	else:
 		print 'Unknown', sexp
-	return ''
+	sys.exit(1)
 
 
 def find(dag, name, cb):
@@ -507,14 +513,18 @@ def genCommon(iname, type, dag, decomp):
 	dep, res = findDepres(dag)
 	if len(dep) != 0 or len(res) != 0:
 		tdep = dep.difference(res)
-		#code += [('DEP', x) for x in tdep] + [('RES', x) for x in res]
-		code += [('when', ('!=', x, 0), [('=', ('[]', 'ReadAbsorb', x), 0)]) for x in tdep.union(res)]
+		if decomp:
+			code += [('DEP', x) for x in tdep] + [('RES', x) for x in res]
+		else:
+			code += [('when', ('!=', x, 0), [('=', ('[]', 'ReadAbsorb', x), 0)]) for x in tdep.union(res)]
 
 	lregs = {}
 	for reg in dep:
 		name = tempname()
-		#code += [('TGPR', name, reg)]
-		code += [('=', name, ('[]', 'Gpr', reg))]
+		if decomp:
+			code += [('=', name, ('[]', 'Gprs', reg))]
+		else:
+			code += [('=', name, ('[]', 'Gpr', reg))]
 		lregs[reg] = name
 
 	def cb(subdag):
@@ -706,7 +716,7 @@ def genDisasm((iname, type, dasm, dag)):
 	d = re.sub(r'(\%?)\$([a-zA-Z0-9]+)', cb, dasm)
 	return code + [('return', '$"' + d + '"')]
 
-def genDecomp((iname, type, dasm, dag)):
+def genRecomp((iname, type, dasm, dag)):
 	dag, code, vars, lregs = genCommon(iname, type, dag, decomp=True)
 
 	has_branch = [False]
@@ -749,7 +759,7 @@ def genDecomp((iname, type, dasm, dag)):
 		elif op in gops:
 			return tuple(map(subgen, dag))
 		elif op in ('signext', 'zeroext'):
-			return (op, dag[1], subgen(dag[2]))
+			return [(op, dag[1], subgen(dag[2]))]
 		elif op == 'pc':
 			return ['$pc']
 		elif op in ('hi', 'lo'):
@@ -768,9 +778,14 @@ def genDecomp((iname, type, dasm, dag)):
 		elif op == 'block':
 			return list(map(subgen, dag[1:]))
 		elif op == 'unsigned':
-			return subgen(dag[1])
+			if len(dag) == 2:
+				return ('unsigned', subgen(dag[1]))
+			else:
+				return ('unsigned', subgen(dag[1]), subgen(dag[2]))
 		elif op == 'signed':
 			return ('signed', subgen(dag[1]))
+		elif op == 'bool2uint':
+			return ('bool2uint', subgen(dag[1]))
 		elif op == 'check_overflow':
 			return [('emit', ('overflow', subgen(dag[1])))]
 		elif op == 'check_store_alignment':
@@ -806,7 +821,7 @@ def genDecomp((iname, type, dasm, dag)):
 		elif op == 'div_delay':
 			return [('emit', ('div_delay',))]
 		elif op == 'absorb_muldiv_delay':
-			return [('call_absorb_muldiv_delay', 'func')]
+			return [('GenAbsorbMuldivDelay', )]
 		elif op == 'do_load':
 			return [('emit', ('do_load', subgen(dag[1]), dag[2]))]
 		else:
@@ -837,11 +852,11 @@ def build():
 		data = file('GeneratorStubs/DisasmStub.cs', 'r').read().decode('utf-8').lstrip(u'\ufeff')
 		data = data.replace('\n\t\t\t/*<<GENERATED>>*/\n', indent(output(generate(genDisasm)), count=3))
 		print >>fp, data.encode('utf-8')
-	"""with file('SharpStation/RecompilerGenerated.cs', 'w') as fp:
+	with file('SharpStation/RecompilerGenerated.cs', 'w') as fp:
 		print >>fp, '/* Autogenerated from insts.td. DO NOT EDIT */'
-		print >>fp, file('RecompileStub.cs', 'r').read()
-		print >>fp, 'inline bool decompile(jit_function_t func, uint32_t pc, uint32_t inst, bool &branched, bool &no_delay, bool &has_load, bool need_load) {%s\treturn false;\n}' % indent(
-			output(generate(genDecomp)))"""
+		data = file('GeneratorStubs/RecompilerStub.cs', 'r').read().decode('utf-8').lstrip(u'\ufeff')
+		data = data.replace('\n\t\t\t/*<<GENERATED>>*/\n', indent(output(generate(genRecomp)), count=4))
+		print >>fp, data.encode('utf-8')
 
 
 if __name__ == '__main__':

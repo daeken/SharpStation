@@ -7,5 +7,6 @@
   <ItemGroup>
     <PackageReference Include="morelinq" Version="3.1.1" />
     <PackageReference Include="PrettyPrinter" Version="1.0.0" />
+    <PackageReference Include="Sigil.NetStandard" Version="4.8.0" />
   </ItemGroup>
 </Project>

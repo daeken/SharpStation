@@ -19,12 +19,12 @@ namespace SharpStation {
 						switch((inst) & (0x3f)) {
 							case 0x0: {
 								/* SLL */
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
-								uint shamt = ((inst) >> ((int) 0x6)) & (0x1f);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var shamt = ((inst) >> ((int) 0x6)) & (0x1f);
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								uint temp_1 = (Gpr)[rt];
+								var temp_1 = (Gpr)[rt];
 								DoLds();
 								if((rd) != (0x0)) { (Gpr)[rd] = (temp_1) << ((int) shamt); }
 								return(true);
@@ -32,12 +32,12 @@ namespace SharpStation {
 							}
 							case 0x2: {
 								/* SRL */
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
-								uint shamt = ((inst) >> ((int) 0x6)) & (0x1f);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var shamt = ((inst) >> ((int) 0x6)) & (0x1f);
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								uint temp_2 = (Gpr)[rt];
+								var temp_2 = (Gpr)[rt];
 								DoLds();
 								if((rd) != (0x0)) { (Gpr)[rd] = (temp_2) >> ((int) shamt); }
 								return(true);
@@ -45,12 +45,12 @@ namespace SharpStation {
 							}
 							case 0x3: {
 								/* SRA */
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
-								uint shamt = ((inst) >> ((int) 0x6)) & (0x1f);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var shamt = ((inst) >> ((int) 0x6)) & (0x1f);
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								uint temp_3 = (Gpr)[rt];
+								var temp_3 = (Gpr)[rt];
 								DoLds();
 								if((rd) != (0x0)) { (Gpr)[rd] = (uint) (((int) (temp_3)) >> ((int) (int) (shamt))); }
 								return(true);
@@ -58,14 +58,14 @@ namespace SharpStation {
 							}
 							case 0x4: {
 								/* SLLV */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								uint temp_4 = (Gpr)[rs];
-								uint temp_5 = (Gpr)[rt];
+								var temp_4 = (Gpr)[rs];
+								var temp_5 = (Gpr)[rt];
 								DoLds();
 								if((rd) != (0x0)) { (Gpr)[rd] = (temp_5) << ((int) temp_4); }
 								return(true);
@@ -73,14 +73,14 @@ namespace SharpStation {
 							}
 							case 0x6: {
 								/* SRLV */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								uint temp_6 = (Gpr)[rs];
-								uint temp_7 = (Gpr)[rt];
+								var temp_6 = (Gpr)[rs];
+								var temp_7 = (Gpr)[rt];
 								DoLds();
 								if((rd) != (0x0)) { (Gpr)[rd] = (temp_7) >> ((int) temp_6); }
 								return(true);
@@ -88,14 +88,14 @@ namespace SharpStation {
 							}
 							case 0x7: {
 								/* SRAV */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								uint temp_8 = (Gpr)[rs];
-								uint temp_9 = (Gpr)[rt];
+								var temp_8 = (Gpr)[rs];
+								var temp_9 = (Gpr)[rt];
 								DoLds();
 								if((rd) != (0x0)) { (Gpr)[rd] = (uint) (((int) (temp_9)) >> ((int) (int) (temp_8))); }
 								return(true);
@@ -103,9 +103,9 @@ namespace SharpStation {
 							}
 							case 0x8: {
 								/* JR */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-								uint temp_10 = (Gpr)[rs];
+								var temp_10 = (Gpr)[rs];
 								DoLds();
 								Alignment(temp_10, 0x20, false, pc);
 								BranchTo = temp_10;
@@ -114,11 +114,11 @@ namespace SharpStation {
 							}
 							case 0x9: {
 								/* JALR */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								uint temp_11 = (Gpr)[rs];
+								var temp_11 = (Gpr)[rs];
 								DoLds();
 								if((rd) != (0x0)) { (Gpr)[rd] = ((pc) + (0x4)) + (0x4); }
 								Alignment(temp_11, 0x20, false, pc);
@@ -128,7 +128,7 @@ namespace SharpStation {
 							}
 							case 0xc: {
 								/* SYSCALL */
-								uint code = ((inst) >> ((int) 0x6)) & (0xfffff);
+								var code = ((inst) >> ((int) 0x6)) & (0xfffff);
 								DoLds();
 								Syscall((int) (code), pc, inst);
 								return(true);
@@ -136,7 +136,7 @@ namespace SharpStation {
 							}
 							case 0xd: {
 								/* BREAK */
-								uint code = ((inst) >> ((int) 0x6)) & (0xfffff);
+								var code = ((inst) >> ((int) 0x6)) & (0xfffff);
 								DoLds();
 								Break((int) (code), pc, inst);
 								return(true);
@@ -144,7 +144,7 @@ namespace SharpStation {
 							}
 							case 0x10: {
 								/* MFHI */
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
 								DoLds();
 								if((rd) != (0x0)) { (Gpr)[rd] = Hi; }
@@ -154,9 +154,9 @@ namespace SharpStation {
 							}
 							case 0x11: {
 								/* MTHI */
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								uint temp_12 = (Gpr)[rd];
+								var temp_12 = (Gpr)[rd];
 								DoLds();
 								Hi = temp_12;
 								return(true);
@@ -164,7 +164,7 @@ namespace SharpStation {
 							}
 							case 0x12: {
 								/* MFLO */
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
 								DoLds();
 								if((rd) != (0x0)) { (Gpr)[rd] = Lo; }
@@ -174,9 +174,9 @@ namespace SharpStation {
 							}
 							case 0x13: {
 								/* MTLO */
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								uint temp_13 = (Gpr)[rd];
+								var temp_13 = (Gpr)[rd];
 								DoLds();
 								Lo = temp_13;
 								return(true);
@@ -184,12 +184,12 @@ namespace SharpStation {
 							}
 							case 0x18: {
 								/* MULT */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-								uint temp_14 = (Gpr)[rs];
-								uint temp_15 = (Gpr)[rt];
+								var temp_14 = (Gpr)[rs];
+								var temp_15 = (Gpr)[rt];
 								DoLds();
 								ulong _t = (ulong) (((long) ((int) (temp_14))) * ((long) ((int) (temp_15))));
 								Lo = (uint) (_t);
@@ -200,12 +200,12 @@ namespace SharpStation {
 							}
 							case 0x19: {
 								/* MULTU */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-								uint temp_16 = (Gpr)[rs];
-								uint temp_17 = (Gpr)[rt];
+								var temp_16 = (Gpr)[rs];
+								var temp_17 = (Gpr)[rt];
 								DoLds();
 								ulong _t = ((ulong) (temp_16)) * ((ulong) (temp_17));
 								Lo = (uint) (_t);
@@ -216,12 +216,12 @@ namespace SharpStation {
 							}
 							case 0x1a: {
 								/* DIV */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-								uint temp_18 = (Gpr)[rs];
-								uint temp_19 = (Gpr)[rt];
+								var temp_18 = (Gpr)[rs];
+								var temp_19 = (Gpr)[rt];
 								DoLds();
 								if((temp_19) == (0x0)) {
 									if(((temp_18) & (0x80000000)) != (0x0)) {
@@ -245,12 +245,12 @@ namespace SharpStation {
 							}
 							case 0x1b: {
 								/* DIVU */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-								uint temp_20 = (Gpr)[rs];
-								uint temp_21 = (Gpr)[rt];
+								var temp_20 = (Gpr)[rs];
+								var temp_21 = (Gpr)[rt];
 								DoLds();
 								if((temp_21) == (0x0)) {
 									Lo = 0xffffffff;
@@ -265,14 +265,14 @@ namespace SharpStation {
 							}
 							case 0x20: {
 								/* ADD */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								uint temp_22 = (Gpr)[rs];
-								uint temp_23 = (Gpr)[rt];
+								var temp_22 = (Gpr)[rs];
+								var temp_23 = (Gpr)[rt];
 								DoLds();
 								Overflow(temp_22, temp_23, 0x1, pc, inst);
 								if((rd) != (0x0)) { (Gpr)[rd] = (temp_22) + (temp_23); }
@@ -281,14 +281,14 @@ namespace SharpStation {
 							}
 							case 0x21: {
 								/* ADDU */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								uint temp_24 = (Gpr)[rs];
-								uint temp_25 = (Gpr)[rt];
+								var temp_24 = (Gpr)[rs];
+								var temp_25 = (Gpr)[rt];
 								DoLds();
 								if((rd) != (0x0)) { (Gpr)[rd] = (temp_24) + (temp_25); }
 								return(true);
@@ -296,14 +296,14 @@ namespace SharpStation {
 							}
 							case 0x22: {
 								/* SUB */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								uint temp_26 = (Gpr)[rs];
-								uint temp_27 = (Gpr)[rt];
+								var temp_26 = (Gpr)[rs];
+								var temp_27 = (Gpr)[rt];
 								DoLds();
 								Overflow(temp_26, temp_27, -0x1, pc, inst);
 								if((rd) != (0x0)) { (Gpr)[rd] = (temp_26) - (temp_27); }
@@ -312,14 +312,14 @@ namespace SharpStation {
 							}
 							case 0x23: {
 								/* SUBU */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								uint temp_28 = (Gpr)[rs];
-								uint temp_29 = (Gpr)[rt];
+								var temp_28 = (Gpr)[rs];
+								var temp_29 = (Gpr)[rt];
 								DoLds();
 								if((rd) != (0x0)) { (Gpr)[rd] = (temp_28) - (temp_29); }
 								return(true);
@@ -327,14 +327,14 @@ namespace SharpStation {
 							}
 							case 0x24: {
 								/* AND */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								uint temp_30 = (Gpr)[rs];
-								uint temp_31 = (Gpr)[rt];
+								var temp_30 = (Gpr)[rs];
+								var temp_31 = (Gpr)[rt];
 								DoLds();
 								if((rd) != (0x0)) { (Gpr)[rd] = (temp_30) & (temp_31); }
 								return(true);
@@ -342,14 +342,14 @@ namespace SharpStation {
 							}
 							case 0x25: {
 								/* OR */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								uint temp_32 = (Gpr)[rs];
-								uint temp_33 = (Gpr)[rt];
+								var temp_32 = (Gpr)[rs];
+								var temp_33 = (Gpr)[rt];
 								DoLds();
 								if((rd) != (0x0)) { (Gpr)[rd] = (temp_32) | (temp_33); }
 								return(true);
@@ -357,14 +357,14 @@ namespace SharpStation {
 							}
 							case 0x26: {
 								/* XOR */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								uint temp_34 = (Gpr)[rs];
-								uint temp_35 = (Gpr)[rt];
+								var temp_34 = (Gpr)[rs];
+								var temp_35 = (Gpr)[rt];
 								DoLds();
 								if((rd) != (0x0)) { (Gpr)[rd] = (temp_34) ^ (temp_35); }
 								return(true);
@@ -372,14 +372,14 @@ namespace SharpStation {
 							}
 							case 0x27: {
 								/* NOR */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								uint temp_36 = (Gpr)[rs];
-								uint temp_37 = (Gpr)[rt];
+								var temp_36 = (Gpr)[rs];
+								var temp_37 = (Gpr)[rt];
 								DoLds();
 								if((rd) != (0x0)) { (Gpr)[rd] = ~((temp_36) | (temp_37)); }
 								return(true);
@@ -387,14 +387,14 @@ namespace SharpStation {
 							}
 							case 0x2a: {
 								/* SLT */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								uint temp_38 = (Gpr)[rs];
-								uint temp_39 = (Gpr)[rt];
+								var temp_38 = (Gpr)[rs];
+								var temp_39 = (Gpr)[rt];
 								DoLds();
 								if((rd) != (0x0)) { (Gpr)[rd] = (((int) (temp_38)) < ((int) (temp_39))) ? (1U) : (0U); }
 								return(true);
@@ -402,14 +402,14 @@ namespace SharpStation {
 							}
 							case 0x2b: {
 								/* SLTU */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								uint temp_40 = (Gpr)[rs];
-								uint temp_41 = (Gpr)[rt];
+								var temp_40 = (Gpr)[rs];
+								var temp_41 = (Gpr)[rt];
 								DoLds();
 								if((rd) != (0x0)) { (Gpr)[rd] = ((temp_40) < (temp_41)) ? (1U) : (0U); }
 								return(true);
@@ -422,12 +422,12 @@ namespace SharpStation {
 						switch(((inst) >> ((int) 0x10)) & (0x1f)) {
 							case 0x0: {
 								/* BLTZanonymous_0 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-								uint temp_42 = (Gpr)[rs];
+								var temp_42 = (Gpr)[rs];
 								DoLds();
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_42)) < (0x0)) {
 									BranchTo = target;
 								} else {
@@ -438,12 +438,12 @@ namespace SharpStation {
 							}
 							case 0x1: {
 								/* BGEZanonymous_0 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-								uint temp_43 = (Gpr)[rs];
+								var temp_43 = (Gpr)[rs];
 								DoLds();
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_43)) >= (0x0)) {
 									BranchTo = target;
 								} else {
@@ -454,12 +454,12 @@ namespace SharpStation {
 							}
 							case 0x2: {
 								/* BLTZanonymous_1 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-								uint temp_44 = (Gpr)[rs];
+								var temp_44 = (Gpr)[rs];
 								DoLds();
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_44)) < (0x0)) {
 									BranchTo = target;
 								} else {
@@ -470,12 +470,12 @@ namespace SharpStation {
 							}
 							case 0x3: {
 								/* BGEZanonymous_1 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-								uint temp_45 = (Gpr)[rs];
+								var temp_45 = (Gpr)[rs];
 								DoLds();
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_45)) >= (0x0)) {
 									BranchTo = target;
 								} else {
@@ -486,12 +486,12 @@ namespace SharpStation {
 							}
 							case 0x4: {
 								/* BLTZanonymous_2 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-								uint temp_46 = (Gpr)[rs];
+								var temp_46 = (Gpr)[rs];
 								DoLds();
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_46)) < (0x0)) {
 									BranchTo = target;
 								} else {
@@ -502,12 +502,12 @@ namespace SharpStation {
 							}
 							case 0x5: {
 								/* BGEZanonymous_2 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-								uint temp_47 = (Gpr)[rs];
+								var temp_47 = (Gpr)[rs];
 								DoLds();
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_47)) >= (0x0)) {
 									BranchTo = target;
 								} else {
@@ -518,12 +518,12 @@ namespace SharpStation {
 							}
 							case 0x6: {
 								/* BLTZanonymous_3 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-								uint temp_48 = (Gpr)[rs];
+								var temp_48 = (Gpr)[rs];
 								DoLds();
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_48)) < (0x0)) {
 									BranchTo = target;
 								} else {
@@ -534,12 +534,12 @@ namespace SharpStation {
 							}
 							case 0x7: {
 								/* BGEZanonymous_3 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-								uint temp_49 = (Gpr)[rs];
+								var temp_49 = (Gpr)[rs];
 								DoLds();
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_49)) >= (0x0)) {
 									BranchTo = target;
 								} else {
@@ -550,12 +550,12 @@ namespace SharpStation {
 							}
 							case 0x8: {
 								/* BLTZanonymous_4 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-								uint temp_50 = (Gpr)[rs];
+								var temp_50 = (Gpr)[rs];
 								DoLds();
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_50)) < (0x0)) {
 									BranchTo = target;
 								} else {
@@ -566,12 +566,12 @@ namespace SharpStation {
 							}
 							case 0x9: {
 								/* BGEZanonymous_4 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-								uint temp_51 = (Gpr)[rs];
+								var temp_51 = (Gpr)[rs];
 								DoLds();
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_51)) >= (0x0)) {
 									BranchTo = target;
 								} else {
@@ -582,12 +582,12 @@ namespace SharpStation {
 							}
 							case 0xa: {
 								/* BLTZanonymous_5 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-								uint temp_52 = (Gpr)[rs];
+								var temp_52 = (Gpr)[rs];
 								DoLds();
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_52)) < (0x0)) {
 									BranchTo = target;
 								} else {
@@ -598,12 +598,12 @@ namespace SharpStation {
 							}
 							case 0xb: {
 								/* BGEZanonymous_5 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-								uint temp_53 = (Gpr)[rs];
+								var temp_53 = (Gpr)[rs];
 								DoLds();
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_53)) >= (0x0)) {
 									BranchTo = target;
 								} else {
@@ -614,12 +614,12 @@ namespace SharpStation {
 							}
 							case 0xc: {
 								/* BLTZanonymous_6 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-								uint temp_54 = (Gpr)[rs];
+								var temp_54 = (Gpr)[rs];
 								DoLds();
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_54)) < (0x0)) {
 									BranchTo = target;
 								} else {
@@ -630,12 +630,12 @@ namespace SharpStation {
 							}
 							case 0xd: {
 								/* BGEZanonymous_6 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-								uint temp_55 = (Gpr)[rs];
+								var temp_55 = (Gpr)[rs];
 								DoLds();
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_55)) >= (0x0)) {
 									BranchTo = target;
 								} else {
@@ -646,12 +646,12 @@ namespace SharpStation {
 							}
 							case 0xe: {
 								/* BLTZanonymous_7 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-								uint temp_56 = (Gpr)[rs];
+								var temp_56 = (Gpr)[rs];
 								DoLds();
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_56)) < (0x0)) {
 									BranchTo = target;
 								} else {
@@ -662,12 +662,12 @@ namespace SharpStation {
 							}
 							case 0xf: {
 								/* BGEZanonymous_7 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-								uint temp_57 = (Gpr)[rs];
+								var temp_57 = (Gpr)[rs];
 								DoLds();
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_57)) >= (0x0)) {
 									BranchTo = target;
 								} else {
@@ -678,14 +678,14 @@ namespace SharpStation {
 							}
 							case 0x10: {
 								/* BLTZALanonymous_0 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((0x1f) != (0x0)) { (ReadAbsorb)[0x1f] = 0x0; }
-								uint temp_58 = (Gpr)[rs];
+								var temp_58 = (Gpr)[rs];
 								DoLds();
 								if((0x1f) != (0x0)) { (Gpr)[0x1f] = ((pc) + (0x4)) + (0x4); }
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_58)) < (0x0)) {
 									BranchTo = target;
 								} else {
@@ -696,14 +696,14 @@ namespace SharpStation {
 							}
 							case 0x11: {
 								/* BGEZALanonymous_0 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((0x1f) != (0x0)) { (ReadAbsorb)[0x1f] = 0x0; }
-								uint temp_59 = (Gpr)[rs];
+								var temp_59 = (Gpr)[rs];
 								DoLds();
 								if((0x1f) != (0x0)) { (Gpr)[0x1f] = ((pc) + (0x4)) + (0x4); }
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_59)) >= (0x0)) {
 									BranchTo = target;
 								} else {
@@ -714,14 +714,14 @@ namespace SharpStation {
 							}
 							case 0x12: {
 								/* BLTZALanonymous_1 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((0x1f) != (0x0)) { (ReadAbsorb)[0x1f] = 0x0; }
-								uint temp_60 = (Gpr)[rs];
+								var temp_60 = (Gpr)[rs];
 								DoLds();
 								if((0x1f) != (0x0)) { (Gpr)[0x1f] = ((pc) + (0x4)) + (0x4); }
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_60)) < (0x0)) {
 									BranchTo = target;
 								} else {
@@ -732,14 +732,14 @@ namespace SharpStation {
 							}
 							case 0x13: {
 								/* BGEZALanonymous_1 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((0x1f) != (0x0)) { (ReadAbsorb)[0x1f] = 0x0; }
-								uint temp_61 = (Gpr)[rs];
+								var temp_61 = (Gpr)[rs];
 								DoLds();
 								if((0x1f) != (0x0)) { (Gpr)[0x1f] = ((pc) + (0x4)) + (0x4); }
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_61)) >= (0x0)) {
 									BranchTo = target;
 								} else {
@@ -750,14 +750,14 @@ namespace SharpStation {
 							}
 							case 0x14: {
 								/* BLTZALanonymous_2 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((0x1f) != (0x0)) { (ReadAbsorb)[0x1f] = 0x0; }
-								uint temp_62 = (Gpr)[rs];
+								var temp_62 = (Gpr)[rs];
 								DoLds();
 								if((0x1f) != (0x0)) { (Gpr)[0x1f] = ((pc) + (0x4)) + (0x4); }
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_62)) < (0x0)) {
 									BranchTo = target;
 								} else {
@@ -768,14 +768,14 @@ namespace SharpStation {
 							}
 							case 0x15: {
 								/* BGEZALanonymous_2 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((0x1f) != (0x0)) { (ReadAbsorb)[0x1f] = 0x0; }
-								uint temp_63 = (Gpr)[rs];
+								var temp_63 = (Gpr)[rs];
 								DoLds();
 								if((0x1f) != (0x0)) { (Gpr)[0x1f] = ((pc) + (0x4)) + (0x4); }
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_63)) >= (0x0)) {
 									BranchTo = target;
 								} else {
@@ -786,14 +786,14 @@ namespace SharpStation {
 							}
 							case 0x16: {
 								/* BLTZALanonymous_3 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((0x1f) != (0x0)) { (ReadAbsorb)[0x1f] = 0x0; }
-								uint temp_64 = (Gpr)[rs];
+								var temp_64 = (Gpr)[rs];
 								DoLds();
 								if((0x1f) != (0x0)) { (Gpr)[0x1f] = ((pc) + (0x4)) + (0x4); }
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_64)) < (0x0)) {
 									BranchTo = target;
 								} else {
@@ -804,14 +804,14 @@ namespace SharpStation {
 							}
 							case 0x17: {
 								/* BGEZALanonymous_3 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((0x1f) != (0x0)) { (ReadAbsorb)[0x1f] = 0x0; }
-								uint temp_65 = (Gpr)[rs];
+								var temp_65 = (Gpr)[rs];
 								DoLds();
 								if((0x1f) != (0x0)) { (Gpr)[0x1f] = ((pc) + (0x4)) + (0x4); }
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_65)) >= (0x0)) {
 									BranchTo = target;
 								} else {
@@ -822,14 +822,14 @@ namespace SharpStation {
 							}
 							case 0x18: {
 								/* BLTZALanonymous_4 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((0x1f) != (0x0)) { (ReadAbsorb)[0x1f] = 0x0; }
-								uint temp_66 = (Gpr)[rs];
+								var temp_66 = (Gpr)[rs];
 								DoLds();
 								if((0x1f) != (0x0)) { (Gpr)[0x1f] = ((pc) + (0x4)) + (0x4); }
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_66)) < (0x0)) {
 									BranchTo = target;
 								} else {
@@ -840,14 +840,14 @@ namespace SharpStation {
 							}
 							case 0x19: {
 								/* BGEZALanonymous_4 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((0x1f) != (0x0)) { (ReadAbsorb)[0x1f] = 0x0; }
-								uint temp_67 = (Gpr)[rs];
+								var temp_67 = (Gpr)[rs];
 								DoLds();
 								if((0x1f) != (0x0)) { (Gpr)[0x1f] = ((pc) + (0x4)) + (0x4); }
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_67)) >= (0x0)) {
 									BranchTo = target;
 								} else {
@@ -858,14 +858,14 @@ namespace SharpStation {
 							}
 							case 0x1a: {
 								/* BLTZALanonymous_5 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((0x1f) != (0x0)) { (ReadAbsorb)[0x1f] = 0x0; }
-								uint temp_68 = (Gpr)[rs];
+								var temp_68 = (Gpr)[rs];
 								DoLds();
 								if((0x1f) != (0x0)) { (Gpr)[0x1f] = ((pc) + (0x4)) + (0x4); }
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_68)) < (0x0)) {
 									BranchTo = target;
 								} else {
@@ -876,14 +876,14 @@ namespace SharpStation {
 							}
 							case 0x1b: {
 								/* BGEZALanonymous_5 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((0x1f) != (0x0)) { (ReadAbsorb)[0x1f] = 0x0; }
-								uint temp_69 = (Gpr)[rs];
+								var temp_69 = (Gpr)[rs];
 								DoLds();
 								if((0x1f) != (0x0)) { (Gpr)[0x1f] = ((pc) + (0x4)) + (0x4); }
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_69)) >= (0x0)) {
 									BranchTo = target;
 								} else {
@@ -894,14 +894,14 @@ namespace SharpStation {
 							}
 							case 0x1c: {
 								/* BLTZALanonymous_6 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((0x1f) != (0x0)) { (ReadAbsorb)[0x1f] = 0x0; }
-								uint temp_70 = (Gpr)[rs];
+								var temp_70 = (Gpr)[rs];
 								DoLds();
 								if((0x1f) != (0x0)) { (Gpr)[0x1f] = ((pc) + (0x4)) + (0x4); }
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_70)) < (0x0)) {
 									BranchTo = target;
 								} else {
@@ -912,14 +912,14 @@ namespace SharpStation {
 							}
 							case 0x1d: {
 								/* BGEZALanonymous_6 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((0x1f) != (0x0)) { (ReadAbsorb)[0x1f] = 0x0; }
-								uint temp_71 = (Gpr)[rs];
+								var temp_71 = (Gpr)[rs];
 								DoLds();
 								if((0x1f) != (0x0)) { (Gpr)[0x1f] = ((pc) + (0x4)) + (0x4); }
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_71)) >= (0x0)) {
 									BranchTo = target;
 								} else {
@@ -930,14 +930,14 @@ namespace SharpStation {
 							}
 							case 0x1e: {
 								/* BLTZALanonymous_7 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((0x1f) != (0x0)) { (ReadAbsorb)[0x1f] = 0x0; }
-								uint temp_72 = (Gpr)[rs];
+								var temp_72 = (Gpr)[rs];
 								DoLds();
 								if((0x1f) != (0x0)) { (Gpr)[0x1f] = ((pc) + (0x4)) + (0x4); }
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_72)) < (0x0)) {
 									BranchTo = target;
 								} else {
@@ -948,14 +948,14 @@ namespace SharpStation {
 							}
 							case 0x1f: {
 								/* BGEZALanonymous_7 */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 								if((0x1f) != (0x0)) { (ReadAbsorb)[0x1f] = 0x0; }
-								uint temp_73 = (Gpr)[rs];
+								var temp_73 = (Gpr)[rs];
 								DoLds();
 								if((0x1f) != (0x0)) { (Gpr)[0x1f] = ((pc) + (0x4)) + (0x4); }
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_73)) >= (0x0)) {
 									BranchTo = target;
 								} else {
@@ -969,35 +969,35 @@ namespace SharpStation {
 					}
 					case 0x2: {
 						/* J */
-						uint imm = (inst) & (0x3ffffff);
+						var imm = (inst) & (0x3ffffff);
 						DoLds();
-						uint target = (((pc) + (0x4)) & (0xf0000000)) + ((imm) << ((int) 0x2));
+						var target = (((pc) + (0x4)) & (0xf0000000)) + ((imm) << ((int) 0x2));
 						BranchTo = target;
 						return(true);
 						break;
 					}
 					case 0x3: {
 						/* JAL */
-						uint imm = (inst) & (0x3ffffff);
+						var imm = (inst) & (0x3ffffff);
 						if((0x1f) != (0x0)) { (ReadAbsorb)[0x1f] = 0x0; }
 						DoLds();
 						if((0x1f) != (0x0)) { (Gpr)[0x1f] = ((pc) + (0x4)) + (0x4); }
-						uint target = (((pc) + (0x4)) & (0xf0000000)) + ((imm) << ((int) 0x2));
+						var target = (((pc) + (0x4)) & (0xf0000000)) + ((imm) << ((int) 0x2));
 						BranchTo = target;
 						return(true);
 						break;
 					}
 					case 0x4: {
 						/* BEQ */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_74 = (Gpr)[rs];
-						uint temp_75 = (Gpr)[rt];
+						var temp_74 = (Gpr)[rs];
+						var temp_75 = (Gpr)[rt];
 						DoLds();
-						uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+						var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 						if((temp_74) == (temp_75)) {
 							BranchTo = target;
 						} else {
@@ -1008,15 +1008,15 @@ namespace SharpStation {
 					}
 					case 0x5: {
 						/* BNE */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_76 = (Gpr)[rs];
-						uint temp_77 = (Gpr)[rt];
+						var temp_76 = (Gpr)[rs];
+						var temp_77 = (Gpr)[rt];
 						DoLds();
-						uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+						var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 						if((temp_76) != (temp_77)) {
 							BranchTo = target;
 						} else {
@@ -1029,12 +1029,12 @@ namespace SharpStation {
 						switch(((inst) >> ((int) 0x10)) & (0x1f)) {
 							case 0x0: {
 								/* BLEZ */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-								uint temp_78 = (Gpr)[rs];
+								var temp_78 = (Gpr)[rs];
 								DoLds();
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_78)) <= (0x0)) {
 									BranchTo = target;
 								} else {
@@ -1050,12 +1050,12 @@ namespace SharpStation {
 						switch(((inst) >> ((int) 0x10)) & (0x1f)) {
 							case 0x0: {
 								/* BGTZ */
-								uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-								uint imm = (inst) & (0xffff);
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								var imm = (inst) & (0xffff);
 								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-								uint temp_79 = (Gpr)[rs];
+								var temp_79 = (Gpr)[rs];
 								DoLds();
-								uint target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
+								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								if(((int) (temp_79)) > (0x0)) {
 									BranchTo = target;
 								} else {
@@ -1069,14 +1069,14 @@ namespace SharpStation {
 					}
 					case 0x8: {
 						/* ADDI */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_80 = (Gpr)[rs];
+						var temp_80 = (Gpr)[rs];
 						DoLds();
-						uint eimm = (uint) (SignExt(0x10, imm));
+						var eimm = (uint) (SignExt(0x10, imm));
 						Overflow(temp_80, eimm, 0x1, pc, inst);
 						if((rt) != (0x0)) { (Gpr)[rt] = (temp_80) + (eimm); }
 						return(true);
@@ -1084,92 +1084,92 @@ namespace SharpStation {
 					}
 					case 0x9: {
 						/* ADDIU */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_81 = (Gpr)[rs];
+						var temp_81 = (Gpr)[rs];
 						DoLds();
-						uint eimm = (uint) (SignExt(0x10, imm));
+						var eimm = (uint) (SignExt(0x10, imm));
 						if((rt) != (0x0)) { (Gpr)[rt] = (temp_81) + (eimm); }
 						return(true);
 						break;
 					}
 					case 0xa: {
 						/* SLTI */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_82 = (Gpr)[rs];
+						var temp_82 = (Gpr)[rs];
 						DoLds();
-						uint eimm = (uint) (SignExt(0x10, imm));
+						var eimm = (uint) (SignExt(0x10, imm));
 						if((rt) != (0x0)) { (Gpr)[rt] = (((int) (temp_82)) < ((int) (eimm))) ? (1U) : (0U); }
 						return(true);
 						break;
 					}
 					case 0xb: {
 						/* SLTIU */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_83 = (Gpr)[rs];
+						var temp_83 = (Gpr)[rs];
 						DoLds();
-						uint eimm = (uint) (SignExt(0x10, imm));
+						var eimm = (uint) (SignExt(0x10, imm));
 						if((rt) != (0x0)) { (Gpr)[rt] = ((temp_83) < (eimm)) ? (1U) : (0U); }
 						return(true);
 						break;
 					}
 					case 0xc: {
 						/* ANDI */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_84 = (Gpr)[rs];
+						var temp_84 = (Gpr)[rs];
 						DoLds();
-						uint eimm = imm;
+						var eimm = imm;
 						if((rt) != (0x0)) { (Gpr)[rt] = (temp_84) & (eimm); }
 						return(true);
 						break;
 					}
 					case 0xd: {
 						/* ORI */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_85 = (Gpr)[rs];
+						var temp_85 = (Gpr)[rs];
 						DoLds();
-						uint eimm = imm;
+						var eimm = imm;
 						if((rt) != (0x0)) { (Gpr)[rt] = (temp_85) | (eimm); }
 						return(true);
 						break;
 					}
 					case 0xe: {
 						/* XORI */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_86 = (Gpr)[rs];
+						var temp_86 = (Gpr)[rs];
 						DoLds();
-						uint eimm = imm;
+						var eimm = imm;
 						if((rt) != (0x0)) { (Gpr)[rt] = (temp_86) ^ (eimm); }
 						return(true);
 						break;
 					}
 					case 0xf: {
 						/* LUI */
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 						DoLds();
 						if((rt) != (0x0)) { (Gpr)[rt] = (imm) << ((int) 0x10); }
@@ -1180,9 +1180,9 @@ namespace SharpStation {
 						switch(((inst) >> ((int) 0x15)) & (0x1f)) {
 							case 0x0: {
 								/* MFCzanonymous_8 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								DoLds();
 								DeferSet(rt, ReadCopreg(cop, rd));
@@ -1191,9 +1191,9 @@ namespace SharpStation {
 							}
 							case 0x2: {
 								/* CFCzanonymous_8 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								DoLds();
 								if((rt) != (0x0)) { (Gpr)[rt] = ReadCopcreg(cop, rd); }
@@ -1202,11 +1202,11 @@ namespace SharpStation {
 							}
 							case 0x4: {
 								/* MTCzanonymous_8 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-								uint temp_87 = (Gpr)[rt];
+								var temp_87 = (Gpr)[rt];
 								DoLds();
 								WriteCopreg(cop, rd, temp_87);
 								return(true);
@@ -1214,11 +1214,11 @@ namespace SharpStation {
 							}
 							case 0x6: {
 								/* CTCzanonymous_8 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-								uint temp_88 = (Gpr)[rt];
+								var temp_88 = (Gpr)[rt];
 								DoLds();
 								WriteCopcreg(cop, rd, temp_88);
 								return(true);
@@ -1226,8 +1226,8 @@ namespace SharpStation {
 							}
 							case 0x10: {
 								/* COPzanonymous_12anonymous_8 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1235,8 +1235,8 @@ namespace SharpStation {
 							}
 							case 0x11: {
 								/* COPzanonymous_13anonymous_8 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1244,8 +1244,8 @@ namespace SharpStation {
 							}
 							case 0x12: {
 								/* COPzanonymous_14anonymous_8 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1253,8 +1253,8 @@ namespace SharpStation {
 							}
 							case 0x13: {
 								/* COPzanonymous_15anonymous_8 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1262,8 +1262,8 @@ namespace SharpStation {
 							}
 							case 0x14: {
 								/* COPzanonymous_16anonymous_8 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1271,8 +1271,8 @@ namespace SharpStation {
 							}
 							case 0x15: {
 								/* COPzanonymous_17anonymous_8 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1280,8 +1280,8 @@ namespace SharpStation {
 							}
 							case 0x16: {
 								/* COPzanonymous_18anonymous_8 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1289,8 +1289,8 @@ namespace SharpStation {
 							}
 							case 0x17: {
 								/* COPzanonymous_19anonymous_8 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1298,8 +1298,8 @@ namespace SharpStation {
 							}
 							case 0x18: {
 								/* COPzanonymous_20anonymous_8 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1307,8 +1307,8 @@ namespace SharpStation {
 							}
 							case 0x19: {
 								/* COPzanonymous_21anonymous_8 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1316,8 +1316,8 @@ namespace SharpStation {
 							}
 							case 0x1a: {
 								/* COPzanonymous_22anonymous_8 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1325,8 +1325,8 @@ namespace SharpStation {
 							}
 							case 0x1b: {
 								/* COPzanonymous_23anonymous_8 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1334,8 +1334,8 @@ namespace SharpStation {
 							}
 							case 0x1c: {
 								/* COPzanonymous_24anonymous_8 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1343,8 +1343,8 @@ namespace SharpStation {
 							}
 							case 0x1d: {
 								/* COPzanonymous_25anonymous_8 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1352,8 +1352,8 @@ namespace SharpStation {
 							}
 							case 0x1e: {
 								/* COPzanonymous_26anonymous_8 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1361,8 +1361,8 @@ namespace SharpStation {
 							}
 							case 0x1f: {
 								/* COPzanonymous_27anonymous_8 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1375,9 +1375,9 @@ namespace SharpStation {
 						switch(((inst) >> ((int) 0x15)) & (0x1f)) {
 							case 0x0: {
 								/* MFCzanonymous_9 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								DoLds();
 								DeferSet(rt, ReadCopreg(cop, rd));
@@ -1386,9 +1386,9 @@ namespace SharpStation {
 							}
 							case 0x2: {
 								/* CFCzanonymous_9 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								DoLds();
 								if((rt) != (0x0)) { (Gpr)[rt] = ReadCopcreg(cop, rd); }
@@ -1397,11 +1397,11 @@ namespace SharpStation {
 							}
 							case 0x4: {
 								/* MTCzanonymous_9 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-								uint temp_89 = (Gpr)[rt];
+								var temp_89 = (Gpr)[rt];
 								DoLds();
 								WriteCopreg(cop, rd, temp_89);
 								return(true);
@@ -1409,11 +1409,11 @@ namespace SharpStation {
 							}
 							case 0x6: {
 								/* CTCzanonymous_9 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-								uint temp_90 = (Gpr)[rt];
+								var temp_90 = (Gpr)[rt];
 								DoLds();
 								WriteCopcreg(cop, rd, temp_90);
 								return(true);
@@ -1421,8 +1421,8 @@ namespace SharpStation {
 							}
 							case 0x10: {
 								/* COPzanonymous_12anonymous_9 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1430,8 +1430,8 @@ namespace SharpStation {
 							}
 							case 0x11: {
 								/* COPzanonymous_13anonymous_9 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1439,8 +1439,8 @@ namespace SharpStation {
 							}
 							case 0x12: {
 								/* COPzanonymous_14anonymous_9 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1448,8 +1448,8 @@ namespace SharpStation {
 							}
 							case 0x13: {
 								/* COPzanonymous_15anonymous_9 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1457,8 +1457,8 @@ namespace SharpStation {
 							}
 							case 0x14: {
 								/* COPzanonymous_16anonymous_9 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1466,8 +1466,8 @@ namespace SharpStation {
 							}
 							case 0x15: {
 								/* COPzanonymous_17anonymous_9 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1475,8 +1475,8 @@ namespace SharpStation {
 							}
 							case 0x16: {
 								/* COPzanonymous_18anonymous_9 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1484,8 +1484,8 @@ namespace SharpStation {
 							}
 							case 0x17: {
 								/* COPzanonymous_19anonymous_9 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1493,8 +1493,8 @@ namespace SharpStation {
 							}
 							case 0x18: {
 								/* COPzanonymous_20anonymous_9 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1502,8 +1502,8 @@ namespace SharpStation {
 							}
 							case 0x19: {
 								/* COPzanonymous_21anonymous_9 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1511,8 +1511,8 @@ namespace SharpStation {
 							}
 							case 0x1a: {
 								/* COPzanonymous_22anonymous_9 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1520,8 +1520,8 @@ namespace SharpStation {
 							}
 							case 0x1b: {
 								/* COPzanonymous_23anonymous_9 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1529,8 +1529,8 @@ namespace SharpStation {
 							}
 							case 0x1c: {
 								/* COPzanonymous_24anonymous_9 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1538,8 +1538,8 @@ namespace SharpStation {
 							}
 							case 0x1d: {
 								/* COPzanonymous_25anonymous_9 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1547,8 +1547,8 @@ namespace SharpStation {
 							}
 							case 0x1e: {
 								/* COPzanonymous_26anonymous_9 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1556,8 +1556,8 @@ namespace SharpStation {
 							}
 							case 0x1f: {
 								/* COPzanonymous_27anonymous_9 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1570,9 +1570,9 @@ namespace SharpStation {
 						switch(((inst) >> ((int) 0x15)) & (0x1f)) {
 							case 0x0: {
 								/* MFCzanonymous_10 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								DoLds();
 								DeferSet(rt, ReadCopreg(cop, rd));
@@ -1581,9 +1581,9 @@ namespace SharpStation {
 							}
 							case 0x2: {
 								/* CFCzanonymous_10 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								DoLds();
 								if((rt) != (0x0)) { (Gpr)[rt] = ReadCopcreg(cop, rd); }
@@ -1592,11 +1592,11 @@ namespace SharpStation {
 							}
 							case 0x4: {
 								/* MTCzanonymous_10 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-								uint temp_91 = (Gpr)[rt];
+								var temp_91 = (Gpr)[rt];
 								DoLds();
 								WriteCopreg(cop, rd, temp_91);
 								return(true);
@@ -1604,11 +1604,11 @@ namespace SharpStation {
 							}
 							case 0x6: {
 								/* CTCzanonymous_10 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-								uint temp_92 = (Gpr)[rt];
+								var temp_92 = (Gpr)[rt];
 								DoLds();
 								WriteCopcreg(cop, rd, temp_92);
 								return(true);
@@ -1616,8 +1616,8 @@ namespace SharpStation {
 							}
 							case 0x10: {
 								/* COPzanonymous_12anonymous_10 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1625,8 +1625,8 @@ namespace SharpStation {
 							}
 							case 0x11: {
 								/* COPzanonymous_13anonymous_10 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1634,8 +1634,8 @@ namespace SharpStation {
 							}
 							case 0x12: {
 								/* COPzanonymous_14anonymous_10 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1643,8 +1643,8 @@ namespace SharpStation {
 							}
 							case 0x13: {
 								/* COPzanonymous_15anonymous_10 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1652,8 +1652,8 @@ namespace SharpStation {
 							}
 							case 0x14: {
 								/* COPzanonymous_16anonymous_10 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1661,8 +1661,8 @@ namespace SharpStation {
 							}
 							case 0x15: {
 								/* COPzanonymous_17anonymous_10 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1670,8 +1670,8 @@ namespace SharpStation {
 							}
 							case 0x16: {
 								/* COPzanonymous_18anonymous_10 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1679,8 +1679,8 @@ namespace SharpStation {
 							}
 							case 0x17: {
 								/* COPzanonymous_19anonymous_10 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1688,8 +1688,8 @@ namespace SharpStation {
 							}
 							case 0x18: {
 								/* COPzanonymous_20anonymous_10 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1697,8 +1697,8 @@ namespace SharpStation {
 							}
 							case 0x19: {
 								/* COPzanonymous_21anonymous_10 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1706,8 +1706,8 @@ namespace SharpStation {
 							}
 							case 0x1a: {
 								/* COPzanonymous_22anonymous_10 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1715,8 +1715,8 @@ namespace SharpStation {
 							}
 							case 0x1b: {
 								/* COPzanonymous_23anonymous_10 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1724,8 +1724,8 @@ namespace SharpStation {
 							}
 							case 0x1c: {
 								/* COPzanonymous_24anonymous_10 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1733,8 +1733,8 @@ namespace SharpStation {
 							}
 							case 0x1d: {
 								/* COPzanonymous_25anonymous_10 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1742,8 +1742,8 @@ namespace SharpStation {
 							}
 							case 0x1e: {
 								/* COPzanonymous_26anonymous_10 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1751,8 +1751,8 @@ namespace SharpStation {
 							}
 							case 0x1f: {
 								/* COPzanonymous_27anonymous_10 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1765,9 +1765,9 @@ namespace SharpStation {
 						switch(((inst) >> ((int) 0x15)) & (0x1f)) {
 							case 0x0: {
 								/* MFCzanonymous_11 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								DoLds();
 								DeferSet(rt, ReadCopreg(cop, rd));
@@ -1776,9 +1776,9 @@ namespace SharpStation {
 							}
 							case 0x2: {
 								/* CFCzanonymous_11 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
 								DoLds();
 								if((rt) != (0x0)) { (Gpr)[rt] = ReadCopcreg(cop, rd); }
@@ -1787,11 +1787,11 @@ namespace SharpStation {
 							}
 							case 0x4: {
 								/* MTCzanonymous_11 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-								uint temp_93 = (Gpr)[rt];
+								var temp_93 = (Gpr)[rt];
 								DoLds();
 								WriteCopreg(cop, rd, temp_93);
 								return(true);
@@ -1799,11 +1799,11 @@ namespace SharpStation {
 							}
 							case 0x6: {
 								/* CTCzanonymous_11 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-								uint rd = ((inst) >> ((int) 0xb)) & (0x1f);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
 								if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-								uint temp_94 = (Gpr)[rt];
+								var temp_94 = (Gpr)[rt];
 								DoLds();
 								WriteCopcreg(cop, rd, temp_94);
 								return(true);
@@ -1811,8 +1811,8 @@ namespace SharpStation {
 							}
 							case 0x10: {
 								/* COPzanonymous_12anonymous_11 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1820,8 +1820,8 @@ namespace SharpStation {
 							}
 							case 0x11: {
 								/* COPzanonymous_13anonymous_11 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1829,8 +1829,8 @@ namespace SharpStation {
 							}
 							case 0x12: {
 								/* COPzanonymous_14anonymous_11 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1838,8 +1838,8 @@ namespace SharpStation {
 							}
 							case 0x13: {
 								/* COPzanonymous_15anonymous_11 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1847,8 +1847,8 @@ namespace SharpStation {
 							}
 							case 0x14: {
 								/* COPzanonymous_16anonymous_11 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1856,8 +1856,8 @@ namespace SharpStation {
 							}
 							case 0x15: {
 								/* COPzanonymous_17anonymous_11 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1865,8 +1865,8 @@ namespace SharpStation {
 							}
 							case 0x16: {
 								/* COPzanonymous_18anonymous_11 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1874,8 +1874,8 @@ namespace SharpStation {
 							}
 							case 0x17: {
 								/* COPzanonymous_19anonymous_11 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1883,8 +1883,8 @@ namespace SharpStation {
 							}
 							case 0x18: {
 								/* COPzanonymous_20anonymous_11 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1892,8 +1892,8 @@ namespace SharpStation {
 							}
 							case 0x19: {
 								/* COPzanonymous_21anonymous_11 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1901,8 +1901,8 @@ namespace SharpStation {
 							}
 							case 0x1a: {
 								/* COPzanonymous_22anonymous_11 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1910,8 +1910,8 @@ namespace SharpStation {
 							}
 							case 0x1b: {
 								/* COPzanonymous_23anonymous_11 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1919,8 +1919,8 @@ namespace SharpStation {
 							}
 							case 0x1c: {
 								/* COPzanonymous_24anonymous_11 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1928,8 +1928,8 @@ namespace SharpStation {
 							}
 							case 0x1d: {
 								/* COPzanonymous_25anonymous_11 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1937,8 +1937,8 @@ namespace SharpStation {
 							}
 							case 0x1e: {
 								/* COPzanonymous_26anonymous_11 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1946,8 +1946,8 @@ namespace SharpStation {
 							}
 							case 0x1f: {
 								/* COPzanonymous_27anonymous_11 */
-								uint cop = ((inst) >> ((int) 0x1a)) & (0x3);
-								uint cofun = (inst) & (0x1ffffff);
+								var cop = ((inst) >> ((int) 0x1a)) & (0x3);
+								var cofun = (inst) & (0x1ffffff);
 								DoLds();
 								Copfun(cop, cofun, inst);
 								return(true);
@@ -1958,29 +1958,29 @@ namespace SharpStation {
 					}
 					case 0x20: {
 						/* LB */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_95 = (Gpr)[rs];
+						var temp_95 = (Gpr)[rs];
 						DoLds();
-						uint offset = (uint) (SignExt(0x10, imm));
+						var offset = (uint) (SignExt(0x10, imm));
 						DeferSet(rt, (uint) (SignExt(0x8, LoadMemory(0x8, (temp_95) + (offset), pc))));
 						return(true);
 						break;
 					}
 					case 0x21: {
 						/* LH */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_96 = (Gpr)[rs];
+						var temp_96 = (Gpr)[rs];
 						DoLds();
-						uint offset = (uint) (SignExt(0x10, imm));
-						uint addr = (temp_96) + (offset);
+						var offset = (uint) (SignExt(0x10, imm));
+						var addr = (temp_96) + (offset);
 						Alignment(addr, 0x10, false, pc);
 						DeferSet(rt, (uint) (SignExt(0x10, LoadMemory(0x10, addr, pc))));
 						return(true);
@@ -1988,18 +1988,18 @@ namespace SharpStation {
 					}
 					case 0x22: {
 						/* LWL */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_97 = (Gpr)[rs];
-						uint temp_98 = (Gpr)[rt];
+						var temp_97 = (Gpr)[rs];
+						var temp_98 = (Gpr)[rt];
 						DoLoad(rt, ref(temp_98));
-						uint simm = (uint) (SignExt(0x10, imm));
-						uint offset = (temp_97) + (simm);
-						uint bottom = (offset) & (0x3);
-						uint moffset = (offset) & (0xfffffffc);
+						var simm = (uint) (SignExt(0x10, imm));
+						var offset = (temp_97) + (simm);
+						var bottom = (offset) & (0x3);
+						var moffset = (offset) & (0xfffffffc);
 						if((bottom) == (0x0)) {
 							DeferSet(rt, ((temp_98) & (0xffffff)) | ((LoadMemory(0x8, moffset, pc)) << ((int) 0x18)));
 						} else {
@@ -2018,15 +2018,15 @@ namespace SharpStation {
 					}
 					case 0x23: {
 						/* LW */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_99 = (Gpr)[rs];
+						var temp_99 = (Gpr)[rs];
 						DoLds();
-						uint offset = (uint) (SignExt(0x10, imm));
-						uint addr = (temp_99) + (offset);
+						var offset = (uint) (SignExt(0x10, imm));
+						var addr = (temp_99) + (offset);
 						Alignment(addr, 0x20, false, pc);
 						DeferSet(rt, LoadMemory(0x20, addr, pc));
 						return(true);
@@ -2034,29 +2034,29 @@ namespace SharpStation {
 					}
 					case 0x24: {
 						/* LBU */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_100 = (Gpr)[rs];
+						var temp_100 = (Gpr)[rs];
 						DoLds();
-						uint offset = (uint) (SignExt(0x10, imm));
+						var offset = (uint) (SignExt(0x10, imm));
 						DeferSet(rt, LoadMemory(0x8, (temp_100) + (offset), pc));
 						return(true);
 						break;
 					}
 					case 0x25: {
 						/* LHU */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_101 = (Gpr)[rs];
+						var temp_101 = (Gpr)[rs];
 						DoLds();
-						uint offset = (uint) (SignExt(0x10, imm));
-						uint addr = (temp_101) + (offset);
+						var offset = (uint) (SignExt(0x10, imm));
+						var addr = (temp_101) + (offset);
 						Alignment(addr, 0x10, false, pc);
 						DeferSet(rt, LoadMemory(0x10, addr, pc));
 						return(true);
@@ -2064,17 +2064,17 @@ namespace SharpStation {
 					}
 					case 0x26: {
 						/* LWR */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_102 = (Gpr)[rs];
-						uint temp_103 = (Gpr)[rt];
+						var temp_102 = (Gpr)[rs];
+						var temp_103 = (Gpr)[rt];
 						DoLoad(rt, ref(temp_103));
-						uint simm = (uint) (SignExt(0x10, imm));
-						uint offset = (temp_102) + (simm);
-						uint bottom = (offset) & (0x3);
+						var simm = (uint) (SignExt(0x10, imm));
+						var offset = (temp_102) + (simm);
+						var bottom = (offset) & (0x3);
 						if((bottom) == (0x0)) {
 							DeferSet(rt, LoadMemory(0x20, offset, pc));
 						} else {
@@ -2093,31 +2093,31 @@ namespace SharpStation {
 					}
 					case 0x28: {
 						/* SB */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_104 = (Gpr)[rs];
-						uint temp_105 = (Gpr)[rt];
+						var temp_104 = (Gpr)[rs];
+						var temp_105 = (Gpr)[rt];
 						DoLds();
-						uint offset = (uint) (SignExt(0x10, imm));
+						var offset = (uint) (SignExt(0x10, imm));
 						StoreMemory(0x8, (temp_104) + (offset), temp_105, pc);
 						return(true);
 						break;
 					}
 					case 0x29: {
 						/* SH */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_106 = (Gpr)[rs];
-						uint temp_107 = (Gpr)[rt];
+						var temp_106 = (Gpr)[rs];
+						var temp_107 = (Gpr)[rt];
 						DoLds();
-						uint offset = (uint) (SignExt(0x10, imm));
-						uint addr = (temp_106) + (offset);
+						var offset = (uint) (SignExt(0x10, imm));
+						var addr = (temp_106) + (offset);
 						Alignment(addr, 0x10, true, pc);
 						StoreMemory(0x10, addr, temp_107, pc);
 						return(true);
@@ -2125,18 +2125,18 @@ namespace SharpStation {
 					}
 					case 0x2a: {
 						/* SWL */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_108 = (Gpr)[rs];
-						uint temp_109 = (Gpr)[rt];
+						var temp_108 = (Gpr)[rs];
+						var temp_109 = (Gpr)[rt];
 						DoLds();
-						uint simm = (uint) (SignExt(0x10, imm));
-						uint offset = (temp_108) + (simm);
-						uint bottom = (offset) & (0x3);
-						uint moffset = (offset) & (0xfffffffc);
+						var simm = (uint) (SignExt(0x10, imm));
+						var offset = (temp_108) + (simm);
+						var bottom = (offset) & (0x3);
+						var moffset = (offset) & (0xfffffffc);
 						if((bottom) == (0x0)) {
 							StoreMemory(0x8, moffset, (temp_109) >> ((int) 0x18), pc);
 						} else {
@@ -2155,16 +2155,16 @@ namespace SharpStation {
 					}
 					case 0x2b: {
 						/* SW */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_110 = (Gpr)[rs];
-						uint temp_111 = (Gpr)[rt];
+						var temp_110 = (Gpr)[rs];
+						var temp_111 = (Gpr)[rt];
 						DoLds();
-						uint offset = (uint) (SignExt(0x10, imm));
-						uint addr = (temp_110) + (offset);
+						var offset = (uint) (SignExt(0x10, imm));
+						var addr = (temp_110) + (offset);
 						Alignment(addr, 0x20, true, pc);
 						StoreMemory(0x20, addr, temp_111, pc);
 						return(true);
@@ -2172,17 +2172,17 @@ namespace SharpStation {
 					}
 					case 0x2e: {
 						/* SWR */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
 						if((rt) != (0x0)) { (ReadAbsorb)[rt] = 0x0; }
-						uint temp_112 = (Gpr)[rs];
-						uint temp_113 = (Gpr)[rt];
+						var temp_112 = (Gpr)[rs];
+						var temp_113 = (Gpr)[rt];
 						DoLds();
-						uint simm = (uint) (SignExt(0x10, imm));
-						uint offset = (temp_112) + (simm);
-						uint bottom = (offset) & (0x3);
+						var simm = (uint) (SignExt(0x10, imm));
+						var offset = (temp_112) + (simm);
+						var bottom = (offset) & (0x3);
 						if((bottom) == (0x0)) {
 							StoreMemory(0x20, offset, temp_113, pc);
 						} else {
@@ -2201,14 +2201,14 @@ namespace SharpStation {
 					}
 					case 0x32: {
 						/* LWC2 */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-						uint temp_114 = (Gpr)[rs];
+						var temp_114 = (Gpr)[rs];
 						DoLds();
-						uint offset = (uint) (SignExt(0x10, imm));
-						uint addr = (temp_114) + (offset);
+						var offset = (uint) (SignExt(0x10, imm));
+						var addr = (temp_114) + (offset);
 						Alignment(addr, 0x20, false, pc);
 						WriteCopreg(0x2, rt, LoadMemory(0x20, (temp_114) + (offset), pc));
 						return(true);
@@ -2216,14 +2216,14 @@ namespace SharpStation {
 					}
 					case 0x3a: {
 						/* SWC2 */
-						uint rs = ((inst) >> ((int) 0x15)) & (0x1f);
-						uint rt = ((inst) >> ((int) 0x10)) & (0x1f);
-						uint imm = (inst) & (0xffff);
+						var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+						var rt = ((inst) >> ((int) 0x10)) & (0x1f);
+						var imm = (inst) & (0xffff);
 						if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
-						uint temp_115 = (Gpr)[rs];
+						var temp_115 = (Gpr)[rs];
 						DoLds();
-						uint offset = (uint) (SignExt(0x10, imm));
-						uint addr = (temp_115) + (offset);
+						var offset = (uint) (SignExt(0x10, imm));
+						var addr = (temp_115) + (offset);
 						Alignment(addr, 0x20, true, pc);
 						StoreMemory(0x20, addr, ReadCopreg(0x2, rt), pc);
 						return(true);
