@@ -1,4 +1,5 @@
 ﻿using System;
+using PrettyPrinter;
 using static System.Console;
 
 namespace SharpStation {
@@ -37,6 +38,7 @@ namespace SharpStation {
 		}
 
 		public void Syscall(int code, uint pc, uint inst) {
+			$"Syscall {code} at {pc:X8}".Print();
 		}
 
 		public void Break(int code, uint pc, uint inst) {
@@ -104,7 +106,7 @@ namespace SharpStation {
 		}
 
 		public uint LoadMemory(int size, uint addr, uint pc) {
-			WriteLine($"Load {size/8} bytes from {addr:X8}");
+			//WriteLine($"Load {size/8} bytes from {addr:X8}");
 			switch(size) {
 				case 8: return Memory.Load8(addr);
 				case 16: return Memory.Load16(addr);

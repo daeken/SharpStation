@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using PrettyPrinter;
 using Sigil;
 using static System.Console;
@@ -62,6 +63,7 @@ namespace SharpStation {
 			set => CpuRef.EmitThen(() => value.EmitThen(() => Ilg.StoreField(typeof(Recompiler).GetField(fieldName))));
 		}
 
+		Value ReadAbsorbRef { get => this[nameof(ReadAbsorb)]; set => this[nameof(ReadAbsorb)] = value; }
 		Value ReadAbsorbWhichRef { get => this[nameof(ReadAbsorbWhich)]; set => this[nameof(ReadAbsorbWhich)] = value; }
 		Value LDWhichRef { get => this[nameof(LdWhich)]; set => this[nameof(LdWhich)] = value; }
 		Value LDAbsorbRef { get => this[nameof(LdAbsorb)]; set => this[nameof(LdAbsorb)] = value; }
@@ -71,9 +73,8 @@ namespace SharpStation {
 		Value LoRef { get => this[nameof(Lo)]; set => this[nameof(Lo)] = value; }
 
 		public override void Run(uint pc) {
-			while(true) {
+			while(true)
 				pc = RecompileBlock(pc);
-			}
 		}
 
 		readonly Dictionary<uint, Action<Recompiler>> BlockCache = new Dictionary<uint, Action<Recompiler>>();
@@ -81,8 +82,20 @@ namespace SharpStation {
 		Action<Recompiler> LastBlock;
 		uint LastBlockAddr = ~0U;
 
+		string TtyBuf = "";
 		uint RecompileBlock(uint pc) {
-			$"Running block at {pc:X8}".Print();
+			if(pc == 0x2C94 && Gpr[4] == 1) {
+				TtyBuf += string.Join("", Enumerable.Range(0, (int) Gpr[6]).Select(i => (char) Memory.Load8((uint) (Gpr[5] + i))));
+				if(TtyBuf.Contains('\n')) {
+					var lines = TtyBuf.Split('\n');
+					TtyBuf = lines.Last();
+					foreach(var line in lines.SkipLast(1))
+						WriteLine($"TTY: {line}");
+				}
+				//return Gpr[31];
+			}
+			
+			//$"Running block at {pc:X8}".Print();
 			if(pc == LastBlockAddr) {
 				LastBlock(this);
 				return BranchTo;
@@ -102,7 +115,7 @@ namespace SharpStation {
 			var did_delay = false;
 			while(!did_delay) {
 				var insn = Memory.Load32(pc);
-				WriteLine($"{pc:X}:  {Disassemble(pc, insn)}");
+				//WriteLine($"{pc:X}:  {Disassemble(pc, insn)}");
 
 				if(branched)
 					did_delay = true;
@@ -176,9 +189,22 @@ namespace SharpStation {
 
 		void DoLds() {
 			GprRef.Emit();
-			LDAbsorbRef.Emit();
 			LDWhichRef.Emit();
+			LDValueRef.Emit();
 			Ilg.StoreElement<uint>();
+
+			ReadAbsorbRef.Emit();
+			LDWhichRef.Emit();
+			LDAbsorbRef.Emit();
+			Ilg.StoreElement<uint>();
+
+			/*var which = Ilg.DeclareLocal(typeof(uint));
+			LDWhichRef.Emit();
+			Ilg.StoreLocal(which);
+			var value = Ilg.DeclareLocal(typeof(uint));
+			LDValueRef.Emit();
+			Ilg.StoreLocal(value);
+			Ilg.WriteLine("DoLds {0} {1:X}", which, value);*/
 
 			ReadFudgeRef = LDWhichRef;
 
@@ -216,14 +242,12 @@ namespace SharpStation {
 		}
 
 		Value RRA(Value idx) => new Value(() => {
-			CpuRef.Emit();
-			Ilg.LoadField(typeof(Recompiler).GetField(nameof(ReadAbsorb)));
+			ReadAbsorbRef.Emit();
 			idx.Emit();
 			Ilg.LoadElement<uint>();
 		});
 		void WRA(Value idx, Value val) {
-			CpuRef.Emit();
-			Ilg.LoadField(typeof(Recompiler).GetField(nameof(ReadAbsorb)));
+			ReadAbsorbRef.Emit();
 			idx.Emit();
 			val.Emit();
 			Ilg.StoreElement<uint>();
@@ -236,21 +260,76 @@ namespace SharpStation {
 		
 		void Alignment(Value value, int bits, bool store, uint pc) {}
 		void Overflow(Value a, Value b, int dir, uint pc, uint inst) {}
-		
-		void Syscall(uint code, uint pc, uint inst) {}
-		void Break(uint code, uint pc, uint inst) {}
 
-		Value GenReadCopreg(uint cop, uint reg) => null;
-		Value GenReadCopcreg(uint cop, uint reg) => null;
-		void WriteCopreg(uint cop, uint reg, Value value) {}
-		void WriteCopcreg(uint cop, uint reg, Value value) {}
-		void GenCopfun(uint cop, uint cofun, uint inst) {}
+		void Syscall(uint code, uint pc, uint inst) =>
+			CpuRef.EmitThen(() => {
+				Ilg.LoadConstant((int) code);
+				Ilg.LoadConstant(pc);
+				Ilg.LoadConstant(inst);
+				Ilg.Call(typeof(Recompiler).GetMethod(nameof(Syscall)));
+				Branch(pc + 4);
+			});
+		void Break(uint code, uint pc, uint inst) =>
+			CpuRef.EmitThen(() => {
+				Ilg.LoadConstant((int) code);
+				Ilg.LoadConstant(pc);
+				Ilg.LoadConstant(inst);
+				Ilg.Call(typeof(Recompiler).GetMethod(nameof(Break)));
+				Branch(pc + 4);
+			});
+
+		Value GenReadCopreg(uint cop, uint reg) => new Value(() => CpuRef.EmitThen(() => {
+			Ilg.LoadConstant(cop);
+			Ilg.LoadConstant(reg);
+			Ilg.Call(typeof(Recompiler).GetMethod(nameof(ReadCopreg)));
+		}));
+		Value GenReadCopcreg(uint cop, uint reg) => new Value(() => CpuRef.EmitThen(() => {
+			Ilg.LoadConstant(cop);
+			Ilg.LoadConstant(reg);
+			Ilg.Call(typeof(Recompiler).GetMethod(nameof(ReadCopcreg)));
+		}));
+
+		void WriteCopreg(uint cop, uint reg, Value value) {
+			CpuRef.Emit();
+			Ilg.LoadConstant(cop);
+			Ilg.LoadConstant(reg);
+			value.Emit();
+			Ilg.Call(typeof(Recompiler).GetMethod(nameof(WriteCopreg)));
+		}
+		void WriteCopcreg(uint cop, uint reg, Value value) {
+			CpuRef.Emit();
+			Ilg.LoadConstant(cop);
+			Ilg.LoadConstant(reg);
+			value.Emit();
+			Ilg.Call(typeof(Recompiler).GetMethod(nameof(WriteCopcreg)));
+		}
+		void GenCopfun(uint cop, uint cofun, uint inst) {
+			CpuRef.Emit();
+			Ilg.LoadConstant(cop);
+			Ilg.LoadConstant(cofun);
+			Ilg.LoadConstant(inst);
+			Ilg.Call(typeof(Recompiler).GetMethod(nameof(Copfun)));
+		}
 
 		Value Add(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Add())));
 		Value Sub(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Subtract())));
 		Value Mul(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Multiply())));
-		Value Mul64(Value a, Value b) => null;
-		Value UMul64(Value a, Value b) => null;
+		Value Mul64(Value a, Value b) {
+			var tempLocal = Ilg.DeclareLocal<long>();
+			a.Emit();
+			b.Emit();
+			Ilg.Multiply();
+			Ilg.StoreLocal(tempLocal);
+			return new Value(() => Ilg.LoadLocal(tempLocal));
+		}
+		Value UMul64(Value a, Value b) {
+			var tempLocal = Ilg.DeclareLocal<ulong>();
+			a.Emit();
+			b.Emit();
+			Ilg.Multiply();
+			Ilg.StoreLocal(tempLocal);
+			return new Value(() => Ilg.LoadLocal(tempLocal));
+		}
 		Value Div(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Divide())));
 		Value Mod(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Remainder())));
 		
@@ -280,14 +359,62 @@ namespace SharpStation {
 		Value Le(Value a, Value b) => Comp(a, b, l => Ilg.BranchIfLessOrEqual(l));
 		Value Ge(Value a, Value b) => Comp(a, b, l => Ilg.BranchIfGreaterOrEqual(l));
 
-		Value ToI32(Value v) => null;
-		Value ToI64(Value v) => null;
-		Value ToU32(Value v) => null;
-		Value ToU64(Value v) => null;
+		Value ToI32(Value v) => new Value(() => v.EmitThen(() => Ilg.Convert<int>()));
+		Value ToI64(Value v) => new Value(() => v.EmitThen(() => Ilg.Convert<long>()));
+		Value ToU32(Value v) => new Value(() => v.EmitThen(() => Ilg.Convert<uint>()));
+		Value ToU64(Value v) => new Value(() => v.EmitThen(() => Ilg.Convert<ulong>()));
 		
-		Value Signed(Value v) => null;
-		Value Unsigned(Value v) => null;
+		Value Signed(Value v) => new Value(() => v.EmitThen(() => Ilg.Convert<int>()));
+		Value Unsigned(Value v) => new Value(() => v.EmitThen(() => Ilg.Convert<uint>()));
 
-		Value SignExt(int size, Value v) => null;
+		Value SignExt(int size, Value v) {
+			/*
+			 * 			unchecked {
+				switch(size) {
+					case 8: return (sbyte) (byte) imm;
+					case 16: return (short) (ushort) imm;
+					case 32: return (int) imm;
+					case int _ when (imm & (1 << (size - 1))) != 0: return (int) imm - (1 << size);
+					default: return (int) imm;
+				}
+			}
+
+			 */
+			switch(size) {
+				case 8:
+					return new Value(() => {
+						v.Emit();
+						Ilg.Convert<byte>();
+						Ilg.Convert<sbyte>();
+						Ilg.Convert<int>();
+					});
+				case 16:
+					return new Value(() => {
+						v.Emit();
+						Ilg.Convert<ushort>();
+						Ilg.Convert<short>();
+						Ilg.Convert<int>();
+					});
+				case 32: return v;
+				default:
+					var topmask = 1U << (size - 1);
+					var sub = 1 << size;
+					return Ternary(
+						new Value(() => {
+							v.Emit();
+							Ilg.Duplicate();
+							Ilg.LoadConstant(topmask);
+							Ilg.And();
+							Ilg.LoadConstant(0U);
+							Ilg.CompareEqual();
+						}), 
+						new Value(() => {}), 
+						new Value(() => {
+							Ilg.Convert<int>();
+							Ilg.LoadConstant(sub);
+							Ilg.Subtract();
+						}));
+			}
+		}
 	}
 }

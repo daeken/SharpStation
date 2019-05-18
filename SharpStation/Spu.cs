@@ -7,6 +7,8 @@ namespace SharpStation {
 		[Port(0x1F801C06, 24, 0x10)] static ushort[] VoiceStartAddress;
 		[Port(0x1F801C08, 24, 0x10)] static ushort[] VoiceAdsrLo;
 		[Port(0x1F801C0A, 24, 0x10)] static ushort[] VoiceAdsrHi;
+		[Port(0x1F801C0C, 24, 0x10)] static ushort[] VoiceAdsrCurrentVolume;
+		[Port(0x1F801C0E, 24, 0x10)] static ushort[] VoiceAdpcmRepeatAddress;
 		
 		[Port(0x1F801D80)] static ushort MainVolumeLeft;
 		[Port(0x1F801D82)] static ushort MainVolumeRight;
@@ -52,5 +54,27 @@ namespace SharpStation {
 		[Port(0x1F801DCE)] static ushort ReverbReflectionVolume2;
 		[Port(0x1F801DD0)] static ushort ReverbApfVolume1;
 		[Port(0x1F801DD2)] static ushort ReverbApfVolume2;
+		[Port(0x1F801DD4)] static ushort ReverbSameSideReflectionAddress1Left;
+		[Port(0x1F801DD6)] static ushort ReverbSameSideReflectionAddress1Right;
+		[Port(0x1F801DD8)] static ushort ReverbCombAddress1Left;
+		[Port(0x1F801DDA)] static ushort ReverbCombAddress1Right;
+		[Port(0x1F801DDC)] static ushort ReverbCombAddress2Left;
+		[Port(0x1F801DDE)] static ushort ReverbCombAddress2Right;
+		[Port(0x1F801DE0)] static ushort ReverbSameSideReflectionAddress2Left;
+		[Port(0x1F801DE2)] static ushort ReverbSameSideReflectionAddress2Right;
+		[Port(0x1F801DE4)] static ushort ReverbDifferentSideReflectionAddress1Left;
+		[Port(0x1F801DE6)] static ushort ReverbDifferentSideReflectionAddress1Right;
+		[Port(0x1F801DE8)] static ushort ReverbCombAddress3Left;
+		[Port(0x1F801DEA)] static ushort ReverbCombAddress3Right;
+		[Port(0x1F801DEC)] static ushort ReverbCombAddress4Left;
+		[Port(0x1F801DEE)] static ushort ReverbCombAddress4Right;
+		[Port(0x1F801DF0)] static ushort ReverbDifferentSideReflectionAddress2Left;
+		[Port(0x1F801DF2)] static ushort ReverbDifferentSideReflectionAddress2Right;
+		[Port(0x1F801DF4)] static ushort ReverbApfAddress1Left;
+		[Port(0x1F801DF6)] static ushort ReverbApfAddress1Right;
+		[Port(0x1F801DF8)] static ushort ReverbApfAddress2Left;
+		[Port(0x1F801DFA)] static ushort ReverbApfAddress2Right;
+		[Port(0x1F801DFC)] static ushort ReverbInputVolumeLeft;
+		[Port(0x1F801DFE)] static ushort ReverbInputVolumeRight;
 	}
 }
