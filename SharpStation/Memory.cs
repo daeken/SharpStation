@@ -213,23 +213,23 @@ namespace SharpStation {
 		}
 
 		public byte Load8(uint addr) => Ports8.ContainsKey(addr) ? Ports8[addr].Load()
-			: throw new NotImplementedException($"Unknown port for load8: 0x{addr:X8}");
+			: throw new NotImplementedException($"Unknown port for load8: {addr:X8}");
 		public void Store8(uint addr, byte value) {
-			if(!Ports8.ContainsKey(addr)) throw new NotImplementedException($"Unknown port for store8: 0x{addr:X8} (0x{value:X2})");
+			if(!Ports8.ContainsKey(addr)) throw new NotImplementedException($"Unknown port for store8: {addr:X8} (0x{value:X2})");
 			Ports8[addr].Store(value);
 		}
 
 		public ushort Load16(uint addr) => Ports16.ContainsKey(addr) ? Ports16[addr].Load()
-			: throw new NotImplementedException($"Unknown port for load16: 0x{addr:X8}");
+			: throw new NotImplementedException($"Unknown port for load16: {addr:X8}");
 		public void Store16(uint addr, ushort value) {
-			if(!Ports16.ContainsKey(addr)) throw new NotImplementedException($"Unknown port for store16: 0x{addr:X8} (0x{value:X4})");
+			if(!Ports16.ContainsKey(addr)) throw new NotImplementedException($"Unknown port for store16: {addr:X8} (0x{value:X4})");
 			Ports16[addr].Store(value);
 		}
 
 		public uint Load32(uint addr) => Ports32.ContainsKey(addr) ? Ports32[addr].Load()
-			: throw new NotImplementedException($"Unknown port for load32: 0x{addr:X8}");
+			: throw new NotImplementedException($"Unknown port for load32: {addr:X8}");
 		public void Store32(uint addr, uint value) {
-			if(!Ports32.ContainsKey(addr)) throw new NotImplementedException($"Unknown port for store32: 0x{addr:X8} (0x{value:X8})");
+			if(!Ports32.ContainsKey(addr)) throw new NotImplementedException($"Unknown port for store32: {addr:X8} (0x{value:X8})");
 			Ports32[addr].Store(value);
 		}
 	}
