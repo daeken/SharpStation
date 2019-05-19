@@ -9,4 +9,7 @@
     <PackageReference Include="PrettyPrinter" Version="1.0.0" />
     <PackageReference Include="Sigil.NetStandard" Version="4.8.0" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SigilLite\SigilLite.csproj" />
+  </ItemGroup>
 </Project>

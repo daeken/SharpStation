@@ -5,12 +5,8 @@ namespace SharpStation {
 	public class Dma {
 		static readonly Dma Instance = new Dma();
 		
+		[Port(0x1F8010F0)] uint Control;
 		[Port(0x1F8010F4)] uint Interrupt;
-
-		[Port(0x1F8010F0)] uint Control {
-			get => 0;
-			set { }
-		}
 
 		[Port(0x1F801080, 7, 0x10)]
 		uint GetBase(int channel) => 0U;

@@ -2,7 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using PrettyPrinter;
+
+#if DEBUG
 using Sigil;
+#else
+using SigilLite;
+#endif
+
 using static System.Console;
 
 namespace SharpStation {
@@ -89,8 +95,11 @@ namespace SharpStation {
 				if(TtyBuf.Contains('\n')) {
 					var lines = TtyBuf.Split('\n');
 					TtyBuf = lines.Last();
-					foreach(var line in lines.SkipLast(1))
+					foreach(var line in lines.SkipLast(1)) {
 						WriteLine($"TTY: {line}");
+						if(line.Contains("VSync"))
+							Environment.Exit(0);
+					}
 				}
 				//return Gpr[31];
 			}
@@ -372,18 +381,6 @@ namespace SharpStation {
 		Value Unsigned(Value v) => new Value(() => v.EmitThen(() => Ilg.Convert<uint>()));
 
 		Value SignExt(int size, Value v) {
-			/*
-			 * 			unchecked {
-				switch(size) {
-					case 8: return (sbyte) (byte) imm;
-					case 16: return (short) (ushort) imm;
-					case 32: return (int) imm;
-					case int _ when (imm & (1 << (size - 1))) != 0: return (int) imm - (1 << size);
-					default: return (int) imm;
-				}
-			}
-
-			 */
 			switch(size) {
 				case 8:
 					return new Value(() => {

@@ -10,7 +10,11 @@
 // ReSharper disable RedundantTypeArgumentsOfMethod
 #pragma warning disable 162
 
+#if DEBUG
 using Sigil;
+#else
+using SigilLite;
+#endif
 
 namespace SharpStation {
 	public partial class Recompiler {

@@ -53,8 +53,11 @@ namespace SharpStation {
 				if(TtyBuf.Contains('\n')) {
 					var lines = TtyBuf.Split('\n');
 					TtyBuf = lines.Last();
-					foreach(var line in lines.SkipLast(1))
+					foreach(var line in lines.SkipLast(1)) {
 						WriteLine($"TTY: {line}");
+						if(line.Contains("VSync"))
+							Environment.Exit(0);
+					}
 				}
 			}
 
