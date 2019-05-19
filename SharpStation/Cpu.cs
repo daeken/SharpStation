@@ -45,14 +45,14 @@ namespace SharpStation {
 		}
 
 		public uint ReadCopreg(uint cop, uint reg) {
-			WriteLine($"Read cop{cop}r{reg}");
+			//WriteLine($"Read cop{cop}r{reg}");
 			if(Coprocessors[cop] == null)
 				throw new Exception($"Read from null coprocessor {cop}");
 			return Coprocessors[cop][reg];
 		}
 		
 		public void WriteCopreg(uint cop, uint reg, uint value) {
-			WriteLine($"Write cop{cop}r{reg} <- 0x{value:X}");
+			//WriteLine($"Write cop{cop}r{reg} <- 0x{value:X}");
 			if(Coprocessors[cop] == null)
 				throw new Exception($"Write to null coprocessor {cop}");
 			Coprocessors[cop][reg] = value;

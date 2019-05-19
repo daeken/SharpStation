@@ -1,21 +1,23 @@
 #pragma warning disable 169
 namespace SharpStation {
-	public static class Timers {
-		[Port(0x1F801100)] static ushort Timer0CurrentValue;
-		[Port(0x1F801104)] static ushort Timer0CounterMode;
-		[Port(0x1F801108)] static ushort Timer0CounterTargetValue;
+	public class Timers {
+		static readonly Timers Instance = new Timers();
 		
-		[Port(0x1F801110)] static ushort Timer1CurrentValue;
-		[Port(0x1F801110)] static uint Timer1CurrentValue4; // TODO: Why is this accessed as 32-bit by the bios?
-		[Port(0x1F801114)] static ushort Timer1CounterMode;
-		[Port(0x1F801114)] static uint Timer1CounterMode4; // TODO: Why is this accessed as 32-bit by the bios?
-		[Port(0x1F801118)] static ushort Timer1CounterTargetValue;
-		[Port(0x1F801118)] static uint Timer1CounterTargetValue4; // TODO: Why is this accessed as 32-bit by the bios?
+		[Port(0x1F801130)] uint Timer3CurrentValue; // TODO: Figure out if this is actually right
 
-		[Port(0x1F801120)] static ushort Timer2CurrentValue;
-		[Port(0x1F801124)] static ushort Timer2CounterMode;
-		[Port(0x1F801128)] static ushort Timer2CounterTargetValue;
+		[Port(0x1F801100, 3, 0x10)]
+		uint GetCurrentValue(int timer) => 0;
+		[Port(0x1F801100, 3, 0x10)]
+		void SetCurrentValue(int timer, uint value) {}
 
-		[Port(0x1F801130)] static uint Timer3; // TODO: Figure out if this is actually right
+		[Port(0x1F801104, 3, 0x10)]
+		uint GetCounterMode(int timer) => 0;
+		[Port(0x1F801104, 3, 0x10)]
+		void SetCounterMode(int timer, uint value) {}
+
+		[Port(0x1F801108, 3, 0x10)]
+		uint GetCounterTargetValue(int timer) => 0;
+		[Port(0x1F801108, 3, 0x10)]
+		void SetCounterTargetValue(int timer, uint value) {}
 	}
 }

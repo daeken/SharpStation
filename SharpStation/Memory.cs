@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Microsoft.VisualBasic.Devices;
 using MoreLinq;
 using PrettyPrinter;
 using static System.Console;
@@ -60,8 +61,8 @@ namespace SharpStation {
 		public uint Addr { get; }
 		public string Name { get; }
 
-		Func<T> _Load;
-		Action<T> _Store;
+		public Func<T> _Load;
+		public Action<T> _Store;
 
 		int BitSize => typeof(T).Name switch {
 			"Byte" => 8, 
@@ -115,18 +116,42 @@ namespace SharpStation {
 		[Port(0x1F802041)] static void POST(byte value) => WriteLine($"BIOS boot status: {value:X2}");
 
 		void Add(Port<byte> port) {
-			if(Ports8.ContainsKey(port.Addr))
-				throw new Exception($"Port {port.Name} assigned to already-occupied address 0x{port.Addr:X8}");
+			if(Ports8.ContainsKey(port.Addr)) {
+				var cport = Ports8[port.Addr];
+				if(cport._Load == null && port._Load != null)
+					cport._Load = port._Load;
+				else if(cport._Store == null && port._Store != null)
+					cport._Store = port._Store;
+				else
+					throw new Exception($"Port {port.Name} assigned to already-occupied address 0x{port.Addr:X8}");
+				return;
+			}
 			Ports8[port.Addr] = port;
 		}
 		void Add(Port<ushort> port) {
-			if(Ports16.ContainsKey(port.Addr))
-				throw new Exception($"Port {port.Name} assigned to already-occupied address 0x{port.Addr:X8}");
+			if(Ports16.ContainsKey(port.Addr)) {
+				var cport = Ports16[port.Addr];
+				if(cport._Load == null && port._Load != null)
+					cport._Load = port._Load;
+				else if(cport._Store == null && port._Store != null)
+					cport._Store = port._Store;
+				else
+					throw new Exception($"Port {port.Name} assigned to already-occupied address 0x{port.Addr:X8}");
+				return;
+			}
 			Ports16[port.Addr] = port;
 		}
 		void Add(Port<uint> port) {
-			if(Ports32.ContainsKey(port.Addr))
-				throw new Exception($"Port {port.Name} assigned to already-occupied address 0x{port.Addr:X8}");
+			if(Ports32.ContainsKey(port.Addr)) {
+				var cport = Ports32[port.Addr];
+				if(cport._Load == null && port._Load != null)
+					cport._Load = port._Load;
+				else if(cport._Store == null && port._Store != null)
+					cport._Store = port._Store;
+				else
+					throw new Exception($"Port {port.Name} assigned to already-occupied address 0x{port.Addr:X8}");
+				return;
+			}
 			Ports32[port.Addr] = port;
 		}
 		
@@ -192,26 +217,58 @@ namespace SharpStation {
 						else if(pi.PropertyType == typeof(ushort)) Add(MapProperty<ushort>(instance, addr, name, pi));
 						else if(pi.PropertyType == typeof(uint)) Add(MapProperty<uint>(instance, addr, name, pi));
 						else throw new NotImplementedException($"Property {x.DeclaringType.Name}.{x} not a supported type");
-					} else if(x is MethodInfo mi) {
+					} else if(attr.Count != 0 && x is MethodInfo mi) {
 						if(!mi.IsStatic && instance == null)
 							throw new Exception($"Port {name} is not static and no instance available");
-						if(attr.Count != 0)
-							throw new Exception($"Port {name} is multi-port but not a field");
 						if(mi.ReturnType == typeof(void)) {
-							var t = mi.GetParameters()[0].ParameterType;
-							if(t == typeof(byte)) Add(new Port<byte>(addr, name) { v => mi.Invoke(instance, new[] { (object) v }) });
-							else if(t == typeof(ushort)) Add(new Port<ushort>(addr, name) { v => mi.Invoke(instance, new[] { (object) v }) });
-							else if(t == typeof(uint)) Add(new Port<uint>(addr, name) { v => mi.Invoke(instance, new[] { (object) v }) });
+							var t = mi.GetParameters()[1].ParameterType;
+							if(t == typeof(byte)) Enumerable.Range(0, attr.Count).ForEach(
+								i => Add(new Port<byte>(addr + (uint) (attr.Stride * i), name)
+									{ v => mi.Invoke(instance, new object[] { i, v }) }));
+							else if(t == typeof(ushort)) Enumerable.Range(0, attr.Count).ForEach(i => 
+								Add(new Port<ushort>(addr + (uint) (attr.Stride * i), name)
+									{ v => mi.Invoke(instance, new object[] { i, v }) }));
+							else if(t == typeof(uint)) Enumerable.Range(0, attr.Count).ForEach(i => 
+								Add(new Port<uint>(addr + (uint) (attr.Stride * i), name)
+									{ v => mi.Invoke(instance, new object[] { i, v }) }));
 							else throw new NotImplementedException($"Method {x.DeclaringType.Name}.{x} not a supported type");
 						} else {
 							var t = mi.ReturnType;
-							if(t == typeof(byte)) Add(new Port<byte>(addr, name) { () => (byte) mi.Invoke(instance, null) });
-							else if(t == typeof(ushort)) Add(new Port<ushort>(addr, name) { () => (ushort) mi.Invoke(instance, null) });
-							else if(t == typeof(uint)) Add(new Port<uint>(addr, name) { () => (uint) mi.Invoke(instance, null) });
+							if(t == typeof(byte)) Enumerable.Range(0, attr.Count).ForEach(i => 
+								Add(new Port<byte>(addr + (uint) (attr.Stride * i), name)
+									{ () => (byte) mi.Invoke(instance, new object[] { i }) }));
+							else if(t == typeof(ushort)) Enumerable.Range(0, attr.Count).ForEach(i => 
+								Add(new Port<ushort>(addr + (uint) (attr.Stride * i), name)
+									{ () => (ushort) mi.Invoke(instance, new object[] { i }) }));
+							else if(t == typeof(uint)) Enumerable.Range(0, attr.Count).ForEach(i => 
+								Add(new Port<uint>(addr + (uint) (attr.Stride * i), name)
+									{ () => (uint) mi.Invoke(instance, new object[] { i }) }));
+							else throw new NotImplementedException($"Method {x.DeclaringType.Name}.{x} not a supported type");
+						}
+					} else if(x is MethodInfo m) {
+						if(!m.IsStatic && instance == null)
+							throw new Exception($"Port {name} is not static and no instance available");
+						if(m.ReturnType == typeof(void)) {
+							var t = m.GetParameters()[0].ParameterType;
+							if(t == typeof(byte)) Add(new Port<byte>(addr, name) { v => m.Invoke(instance, new[] { (object) v }) });
+							else if(t == typeof(ushort)) Add(new Port<ushort>(addr, name) { v => m.Invoke(instance, new[] { (object) v }) });
+							else if(t == typeof(uint)) Add(new Port<uint>(addr, name) { v => m.Invoke(instance, new[] { (object) v }) });
+							else throw new NotImplementedException($"Method {x.DeclaringType.Name}.{x} not a supported type");
+						} else {
+							var t = m.ReturnType;
+							if(t == typeof(byte)) Add(new Port<byte>(addr, name) { () => (byte) m.Invoke(instance, null) });
+							else if(t == typeof(ushort)) Add(new Port<ushort>(addr, name) { () => (ushort) m.Invoke(instance, null) });
+							else if(t == typeof(uint)) Add(new Port<uint>(addr, name) { () => (uint) m.Invoke(instance, null) });
 							else throw new NotImplementedException($"Method {x.DeclaringType.Name}.{x} not a supported type");
 						}
 					}
 				});
+
+			Ports32.Values.Where(port => !Ports16.ContainsKey(port.Addr)).ForEach(port =>
+				Add(new Port<ushort>(port.Addr, port.Name) {
+					port._Load != null ? () => (ushort) port.Load() : (Func<ushort>) null,
+					port._Store != null ? value => port.Store(value) : (Action<ushort>) null
+				}));
 		}
 
 		public byte Load8(uint addr) => Ports8.ContainsKey(addr) ? Ports8[addr].Load()

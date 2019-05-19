@@ -36,9 +36,6 @@ namespace SharpStation {
 	public class Gpu {
 		static readonly Gpu Instance = new Gpu();
 		
-		[Port(0x1F801810)] uint GpuReadAndGp0Send { get => Read; set => Gp0Incoming(value); }
-		[Port(0x1F801814)] uint GpuStatAndGp1Send { get => Stat; set => Gp1Incoming(value); }
-
 		readonly (int Count, MethodInfo Func)[] Gp0Commands = new (int, MethodInfo)[0x100];
 		readonly (int Count, MethodInfo Func)[] Gp1Commands = new (int, MethodInfo)[0x100];
 
@@ -53,9 +50,10 @@ namespace SharpStation {
 				.ForEach(x => Gp1Commands[x.Attr.Command] = (x.Method.GetParameters().Length, x.Method));
 		}
 
-		uint Read = 0xd0;
-		uint Stat;
+		[Port(0x1F801810)] uint Read = 0xd0;
+		[Port(0x1F801814)] uint Stat;
 
+		[Port(0x1F801810)]
 		void Gp0Incoming(uint value) {
 			if(CurGp0 == null) {
 				var cmd = (byte) (value >> 24);
@@ -78,6 +76,7 @@ namespace SharpStation {
 			}
 		}
 
+		[Port(0x1F801814)]
 		void Gp1Incoming(uint value) {
 			if(CurGp1 == null) {
 				var cmd = (byte) (value >> 24);

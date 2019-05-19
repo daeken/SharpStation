@@ -59,6 +59,7 @@ namespace SharpStation {
 			}
 
 			var res = Interpret(pc, inst);
+			if(!res) throw new Exception($"Unknown instruction @ {pc:X}");
 			if(Gpr[0] != 0) throw new Exception($"R0 != 0 ?! {pc:X}");
 			//Console.WriteLine($"Interpret: {res}");
 		}
