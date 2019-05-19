@@ -18,6 +18,7 @@ namespace SharpStation {
 						return EPC;
 					case 15: // Processor ID
 						return 2;
+					case uint _ when register >= 16: return 0;
 					default:
 						throw new NotImplementedException();
 				}

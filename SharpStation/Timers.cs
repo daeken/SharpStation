@@ -6,6 +6,7 @@ namespace SharpStation {
 		[Port(0x1F801108)] static ushort Timer0CounterTargetValue;
 		
 		[Port(0x1F801110)] static ushort Timer1CurrentValue;
+		[Port(0x1F801110)] static uint Timer1CurrentValue4; // TODO: Why is this accessed as 32-bit by the bios?
 		[Port(0x1F801114)] static ushort Timer1CounterMode;
 		[Port(0x1F801114)] static uint Timer1CounterMode4; // TODO: Why is this accessed as 32-bit by the bios?
 		[Port(0x1F801118)] static ushort Timer1CounterTargetValue;

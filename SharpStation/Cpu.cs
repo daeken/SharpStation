@@ -88,11 +88,6 @@ namespace SharpStation {
 		public void Overflow(uint a, uint b, int dir, uint pc, uint instr) {
 		}
 
-		public void DeferSet(uint reg, uint value) {
-			LdWhich = reg;
-			LdValue = value;
-		}
-
 		public int SignExt(int size, uint imm) {
 			unchecked {
 				switch(size) {

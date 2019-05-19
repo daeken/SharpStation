@@ -237,8 +237,12 @@ namespace SharpStation {
 		}
 
 		void DeferSet(uint reg, Value value) {
-			LDWhichRef = MakeValue(reg);
-			LDValueRef = value;
+			if(reg == 0)
+				value.EmitThen(() => Ilg.StoreLocal(Ilg.DeclareLocal<uint>()));
+			else {
+				LDWhichRef = MakeValue(reg);
+				LDValueRef = value;
+			}
 		}
 
 		Value RRA(Value idx) => new Value(() => {

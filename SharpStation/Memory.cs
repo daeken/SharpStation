@@ -102,7 +102,7 @@ namespace SharpStation {
 			Debug.Assert(stride != 0);
 		}
 	}
-
+	
 	public class IoPorts : IMemory {
 		public int Size => 8 * 1024;
 
@@ -131,10 +131,10 @@ namespace SharpStation {
 		}
 		
 		public IoPorts(Cpu cpu) {
-			Port<T> MapProperty<T>(uint addr, string name, PropertyInfo pi) where T : struct {
+			Port<T> MapProperty<T>(object instance, uint addr, string name, PropertyInfo pi) where T : struct {
 				var port = new Port<T>(addr, name);
-				if(pi.GetMethod != null) port.Add(() => (T) pi.GetValue(null));
-				if(pi.SetMethod != null) port.Add(v => pi.SetValue(null, v));
+				if(pi.GetMethod != null) port.Add(() => (T) pi.GetValue(instance));
+				if(pi.SetMethod != null) port.Add(v => pi.SetValue(instance, v));
 				return port;
 			}
 			
@@ -147,65 +147,67 @@ namespace SharpStation {
 					var attr = x.GetCustomAttribute<PortAttribute>();
 					var addr = attr.Addr;
 					var name = $"{x.DeclaringType.Name}.{x.Name}";
+					var instance = x.DeclaringType.GetField("Instance",
+						BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)?.GetValue(null);
 					if(attr.Count == 0 && x is FieldInfo fi) {
-						if(!fi.IsStatic)
-							throw new Exception($"Port {name} is not static");
+						if(!fi.IsStatic && instance == null)
+							throw new Exception($"Port {name} is not static and no instance available");
 						if(fi.FieldType == typeof(byte))
 							Add(new Port<byte>(addr, name)
-								{ () => (byte) fi.GetValue(null), v => fi.SetValue(null, v) });
+								{ () => (byte) fi.GetValue(instance), v => fi.SetValue(instance, v) });
 						else if(fi.FieldType == typeof(ushort))
 							Add(new Port<ushort>(addr, name)
-								{ () => (ushort) fi.GetValue(null), v => fi.SetValue(null, v) });
+								{ () => (ushort) fi.GetValue(instance), v => fi.SetValue(instance, v) });
 						else if(fi.FieldType == typeof(uint))
 							Add(new Port<uint>(addr, name)
-								{ () => (uint) fi.GetValue(null), v => fi.SetValue(null, v) });
+								{ () => (uint) fi.GetValue(instance), v => fi.SetValue(instance, v) });
 						else
 							throw new NotImplementedException($"Field {x.DeclaringType.Name}.{x} not a supported type");
 					} else if(x is FieldInfo f) {
-						if(!f.IsStatic)
-							throw new Exception($"Port {name} is not static");
+						if(!f.IsStatic && instance == null)
+							throw new Exception($"Port {name} is not static and no instance available");
 						if(f.FieldType == typeof(byte[])) {
 							var arr = new byte[attr.Count];
-							f.SetValue(null, arr);
+							f.SetValue(instance, arr);
 							Enumerable.Range(0, attr.Count).ForEach(i => Add(
 								new Port<byte>(addr + (uint) (attr.Stride * i), name) { () => arr[i], v => arr[i] = v }));
 						} else if(f.FieldType == typeof(ushort[])) {
 							var arr = new ushort[attr.Count];
-							f.SetValue(null, arr);
+							f.SetValue(instance, arr);
 							Enumerable.Range(0, attr.Count).ForEach(i => Add(
 								new Port<ushort>(addr + (uint) (attr.Stride * i), name) { () => arr[i], v => arr[i] = v }));
 						} else if(f.FieldType == typeof(uint[])) {
 							var arr = new uint[attr.Count];
-							f.SetValue(null, arr);
+							f.SetValue(instance, arr);
 							Enumerable.Range(0, attr.Count).ForEach(i => Add(
 								new Port<uint>(addr + (uint) (attr.Stride * i), name) { () => arr[i], v => arr[i] = v }));
 						} else
 							throw new NotImplementedException($"Field {x.DeclaringType.Name}.{x} not a supported type");
 					} else if(x is PropertyInfo pi) {
-						if(pi.GetMethod != null && !pi.GetMethod.IsStatic || pi.SetMethod != null && !pi.SetMethod.IsStatic)
-							throw new Exception($"Port {name} is not static");
+						if((pi.GetMethod != null && !pi.GetMethod.IsStatic || pi.SetMethod != null && !pi.SetMethod.IsStatic) && instance == null)
+							throw new Exception($"Port {name} is not static and no instance available");
 						if(attr.Count != 0)
 							throw new Exception($"Port {name} is multi-port but not a field");
-						if(pi.PropertyType == typeof(byte)) Add(MapProperty<byte>(addr, name, pi));
-						else if(pi.PropertyType == typeof(ushort)) Add(MapProperty<ushort>(addr, name, pi));
-						else if(pi.PropertyType == typeof(uint)) Add(MapProperty<uint>(addr, name, pi));
+						if(pi.PropertyType == typeof(byte)) Add(MapProperty<byte>(instance, addr, name, pi));
+						else if(pi.PropertyType == typeof(ushort)) Add(MapProperty<ushort>(instance, addr, name, pi));
+						else if(pi.PropertyType == typeof(uint)) Add(MapProperty<uint>(instance, addr, name, pi));
 						else throw new NotImplementedException($"Property {x.DeclaringType.Name}.{x} not a supported type");
 					} else if(x is MethodInfo mi) {
-						if(!mi.IsStatic)
-							throw new Exception($"Port {name} is not static");
+						if(!mi.IsStatic && instance == null)
+							throw new Exception($"Port {name} is not static and no instance available");
 						if(attr.Count != 0)
 							throw new Exception($"Port {name} is multi-port but not a field");
 						if(mi.ReturnType == typeof(void)) {
 							var t = mi.GetParameters()[0].ParameterType;
-							if(t == typeof(byte)) Add(new Port<byte>(addr, name) { v => mi.Invoke(null, new[] { (object) v }) });
-							else if(t == typeof(ushort)) Add(new Port<ushort>(addr, name) { v => mi.Invoke(null, new[] { (object) v }) });
-							else if(t == typeof(uint)) Add(new Port<uint>(addr, name) { v => mi.Invoke(null, new[] { (object) v }) });
+							if(t == typeof(byte)) Add(new Port<byte>(addr, name) { v => mi.Invoke(instance, new[] { (object) v }) });
+							else if(t == typeof(ushort)) Add(new Port<ushort>(addr, name) { v => mi.Invoke(instance, new[] { (object) v }) });
+							else if(t == typeof(uint)) Add(new Port<uint>(addr, name) { v => mi.Invoke(instance, new[] { (object) v }) });
 							else throw new NotImplementedException($"Method {x.DeclaringType.Name}.{x} not a supported type");
 						} else {
 							var t = mi.ReturnType;
-							if(t == typeof(byte)) Add(new Port<byte>(addr, name) { () => (byte) mi.Invoke(null, null) });
-							else if(t == typeof(ushort)) Add(new Port<ushort>(addr, name) { () => (ushort) mi.Invoke(null, null) });
-							else if(t == typeof(uint)) Add(new Port<uint>(addr, name) { () => (uint) mi.Invoke(null, null) });
+							if(t == typeof(byte)) Add(new Port<byte>(addr, name) { () => (byte) mi.Invoke(instance, null) });
+							else if(t == typeof(ushort)) Add(new Port<ushort>(addr, name) { () => (ushort) mi.Invoke(instance, null) });
+							else if(t == typeof(uint)) Add(new Port<uint>(addr, name) { () => (uint) mi.Invoke(instance, null) });
 							else throw new NotImplementedException($"Method {x.DeclaringType.Name}.{x} not a supported type");
 						}
 					}
@@ -266,19 +268,13 @@ namespace SharpStation {
 			else if(rvaddr >= 0xA0000000U && rvaddr < 0xFFFE0000U)
 				rvaddr -= 0xA0000000U;
 			
-			if(rvaddr < Ram.Size)
-				return func(Ram, rvaddr);
-			else if(rvaddr >= 0x1F000000 && rvaddr < 0x1F800000)
-				return func(Blackhole, rvaddr);
-			else if(rvaddr >= 0x1F800000 && rvaddr < 0x1F800400)
-				return func(Scratchpad, rvaddr - 0x1F800000);
-			else if(rvaddr >= 0x1F801000 && rvaddr < 0x1F803000)
-				return func(IoPorts, rvaddr);
-			else if(rvaddr >= 0x1FC00000U && rvaddr < 0x1FC80000U)
-				return func(Bios, rvaddr - 0x1FC00000);
-			else if(rvaddr >= 0xFFFE0000 && rvaddr < 0xFFFE0200)
-				return func(IoPorts, rvaddr - 0xFFFE0000 + 0x1F801000);
-			throw new NotImplementedException();
+			if(rvaddr < Ram.Size) return func(Ram, rvaddr);
+			if(rvaddr >= 0x1F000000 && rvaddr < 0x1F800000) return func(Blackhole, rvaddr);
+			if(rvaddr >= 0x1F800000 && rvaddr < 0x1F800400) return func(Scratchpad, rvaddr - 0x1F800000);
+			if(rvaddr >= 0x1F801000 && rvaddr < 0x1F803000) return func(IoPorts, rvaddr);
+			if(rvaddr >= 0x1FC00000U && rvaddr < 0x1FC80000U) return func(Bios, rvaddr - 0x1FC00000);
+			if(rvaddr >= 0xFFFE0000 && rvaddr < 0xFFFE0200) return func(IoPorts, rvaddr - 0xFFFE0000 + 0x1F801000);
+			throw new NotImplementedException($"Unknown memory region for addr {rvaddr:X08}h");
 		}
 		
 		void FindMemory(uint vaddr, Action<IMemory, uint> func) {

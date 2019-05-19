@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
+using PrettyPrinter;
+using static System.Console;
 
 namespace SharpStation {
 	public partial class Interpreter : Cpu {
 		void DoLds() {
-			Gpr[LdWhich] = LdValue;
+			if(LdWhich != 0) Gpr[LdWhich] = LdValue;
 			ReadAbsorb[LdWhich] = LdAbsorb;
 			ReadFudge = LdWhich;
 			ReadAbsorbWhich |= LdWhich != 35 ? LdWhich & 0x1F : 0;
@@ -19,6 +21,11 @@ namespace SharpStation {
 				DoLds();
 		}
 
+		public void DeferSet(uint reg, uint value) {
+			LdWhich = reg;
+			LdValue = value;
+		}
+		
 		string TtyBuf = "";
 
 		public override void Run(uint pc) {
@@ -47,11 +54,12 @@ namespace SharpStation {
 					var lines = TtyBuf.Split('\n');
 					TtyBuf = lines.Last();
 					foreach(var line in lines.SkipLast(1))
-						Console.WriteLine($"TTY: {line}");
+						WriteLine($"TTY: {line}");
 				}
 			}
-			
+
 			var res = Interpret(pc, inst);
+			if(Gpr[0] != 0) throw new Exception($"R0 != 0 ?! {pc:X}");
 			//Console.WriteLine($"Interpret: {res}");
 		}
 	}
