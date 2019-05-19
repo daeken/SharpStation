@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using PrettyPrinter;
 
 #if DEBUG
 using Sigil;
+using Label = Sigil.Label;
 #else
 using SigilLite;
+using Label = SigilLite.Label;
 #endif
 
 using static System.Console;
@@ -33,6 +37,13 @@ namespace SharpStation {
 		public void Set(Value value) => GenerateSetter(value);
 	}
 
+	public class Block {
+		public readonly uint Addr;
+		public Action<Recompiler> Func;
+
+		public Block(uint addr) => Addr = addr;
+	}
+
 	public partial class Recompiler : Cpu {
 		public struct RGprs {
 			public Value this[uint reg] {
@@ -57,7 +68,8 @@ namespace SharpStation {
 			}
 		}
 
-		public static Emit<Action<Recompiler>> Ilg;
+		static TypeBuilder Tb;
+		static Emit<Action<Recompiler>> Ilg;
 		
 		static readonly Value CpuRef = new Value(() => Ilg.LoadArgument(0));
 		static readonly Value GprRef = new Value(() => CpuRef.EmitThen(() => Ilg.LoadField(typeof(Recompiler).GetField(nameof(Gpr)))));
@@ -78,18 +90,7 @@ namespace SharpStation {
 		Value HiRef { get => this[nameof(Hi)]; set => this[nameof(Hi)] = value; }
 		Value LoRef { get => this[nameof(Lo)]; set => this[nameof(Lo)] = value; }
 
-		public override void Run(uint pc) {
-			while(true)
-				pc = RecompileBlock(pc);
-		}
-
-		readonly Dictionary<uint, Action<Recompiler>> BlockCache = new Dictionary<uint, Action<Recompiler>>();
-
-		Action<Recompiler> LastBlock;
-		uint LastBlockAddr = ~0U;
-
-		string TtyBuf = "";
-		uint RecompileBlock(uint pc) {
+		void InterceptBlock(uint pc) {
 			if(pc == 0x2C94 && Gpr[4] == 1) {
 				TtyBuf += string.Join("", Enumerable.Range(0, (int) Gpr[6]).Select(i => (char) Memory.Load8((uint) (Gpr[5] + i))));
 				if(TtyBuf.Contains('\n')) {
@@ -101,23 +102,62 @@ namespace SharpStation {
 							Environment.Exit(0);
 					}
 				}
-				//return Gpr[31];
 			}
-			
+		}
+		
+		public override void Run(uint pc) {
+			while(true) {
+				if(BranchToBlock != null) {
+					var func = LastBlock = BranchToBlock.Func;
+					pc = LastBlockAddr = BranchToBlock.Addr;
+					BranchToBlock = null;
+					InterceptBlock(pc);
+					if(func == null)
+						pc = RecompileBlock(pc);
+					else {
+						func(this);
+						pc = BranchTo;
+					}
+				} else {
+					InterceptBlock(pc);
+					pc = RecompileBlock(pc);
+				}
+			}
+		}
+
+		readonly Dictionary<uint, Block> BlockCache = new Dictionary<uint, Block>();
+
+		Action<Recompiler> LastBlock;
+		uint LastBlockAddr = ~0U;
+
+		Dictionary<string, (FieldBuilder, Block)> CurBlockRefs;
+		public Block BranchToBlock;
+
+		string TtyBuf = "";
+		uint RecompileBlock(uint pc, Block block = null) {
 			//$"Running block at {pc:X8}".Print();
-			if(pc == LastBlockAddr) {
+			if(pc == LastBlockAddr && LastBlock != null) {
 				LastBlock(this);
 				return BranchTo;
 			}
-			if(BlockCache.ContainsKey(pc)) {
-				LastBlock = BlockCache[pc];
+
+			block ??= GetBlock(pc);
+			if(block.Func != null) {
+				LastBlock = block.Func;
 				LastBlockAddr = pc;
 				LastBlock(this);
 				return BranchTo;
 			}
 			
+			CurBlockRefs = new Dictionary<string, (FieldBuilder, Block)>();
+
+			var ab = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(Guid.NewGuid().ToString()), AssemblyBuilderAccess.Run);
+			var mb = ab.DefineDynamicModule("Block");
+			Tb = mb.DefineType("Block");
+			var mname = $"Block_{pc:X8}";
+			Ilg = Emit<Action<Recompiler>>.BuildMethod(Tb, mname, MethodAttributes.Static | MethodAttributes.Public, CallingConventions.Standard);
+			
 			var opc = pc;
-			Ilg = Emit<Action<Recompiler>>.NewDynamicMethod($"Block_{pc:X8}");
 			var branched = false;
 			var no_delay = false;
 			var need_load = true;
@@ -141,12 +181,20 @@ namespace SharpStation {
 				pc += 4;
 			}
 			Ilg.Return();
-			var func = Ilg.CreateDelegate();
-			LastBlock = BlockCache[opc] = func;
+			Ilg.CreateMethod();
+			var type = Tb.CreateType();
+			foreach(var (fn, (_, b)) in CurBlockRefs)
+				type.GetField(fn).SetValue(null, b);
+			var func = type.GetMethod(mname).CreateDelegate<Action<Recompiler>>();
+
+			block.Func = LastBlock = func;
 			LastBlockAddr = opc;
 			func(this);
 			return BranchTo;
 		}
+
+		Block GetBlock(uint addr) =>
+			BlockCache.TryGetValue(addr, out var block) ? block : BlockCache[addr] = new Block(addr);
 
 		void Branch(Label label) => Ilg.Branch(label);
 		
@@ -156,9 +204,19 @@ namespace SharpStation {
 			Ilg.StoreField(typeof(Recompiler).GetField(nameof(BranchTo)));
 		}
 		void Branch(uint target) {
-			CpuRef.Emit();
-			Ilg.LoadConstant(target);
-			Ilg.StoreField(typeof(Recompiler).GetField(nameof(BranchTo)));
+			var fname = $"_{target:X8}";
+			var block = GetBlock(target);
+			if(CurBlockRefs.TryGetValue(fname, out var br)) {
+				CpuRef.Emit();
+				Ilg.LoadField(br.Item1);
+				Ilg.StoreField(typeof(Recompiler).GetField(nameof(BranchToBlock)));
+			} else {
+				var fb = Tb.DefineField(fname, typeof(Block), FieldAttributes.Public | FieldAttributes.Static);
+				CurBlockRefs[fname] = (fb, block);
+				CpuRef.Emit();
+				Ilg.LoadField(fb);
+				Ilg.StoreField(typeof(Recompiler).GetField(nameof(BranchToBlock)));
+			}
 		}
 
 		void BranchIf(Value condition, Label label) => condition.EmitThen(() => Ilg.BranchIfTrue(label));

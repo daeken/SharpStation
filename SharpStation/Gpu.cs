@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using MoreLinq;
 using PrettyPrinter;
+#pragma warning disable 414
 
 namespace SharpStation {
 	[AttributeUsage(AttributeTargets.Method)]

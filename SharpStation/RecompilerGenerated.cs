@@ -684,7 +684,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_356);
 								Label(temp_355);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_356);
 								branched = true;
 								return(true);
@@ -711,7 +711,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_362);
 								Label(temp_361);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_362);
 								branched = true;
 								return(true);
@@ -738,7 +738,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_368);
 								Label(temp_367);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_368);
 								branched = true;
 								return(true);
@@ -765,7 +765,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_374);
 								Label(temp_373);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_374);
 								branched = true;
 								return(true);
@@ -792,7 +792,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_380);
 								Label(temp_379);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_380);
 								branched = true;
 								return(true);
@@ -819,7 +819,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_386);
 								Label(temp_385);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_386);
 								branched = true;
 								return(true);
@@ -846,7 +846,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_392);
 								Label(temp_391);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_392);
 								branched = true;
 								return(true);
@@ -873,7 +873,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_398);
 								Label(temp_397);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_398);
 								branched = true;
 								return(true);
@@ -900,7 +900,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_404);
 								Label(temp_403);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_404);
 								branched = true;
 								return(true);
@@ -927,7 +927,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_410);
 								Label(temp_409);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_410);
 								branched = true;
 								return(true);
@@ -954,7 +954,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_416);
 								Label(temp_415);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_416);
 								branched = true;
 								return(true);
@@ -981,7 +981,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_422);
 								Label(temp_421);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_422);
 								branched = true;
 								return(true);
@@ -1008,7 +1008,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_428);
 								Label(temp_427);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_428);
 								branched = true;
 								return(true);
@@ -1035,7 +1035,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_434);
 								Label(temp_433);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_434);
 								branched = true;
 								return(true);
@@ -1062,7 +1062,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_440);
 								Label(temp_439);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_440);
 								branched = true;
 								return(true);
@@ -1089,7 +1089,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_446);
 								Label(temp_445);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_446);
 								branched = true;
 								return(true);
@@ -1118,7 +1118,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_452);
 								Label(temp_451);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_452);
 								branched = true;
 								return(true);
@@ -1147,7 +1147,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_458);
 								Label(temp_457);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_458);
 								branched = true;
 								return(true);
@@ -1176,7 +1176,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_464);
 								Label(temp_463);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_464);
 								branched = true;
 								return(true);
@@ -1205,7 +1205,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_470);
 								Label(temp_469);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_470);
 								branched = true;
 								return(true);
@@ -1234,7 +1234,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_476);
 								Label(temp_475);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_476);
 								branched = true;
 								return(true);
@@ -1263,7 +1263,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_482);
 								Label(temp_481);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_482);
 								branched = true;
 								return(true);
@@ -1292,7 +1292,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_488);
 								Label(temp_487);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_488);
 								branched = true;
 								return(true);
@@ -1321,7 +1321,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_494);
 								Label(temp_493);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_494);
 								branched = true;
 								return(true);
@@ -1350,7 +1350,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_500);
 								Label(temp_499);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_500);
 								branched = true;
 								return(true);
@@ -1379,7 +1379,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_506);
 								Label(temp_505);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_506);
 								branched = true;
 								return(true);
@@ -1408,7 +1408,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_512);
 								Label(temp_511);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_512);
 								branched = true;
 								return(true);
@@ -1437,7 +1437,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_518);
 								Label(temp_517);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_518);
 								branched = true;
 								return(true);
@@ -1466,7 +1466,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_524);
 								Label(temp_523);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_524);
 								branched = true;
 								return(true);
@@ -1495,7 +1495,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_530);
 								Label(temp_529);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_530);
 								branched = true;
 								return(true);
@@ -1524,7 +1524,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_536);
 								Label(temp_535);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_536);
 								branched = true;
 								return(true);
@@ -1553,7 +1553,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_542);
 								Label(temp_541);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_542);
 								branched = true;
 								return(true);
@@ -1575,7 +1575,7 @@ namespace SharpStation {
 						var imm = (inst) & (0x3ffffff);
 						if(need_load) { DoLds(); }
 						var target = (((pc) + (0x4)) & (0xf0000000)) + ((imm) << ((int) 0x2));
-						if(!branched) Branch(MakeValue<uint>(target));
+						if(!branched) Branch(target);
 						branched = true;
 						return(true);
 						break;
@@ -1595,7 +1595,7 @@ namespace SharpStation {
 						if(need_load) { DoLds(); }
 						Gprs[0x1f] = Add(Add(MakeValue<uint>(pc), MakeValue<uint>(0x4)), MakeValue<uint>(0x4));
 						var target = (((pc) + (0x4)) & (0xf0000000)) + ((imm) << ((int) 0x2));
-						if(!branched) Branch(MakeValue<uint>(target));
+						if(!branched) Branch(target);
 						branched = true;
 						return(true);
 						break;
@@ -1624,7 +1624,7 @@ namespace SharpStation {
 						if(!branched) Branch(pc + 8);
 						Branch(temp_556);
 						Label(temp_555);
-						if(!branched) Branch(MakeValue<uint>(target));
+						if(!branched) Branch(target);
 						Label(temp_556);
 						branched = true;
 						return(true);
@@ -1654,7 +1654,7 @@ namespace SharpStation {
 						if(!branched) Branch(pc + 8);
 						Branch(temp_562);
 						Label(temp_561);
-						if(!branched) Branch(MakeValue<uint>(target));
+						if(!branched) Branch(target);
 						Label(temp_562);
 						branched = true;
 						return(true);
@@ -1683,7 +1683,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_568);
 								Label(temp_567);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_568);
 								branched = true;
 								return(true);
@@ -1715,7 +1715,7 @@ namespace SharpStation {
 								if(!branched) Branch(pc + 8);
 								Branch(temp_574);
 								Label(temp_573);
-								if(!branched) Branch(MakeValue<uint>(target));
+								if(!branched) Branch(target);
 								Label(temp_574);
 								branched = true;
 								return(true);

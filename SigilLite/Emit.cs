@@ -17,15 +17,11 @@ namespace SigilLite {
 	}
 	
 	public class Emit<DelegateT> {
-		public static Emit<DelegateT> NewDynamicMethod(string name) => new Emit<DelegateT>(name);
+		public static Emit<DelegateT> BuildMethod(TypeBuilder tb, string name, MethodAttributes attr, CallingConventions _) => new Emit<DelegateT>(tb, name, attr);
 
-		readonly string Name;
-		readonly DynamicMethod Dm;
 		readonly ILGenerator Ilg;
 
-		Emit(string name) {
-			Name = name;
-
+		Emit(TypeBuilder tb, string name, MethodAttributes attr) {
 			var returnType = typeof(void);
 			Type[] argTypes = null;
 			
@@ -41,11 +37,11 @@ namespace SigilLite {
 			else
 				throw new NotSupportedException($"Unknown delegate type for Emit: {typeof(DelegateT)}");
 
-			Dm = new DynamicMethod(name, returnType, argTypes);
-			Ilg = Dm.GetILGenerator();
+			var mb = tb.DefineMethod(name, attr, returnType, argTypes);
+			Ilg = mb.GetILGenerator();
 		}
 
-		public DelegateT CreateDelegate() => (DelegateT) (object) Dm.CreateDelegate(typeof(DelegateT));
+		public void CreateMethod() {}
 
 		Emit<DelegateT> Do(Action func) {
 			func();
@@ -86,7 +82,7 @@ namespace SigilLite {
 
 		public Emit<DelegateT> Divide() => Do(() => Ilg.Emit(OpCodes.Div));
 		
-		public Emit<DelegateT> Duplicate() => throw new NotImplementedException();
+		public Emit<DelegateT> Duplicate() => Do(() => Ilg.Emit(OpCodes.Dup));
 
 		public Emit<DelegateT> LoadArgument(int index) {
 			if(index > 3)
@@ -118,7 +114,7 @@ namespace SigilLite {
 			throw new NotImplementedException($"Load element of unknown type: {tt}");
 		}
 
-		public Emit<DelegateT> LoadField(FieldInfo field) => Do(() => Ilg.Emit(OpCodes.Ldfld, field));
+		public Emit<DelegateT> LoadField(FieldInfo field) => Do(() => Ilg.Emit(field.IsStatic ? OpCodes.Ldsfld : OpCodes.Ldfld, field));
 		
 		public Emit<DelegateT> LoadLocal(Local local) => Do(() => Ilg.Emit(OpCodes.Ldloc, local.ILocal.LocalIndex));
 
@@ -146,7 +142,7 @@ namespace SigilLite {
 			throw new NotImplementedException($"Store element of unknown type: {tt}");
 		}
 		
-		public Emit<DelegateT> StoreField(FieldInfo field) => Do(() => Ilg.Emit(OpCodes.Stfld, field));
+		public Emit<DelegateT> StoreField(FieldInfo field) => Do(() => Ilg.Emit(field.IsStatic ? OpCodes.Stsfld : OpCodes.Stfld, field));
 
 		public Emit<DelegateT> StoreLocal(Local local) => Do(() => Ilg.Emit(OpCodes.Stloc, local.ILocal.LocalIndex));
 		

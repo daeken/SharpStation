@@ -355,7 +355,7 @@ def _emitter(sexp, storing=False, locals=None):
 		#if (isinstance(sexp[1], str) or isinstance(sexp[1], unicode)) and not sexp[1].startswith('temp_'):
 		#	return 'if(!branched) BranchBlock(GetBlockReference(%s));' % emitter(sexp[1])
 		#else:
-		return 'if(!branched) Branch(%s);' % (to_val(emitter(sexp[1])))
+		return 'if(!branched) Branch(%s);' % emitter(sexp[1])
 	elif op == 'branch_default':
 		#return 'if(!branched) BranchBlock(GetBlockReference(pc + 8));'
 		return 'if(!branched) Branch(pc + 8);'
