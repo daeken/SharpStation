@@ -59,10 +59,10 @@ namespace SharpStation {
 
 	public class Port<T> : IEnumerable where T : struct {
 		public uint Addr { get; }
-		public string Name { get; }
+		public string? Name { get; }
 
-		public Func<T> _Load;
-		public Action<T> _Store;
+		public Func<T>? _Load;
+		public Action<T>? _Store;
 
 		int BitSize => typeof(T).Name switch {
 			"Byte" => 8, 
@@ -71,14 +71,14 @@ namespace SharpStation {
 			_ => throw new NotImplementedException($"Unknown type for Port bitsize: {typeof(T).Name}")
 		};
 
-		public Port(uint addr, string name = null) {
+		public Port(uint addr, string? name = null) {
 			Addr = addr;
 			Name = name;
 		}
 
-		public void Add(Func<T> load) => _Load = load;
+		public void Add(Func<T>? load) => _Load = load;
 		
-		public void Add(Action<T> store) => _Store = store;
+		public void Add(Action<T>? store) => _Store = store;
 
 		public T Load() => _Load?.Invoke() ?? throw new NotImplementedException($"No load{BitSize} for 0x{Addr:X8} ({Name})");
 
@@ -156,7 +156,7 @@ namespace SharpStation {
 		}
 		
 		public IoPorts(Cpu cpu) {
-			Port<T> MapProperty<T>(object instance, uint addr, string name, PropertyInfo pi) where T : struct {
+			Port<T> MapProperty<T>(object? instance, uint addr, string name, PropertyInfo pi) where T : struct {
 				var port = new Port<T>(addr, name);
 				if(pi.GetMethod != null) port.Add(() => (T) pi.GetValue(instance));
 				if(pi.SetMethod != null) port.Add(v => pi.SetValue(instance, v));
@@ -266,8 +266,8 @@ namespace SharpStation {
 
 			Ports32.Values.Where(port => !Ports16.ContainsKey(port.Addr)).ForEach(port =>
 				Add(new Port<ushort>(port.Addr, port.Name) {
-					port._Load != null ? () => (ushort) port.Load() : (Func<ushort>) null,
-					port._Store != null ? value => port.Store(value) : (Action<ushort>) null
+					port._Load != null ? () => (ushort) port.Load() : (Func<ushort>?) null,
+					port._Store != null ? value => port.Store(value) : (Action<ushort>?) null
 				}));
 		}
 

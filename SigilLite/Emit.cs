@@ -100,6 +100,7 @@ namespace SigilLite {
 
 		public Emit<DelegateT> LoadConstant<ConstT>(ConstT value) {
 			Ilg.Emit(OpCodes.Ldc_I4, (uint) System.Convert.ChangeType(value, typeof(uint)));
+			
 			return Convert<ConstT>();
 		}
 

@@ -40,7 +40,7 @@ namespace SharpStation {
 		readonly (int Count, MethodInfo Func)[] Gp0Commands = new (int, MethodInfo)[0x100];
 		readonly (int Count, MethodInfo Func)[] Gp1Commands = new (int, MethodInfo)[0x100];
 
-		CurCommand CurGp0, CurGp1;
+		CurCommand? CurGp0, CurGp1;
 
 		Gpu() {
 			typeof(Gpu).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
