@@ -104,17 +104,17 @@ namespace SharpStation {
 
 		[Gp0Command(0xE1)]
 		void SetDrawMode(uint value) {
-			$"Setting draw mode to {value:X06}".Print();
+			$"Setting draw mode to {value:X06}".Debug();
 			Stat = 0xFFFFFFFF;
 		}
 
 		[Gp1Command(0x00)]
-		void Reset() => "GPU reset!".Print();
+		void Reset() => "GPU reset!".Debug();
 
 		[Gp1Command(0x04)]
-		void DmaDirectionDataRequest(uint value) => $"DMA direction {value & 3}".Print();
+		void DmaDirectionDataRequest(uint value) => $"DMA direction {value & 3}".Debug();
 
 		[Gp1Command(0x08)]
-		void DisplayMode(uint value) => $"Display mode {value:X06}".Print();
+		void DisplayMode(uint value) => $"Display mode {value:X06}".Debug();
 	}
 }

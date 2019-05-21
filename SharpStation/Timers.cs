@@ -9,31 +9,31 @@ namespace SharpStation {
 		
 		public uint CurrentValue {
 			get {
-				$"Timer {Index} get current value ({currentValue:X08})".Print();
+				$"Timer {Index} get current value ({currentValue:X08})".Debug();
 				return currentValue;
 			}
 			set {
-				$"Timer {Index} set current value ({value:X08})".Print();
+				$"Timer {Index} set current value ({value:X08})".Debug();
 				currentValue = value;
 			}
 		}
 		public uint CounterMode {
 			get {
-				$"Timer {Index} get counter mode ({counterMode:X08})".Print();
+				$"Timer {Index} get counter mode ({counterMode:X08})".Debug();
 				return counterMode;
 			}
 			set {
-				$"Timer {Index} set counter mode ({value:X08})".Print();
+				$"Timer {Index} set counter mode ({value:X08})".Debug();
 				counterMode = value;
 			}
 		}
 		public uint TargetValue {
 			get {
-				$"Timer {Index} get target value ({targetValue:X08})".Print();
+				$"Timer {Index} get target value ({targetValue:X08})".Debug();
 				return targetValue;
 			}
 			set {
-				$"Timer {Index} set target value ({value:X08})".Print();
+				$"Timer {Index} set target value ({value:X08})".Debug();
 				targetValue = value;
 			}
 		}

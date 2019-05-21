@@ -8,7 +8,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.VisualBasic.Devices;
 using MoreLinq;
-using PrettyPrinter;
 using static System.Console;
 
 namespace SharpStation {

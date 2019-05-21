@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using PrettyPrinter;
-
 #if DEBUG
 using Sigil;
 using Label = Sigil.Label;
@@ -40,6 +39,7 @@ namespace SharpStation {
 
 	public class Block {
 		public readonly uint Addr;
+		public uint End;
 		public Action<Recompiler>? Func;
 
 		public Block(uint addr) => Addr = addr;
@@ -108,6 +108,7 @@ namespace SharpStation {
 		
 		public override void Run(uint pc) {
 			while(true) {
+				//$"Running block {pc:X}".Debug();
 				if(BranchToBlock != null) {
 					var func = LastBlock = BranchToBlock.Func;
 					pc = LastBlockAddr = BranchToBlock.Addr;
@@ -132,11 +133,15 @@ namespace SharpStation {
 		uint LastBlockAddr = ~0U;
 
 		Dictionary<string, (FieldBuilder, Block)> CurBlockRefs = new Dictionary<string, (FieldBuilder, Block)>();
+		Dictionary<uint, Label> BlockInstLabels = new Dictionary<uint, Label>();
 		public Block? BranchToBlock;
+		Action? BranchToLabel;
+		Local? BranchToLabelLocal;
+		uint BlockStart, CurPc;
 
 		string TtyBuf = "";
 		uint RecompileBlock(uint pc, Block? block = null) {
-			//$"Running block at {pc:X8}".Print();
+			//$"Running block at {pc:X8}".Debug();
 			if(pc == LastBlockAddr && LastBlock != null) {
 				LastBlock(this);
 				return BranchTo;
@@ -151,14 +156,18 @@ namespace SharpStation {
 			}
 			
 			CurBlockRefs = new Dictionary<string, (FieldBuilder, Block)>();
+			BlockInstLabels = new Dictionary<uint, Label>();
 
 			var ab = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(Guid.NewGuid().ToString()), AssemblyBuilderAccess.Run);
 			var mb = ab.DefineDynamicModule("Block");
 			Tb = mb.DefineType("Block");
 			var mname = $"Block_{pc:X8}";
 			Ilg = Emit<Action<Recompiler>>.BuildMethod(Tb, mname, MethodAttributes.Static | MethodAttributes.Public, CallingConventions.Standard);
+
+			BranchToLabel = null;
+			BranchToLabelLocal = Ilg.DeclareLocal<bool>();
 			
-			var opc = pc;
+			var opc = BlockStart = pc;
 			var branched = false;
 			var no_delay = false;
 			var need_load = true;
@@ -170,24 +179,35 @@ namespace SharpStation {
 				if(branched)
 					did_delay = true;
 				
+				CurPc = pc;
 				var has_load = false;
+				Ilg.MarkLabel(BlockInstLabels[pc] = Ilg.DefineLabel());
 				if(!Recompile(pc, insn, ref branched, ref no_delay, ref has_load, need_load))
 					throw new NotSupportedException($"Unknown instruction at 0x{pc:X8}");
 				
 				need_load = has_load;
 
-				if(branched && no_delay)
+				if(branched && no_delay) {
 					did_delay = true;
+					BranchToLabel?.Invoke();
+					BranchToLabel = null;
+				} else if(did_delay && BranchToLabel != null) {
+					BranchToLabel();
+					BranchToLabel = null;
+				}
 
 				pc += 4;
 			}
-			Ilg.Return();
+
+			try { Ilg.Return(); } catch (SigilVerificationException) { }
+
 			Ilg.CreateMethod();
 			var type = Tb.CreateType();
 			foreach(var br in CurBlockRefs)
 				type.GetField(br.Key).SetValue(null, br.Value.Item2);
 			var func = type.GetMethod(mname).CreateDelegate<Action<Recompiler>>();
 
+			block.End = pc;
 			block.Func = LastBlock = func;
 			LastBlockAddr = opc;
 			func(this);
@@ -205,6 +225,18 @@ namespace SharpStation {
 			Ilg.StoreField(typeof(Recompiler).GetField(nameof(BranchTo)));
 		}
 		void Branch(uint target) {
+			if(BlockStart <= target && target <= CurPc) {
+				Ilg.LoadConstant(true);
+				Ilg.StoreLocal(BranchToLabelLocal);
+				BranchToLabel = () => {
+					Ilg.LoadLocal(BranchToLabelLocal);
+					Ilg.BranchIfTrue(BlockInstLabels[target]);
+				};
+				return;
+			}
+			Ilg.LoadConstant(false);
+			Ilg.StoreLocal(BranchToLabelLocal);
+
 			var fname = $"_{target:X8}";
 			var block = GetBlock(target);
 			if(CurBlockRefs.TryGetValue(fname, out var br)) {
@@ -233,6 +265,7 @@ namespace SharpStation {
 
 		void LoadConstant(object c) {
 			switch(c) {
+				case bool v: Ilg.LoadConstant(v); break;
 				case byte v: Ilg.LoadConstant(v); break;
 				case sbyte v: Ilg.LoadConstant(v); break;
 				case ushort v: Ilg.LoadConstant(v); break;
@@ -243,136 +276,32 @@ namespace SharpStation {
 			}
 		}
 
-		void Call(Action method) {
-			if(method.Target != this && method.Target == null)
-				throw new NotSupportedException("Method call to non-static method not on Recompiler");
-			if(method.Target == this)
-				CpuRef.Emit();
-			Ilg.Call(method.GetMethodInfo());
-		}
-		void Call<A1T>(Action<A1T> method, object a1) {
-			if(method.Target != this && method.Target == null)
-				throw new NotSupportedException("Method call to non-static method not on Recompiler");
-			if(method.Target == this)
-				CpuRef.Emit();
-			if(a1 is Value v1) v1.Emit();
-			else LoadConstant(a1);
-			Ilg.Call(method.GetMethodInfo());
-		}
-		void Call<A1T, A2T>(Action<A1T, A2T> method, object a1, object a2) {
-			if(method.Target != this && method.Target == null)
-				throw new NotSupportedException("Method call to non-static method not on Recompiler");
-			if(method.Target == this)
-				CpuRef.Emit();
-			if(a1 is Value v1) v1.Emit();
-			else LoadConstant(a1);
-			if(a2 is Value v2) v2.Emit();
-			else LoadConstant(a2);
-			Ilg.Call(method.GetMethodInfo());
-		}
-		void Call<A1T, A2T, A3T>(Action<A1T, A2T, A3T> method, object a1, object a2, object a3) {
-			if(method.Target != this && method.Target == null)
-				throw new NotSupportedException("Method call to non-static method not on Recompiler");
-			if(method.Target == this)
-				CpuRef.Emit();
-			if(a1 is Value v1) v1.Emit();
-			else LoadConstant(a1);
-			if(a2 is Value v2) v2.Emit();
-			else LoadConstant(a2);
-			if(a3 is Value v3) v3.Emit();
-			else LoadConstant(a3);
-			Ilg.Call(method.GetMethodInfo());
-		}
-		void Call<A1T, A2T, A3T, A4T>(Action<A1T, A2T, A3T, A4T> method, object a1, object a2, object a3, object a4) {
-			if(method.Target != this && method.Target == null)
-				throw new NotSupportedException("Method call to non-static method not on Recompiler");
-			if(method.Target == this)
-				CpuRef.Emit();
-			if(a1 is Value v1) v1.Emit();
-			else LoadConstant(a1);
-			if(a2 is Value v2) v2.Emit();
-			else LoadConstant(a2);
-			if(a3 is Value v3) v3.Emit();
-			else LoadConstant(a3);
-			if(a4 is Value v4) v4.Emit();
-			else LoadConstant(a4);
-			Ilg.Call(method.GetMethodInfo());
+		Value Call(string methodName, params object[] args) {
+			var mi = typeof(Cpu).GetMethod(methodName,
+				BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+			if(mi == null)
+				mi = typeof(Recompiler).GetMethod(methodName,
+					BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+			var value = new Value(() => {
+				if(!mi.IsStatic)
+					CpuRef.Emit();
+				foreach(var a in args)
+					if(a is Value v) v.Emit();
+					else LoadConstant(a);
+				Ilg.Call(mi);
+			});
+			if(mi.ReturnType == typeof(void))
+				value.Emit();
+			return value;
 		}
 
-		Value Call<RT>(Func<RT> method) {
-			if(method.Target != this && method.Target == null)
-				throw new NotSupportedException("Method call to non-static method not on Recompiler");
-			return new Value(() => {
-				if(method.Target == this)
-					CpuRef.Emit();
-				Ilg.Call(method.GetMethodInfo());
-			});
-		}
-		Value Call<A1T, RT>(Func<A1T, RT> method, object a1) {
-			if(method.Target != this && method.Target == null)
-				throw new NotSupportedException("Method call to non-static method not on Recompiler");
-			return new Value(() => {
-				if(method.Target == this)
-					CpuRef.Emit();
-				if(a1 is Value v1) v1.Emit();
-				else LoadConstant(a1);
-				Ilg.Call(method.GetMethodInfo());
-			});
-		}
-		Value Call<A1T, A2T, RT>(Func<A1T, A2T, RT> method, object a1, object a2) {
-			if(method.Target != this && method.Target == null)
-				throw new NotSupportedException("Method call to non-static method not on Recompiler");
-			return new Value(() => {
-				if(method.Target == this)
-					CpuRef.Emit();
-				if(a1 is Value v1) v1.Emit();
-				else LoadConstant(a1);
-				if(a2 is Value v2) v2.Emit();
-				else LoadConstant(a2);
-				Ilg.Call(method.GetMethodInfo());
-			});
-		}
-		Value Call<A1T, A2T, A3T, RT>(Func<A1T, A2T, A3T, RT> method, object a1, object a2, object a3) {
-			if(method.Target != this && method.Target == null)
-				throw new NotSupportedException("Method call to non-static method not on Recompiler");
-			return new Value(() => {
-				if(method.Target == this)
-					CpuRef.Emit();
-				if(a1 is Value v1) v1.Emit();
-				else LoadConstant(a1);
-				if(a2 is Value v2) v2.Emit();
-				else LoadConstant(a2);
-				if(a3 is Value v3) v3.Emit();
-				else LoadConstant(a3);
-				Ilg.Call(method.GetMethodInfo());
-			});
-		}
-		Value Call<A1T, A2T, A3T, A4T, RT>(Func<A1T, A2T, A3T, A4T, RT> method, object a1, object a2, object a3, object a4) {
-			if(method.Target != this && method.Target == null)
-				throw new NotSupportedException("Method call to non-static method not on Recompiler");
-			return new Value(() => {
-				if(method.Target == this)
-					CpuRef.Emit();
-				if(a1 is Value v1) v1.Emit();
-				else LoadConstant(a1);
-				if(a2 is Value v2) v2.Emit();
-				else LoadConstant(a2);
-				if(a3 is Value v3) v3.Emit();
-				else LoadConstant(a3);
-				if(a4 is Value v4) v4.Emit();
-				else LoadConstant(a4);
-				Ilg.Call(method.GetMethodInfo());
-			});
-		}
-
-		Value Load(int bits, Value ptr, uint pc) => Call((Func<int, uint, uint, uint>) LoadMemory, bits, ptr, pc);
+		Value Load(int bits, Value ptr, uint pc) => Call(nameof(LoadMemory), bits, ptr, pc);
+		void Store(int bits, Value ptr, Value value, uint pc) => Call(nameof(StoreMemory), bits, ptr, value, pc);
 
 		void Store(Value ptr, Value value) {
 			if(ptr is SettableValue sv) sv.Set(value);
 			else throw new NotSupportedException("Assignment to non-settable value");
 		}
-
-		void Store(int bits, Value ptr, Value value, uint pc) => Call((Action<int, uint, uint, uint>) StoreMemory, bits, ptr, value, pc);
 
 		void DoLds() {
 			GprRef.Emit();
@@ -384,17 +313,9 @@ namespace SharpStation {
 			LDWhichRef.Emit();
 			LDAbsorbRef.Emit();
 			Ilg.StoreElement<uint>();
-
-			/*var which = Ilg.DeclareLocal(typeof(uint));
-			LDWhichRef.Emit();
-			Ilg.StoreLocal(which);
-			var value = Ilg.DeclareLocal(typeof(uint));
-			LDValueRef.Emit();
-			Ilg.StoreLocal(value);
-			Ilg.WriteLine("DoLds {0} {1:X}", which, value);*/
-
+			
 			ReadFudgeRef = LDWhichRef;
-
+			
 			ReadAbsorbWhichRef = Or(ReadAbsorbWhichRef, 
 				Ternary(Ne(LDWhichRef, MakeValue(35U)), 
 					And(LDWhichRef, MakeValue(0x1FU)), 
@@ -445,29 +366,29 @@ namespace SharpStation {
 		}
 		
 		void TimestampInc(int inc) {}
-		void GenAbsorbMuldivDelay() {}
-		void MulDelay(Value a, Value b, bool signed) {}
-		void GenDivDelay() {}
-		
-		void Alignment(Value value, int bits, bool store, uint pc) {}
-		void Overflow(Value a, Value b, int dir, uint pc, uint inst) {}
+		void GenAbsorbMuldivDelay() => Call(nameof(AbsorbMuldivDelay));
+		void MulDelay(Value a, Value b, bool signed) => Call(nameof(MulDelay), a, b, signed);
+		void GenDivDelay() => Call(nameof(DivDelay));
+
+		void Alignment(Value value, int bits, bool store, uint pc) => Call(nameof(Alignment), value, bits, store, pc);
+		void Overflow(Value a, Value b, int dir, uint pc, uint inst) => Call(nameof(Overflow), a, b, dir, pc, inst);
 
 		void Syscall(uint code, uint pc, uint inst) {
-			Call((Action<int, uint, uint>) Syscall, (int) code, pc, inst);
+			Call(nameof(Syscall), (int) code, pc, inst);
 			Branch(pc + 4);
 		}
 
 		void Break(uint code, uint pc, uint inst) {
-			Call((Action<int, uint, uint>) Break, (int) code, pc, inst);
+			Call(nameof(Break), (int) code, pc, inst);
 			Branch(pc + 4);
 		}
 
-		Value GenReadCopreg(uint cop, uint reg) => Call((Func<uint, uint, uint>) ReadCopreg, cop, reg);
-		Value GenReadCopcreg(uint cop, uint reg) => Call((Func<uint, uint, uint>) ReadCopcreg, cop, reg);
+		Value GenReadCopreg(uint cop, uint reg) => Call(nameof(ReadCopreg), cop, reg);
+		Value GenReadCopcreg(uint cop, uint reg) => Call(nameof(ReadCopcreg), cop, reg);
 
-		void WriteCopreg(uint cop, uint reg, Value value) => Call((Action<uint, uint, uint>) WriteCopreg, cop, reg, value);
-		void WriteCopcreg(uint cop, uint reg, Value value) => Call((Action<uint, uint, uint>) WriteCopcreg, cop, reg, value);
-		void GenCopfun(uint cop, uint cofun, uint inst) => Call((Action<uint, uint, uint>) Copfun, cop, cofun, inst);
+		void WriteCopreg(uint cop, uint reg, Value value) => Call(nameof(WriteCopreg), cop, reg, value);
+		void WriteCopcreg(uint cop, uint reg, Value value) => Call(nameof(WriteCopcreg), cop, reg, value);
+		void GenCopfun(uint cop, uint cofun, uint inst) => Call(nameof(Copfun), cop, cofun, inst);
 
 		Value Add(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Add())));
 		Value Sub(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Subtract())));

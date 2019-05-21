@@ -12,21 +12,21 @@ namespace SharpStation {
 		uint GetBase(int channel) => 0U;
 		[Port(0x1F801080, 7, 0x10)]
 		void SetBase(int channel, uint value) {
-			$"Base for DMA channel {channel} set to {value:X}".Print();
+			$"Base for DMA channel {channel} set to {value:X}".Debug();
 		}
 
 		[Port(0x1F801084, 7, 0x10)]
 		uint GetBlockControl(int channel) => 0U;
 		[Port(0x1F801084, 7, 0x10)]
 		void SetBlockControl(int channel, uint value) {
-			$"Block control for DMA channel {channel} set to {value:X}".Print();
+			$"Block control for DMA channel {channel} set to {value:X}".Debug();
 		}
 
 		[Port(0x1F801088, 7, 0x10)]
 		uint GetChannelControl(int channel) => 0U;
 		[Port(0x1F801088, 7, 0x10)]
 		void SetChannelControl(int channel, uint value) {
-			$"Channel control for DMA channel {channel} set to {value:X}".Print();
+			$"Channel control for DMA channel {channel} set to {value:X}".Debug();
 		}
 	}
 }

@@ -16,6 +16,8 @@ namespace SigilLite {
 		internal Local(LocalBuilder ilocal) => ILocal = ilocal;
 	}
 	
+	public class SigilVerificationException : Exception {}
+	
 	public class Emit<DelegateT> {
 		public static Emit<DelegateT> BuildMethod(TypeBuilder tb, string name, MethodAttributes attr, CallingConventions _) => new Emit<DelegateT>(tb, name, attr);
 
@@ -65,6 +67,7 @@ namespace SigilLite {
 
 		public Emit<DelegateT> Convert<TargetT>() {
 			var tt = typeof(TargetT);
+			if(tt == typeof(bool)) return Do(() => Ilg.Emit(OpCodes.Conv_I1));
 			if(tt == typeof(byte)) return Do(() => Ilg.Emit(OpCodes.Conv_U1));
 			if(tt == typeof(sbyte)) return Do(() => Ilg.Emit(OpCodes.Conv_I1));
 			if(tt == typeof(ushort)) return Do(() => Ilg.Emit(OpCodes.Conv_U2));

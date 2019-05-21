@@ -1,5 +1,4 @@
 ﻿using System;
-using PrettyPrinter;
 using static System.Console;
 
 namespace SharpStation {
@@ -38,7 +37,7 @@ namespace SharpStation {
 		}
 
 		public void Syscall(int code, uint pc, uint inst) {
-			$"Syscall {code} at {pc:X8}".Print();
+			$"Syscall {code} at {pc:X8}".Debug();
 		}
 
 		public void Break(int code, uint pc, uint inst) {
