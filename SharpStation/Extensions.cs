@@ -14,5 +14,14 @@ namespace SharpStation {
 		
 		public static DelegateT CreateDelegate<DelegateT>(this MethodInfo mi) =>
 			(DelegateT) (object) Delegate.CreateDelegate(typeof(DelegateT), mi);
+
+		public static int CountLeadingZeros(this uint v) {
+			var c = 0;
+			for(var i = 0x80000000U; i != 0; i >>= 1, ++c) {
+				if((v & i) != 0)
+					return c;
+			}
+			return 0;
+		}
 	}
 }

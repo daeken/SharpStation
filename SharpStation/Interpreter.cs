@@ -28,7 +28,7 @@ namespace SharpStation {
 		
 		string TtyBuf = "";
 
-		public override void Run(uint pc) {
+		public override void RunFrom(uint pc) {
 			while(true) {
 				var insn = Memory.Load32(pc);
 				//WriteLine($"{pc:X}:  {Disassemble(pc, insn)}");

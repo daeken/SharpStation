@@ -5,7 +5,7 @@ namespace App {
 		static void Main(string[] args) {
 			//var cpu = new Interpreter();
 			var cpu = new Recompiler();
-			cpu.Run(0xBFC00000U);
+			cpu.Run();
 		}
 	}
 }

@@ -3,13 +3,15 @@
 namespace SharpStation {
 	public class Cop0 : ICoprocessor {
 		readonly Cpu Cpu;
-		public uint StatusRegister = (1 << 22) | (1 << 21), Cause, EPC;
+		public uint StatusRegister = (1 << 22) | (1 << 21), Cause, EPC, TargetAddress;
 
 		public Cop0(Cpu cpu) => Cpu = cpu;
 		
 		public uint this[uint register] {
 			get {
 				switch(register) {
+					case 6:
+						return TargetAddress;
 					case 12:
 						return StatusRegister;
 					case 13:

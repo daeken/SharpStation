@@ -92,21 +92,23 @@ namespace SharpStation {
 		Value LoRef { get => this[nameof(Lo)]; set => this[nameof(Lo)] = value; }
 
 		void InterceptBlock(uint pc) {
-			if(pc == 0x2C94 && Gpr[4] == 1) {
-				TtyBuf += string.Join("", Enumerable.Range(0, (int) Gpr[6]).Select(i => (char) Memory.Load8((uint) (Gpr[5] + i))));
-				if(TtyBuf.Contains('\n')) {
-					var lines = TtyBuf.Split('\n');
-					TtyBuf = lines.Last();
-					foreach(var line in lines.SkipLast(1)) {
-						WriteLine($"TTY: {line}");
-						if(line.Contains("VSync"))
-							Environment.Exit(0);
+			switch(pc) {
+				case 0x2C94 when Gpr[4] == 1:
+					TtyBuf += string.Join("", Enumerable.Range(0, (int) Gpr[6]).Select(i => (char) Memory.Load8((uint) (Gpr[5] + i))));
+					if(TtyBuf.Contains('\n')) {
+						var lines = TtyBuf.Split('\n');
+						TtyBuf = lines.Last();
+						foreach(var line in lines.SkipLast(1)) {
+							WriteLine($"TTY: {line}");
+							if(line.Contains("VSync"))
+								Environment.Exit(0);
+						}
 					}
-				}
+					break;
 			}
 		}
 		
-		public override void Run(uint pc) {
+		public override void RunFrom(uint pc) {
 			while(true) {
 				//$"Running block {pc:X}".Debug();
 				if(BranchToBlock != null) {
@@ -254,8 +256,8 @@ namespace SharpStation {
 
 		void BranchIf(Value condition, Label label) => condition.EmitThen(() => Ilg.BranchIfTrue(label));
 		void Label(Label label) => Ilg.MarkLabel(label);
-		
-		public static Value MakeValue<T>(T value) =>
+
+		static Value MakeValue<T>(T value) =>
 			value is uint i
 				? new Value(() => {
 						Ilg.LoadConstant(i);
@@ -263,7 +265,7 @@ namespace SharpStation {
 					})
 				: throw new NotImplementedException($"Unknown type to MakeValue: {typeof(T)}");
 
-		void LoadConstant(object c) {
+		static void LoadConstant(object c) {
 			switch(c) {
 				case bool v: Ilg.LoadConstant(v); break;
 				case byte v: Ilg.LoadConstant(v); break;
@@ -276,7 +278,7 @@ namespace SharpStation {
 			}
 		}
 
-		Value Call(string methodName, params object[] args) {
+		static Value Call(string methodName, params object[] args) {
 			var mi = typeof(Cpu).GetMethod(methodName,
 				BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
 			if(mi == null)
@@ -298,7 +300,7 @@ namespace SharpStation {
 		Value Load(int bits, Value ptr, uint pc) => Call(nameof(LoadMemory), bits, ptr, pc);
 		void Store(int bits, Value ptr, Value value, uint pc) => Call(nameof(StoreMemory), bits, ptr, value, pc);
 
-		void Store(Value ptr, Value value) {
+		static void Store(Value ptr, Value value) {
 			if(ptr is SettableValue sv) sv.Set(value);
 			else throw new NotSupportedException("Assignment to non-settable value");
 		}
@@ -364,8 +366,8 @@ namespace SharpStation {
 			val.Emit();
 			Ilg.StoreElement<uint>();
 		}
-		
-		void TimestampInc(int inc) {}
+
+		void TimestampInc(uint inc) => this[nameof(Timestamp)] = Add(this[nameof(Timestamp)], MakeValue(inc));
 		void GenAbsorbMuldivDelay() => Call(nameof(AbsorbMuldivDelay));
 		void MulDelay(Value a, Value b, bool signed) => Call(nameof(MulDelay), a, b, signed);
 		void GenDivDelay() => Call(nameof(DivDelay));
