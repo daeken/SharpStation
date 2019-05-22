@@ -1,11 +1,7 @@
-﻿using SharpStation;
+﻿using static SharpStation.Globals;
 
 namespace App {
-	class Program {
-		static void Main(string[] args) {
-			//var cpu = new Interpreter();
-			var cpu = new Recompiler();
-			cpu.Run();
-		}
+	static class Program {
+		static void Main(string[] args) => StartSystem();
 	}
 }

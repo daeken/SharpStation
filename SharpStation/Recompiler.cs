@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using PrettyPrinter;
+using static SharpStation.Globals;
 #if DEBUG
 using Sigil;
 using Label = Sigil.Label;
@@ -45,7 +45,7 @@ namespace SharpStation {
 		public Block(uint addr) => Addr = addr;
 	}
 
-	public partial class Recompiler : Cpu {
+	public partial class Recompiler : BaseCpu {
 		public struct RGprs {
 			public Value this[uint reg] {
 				get => reg == 0 ? MakeValue(0U)
@@ -100,33 +100,33 @@ namespace SharpStation {
 						TtyBuf = lines.Last();
 						foreach(var line in lines.SkipLast(1)) {
 							WriteLine($"TTY: {line}");
-							if(line.Contains("VSync"))
-								Environment.Exit(0);
+							//if(line.Contains("VSync"))
+							//	Environment.Exit(0);
 						}
 					}
 					break;
 			}
 		}
-		
-		public override void RunFrom(uint pc) {
-			while(true) {
+
+		protected override void RunFrom() {
+			do {
 				//$"Running block {pc:X}".Debug();
 				if(BranchToBlock != null) {
 					var func = LastBlock = BranchToBlock.Func;
-					pc = LastBlockAddr = BranchToBlock.Addr;
+					Pc = LastBlockAddr = BranchToBlock.Addr;
 					BranchToBlock = null;
-					InterceptBlock(pc);
+					InterceptBlock(Pc);
 					if(func == null)
-						pc = RecompileBlock(pc);
+						Pc = RecompileBlock(Pc);
 					else {
 						func(this);
-						pc = BranchTo;
+						Pc = BranchTo;
 					}
 				} else {
-					InterceptBlock(pc);
-					pc = RecompileBlock(pc);
+					InterceptBlock(Pc);
+					Pc = RecompileBlock(Pc);
 				}
-			}
+			} while(IPCache == 0);
 		}
 
 		readonly Dictionary<uint, Block> BlockCache = new Dictionary<uint, Block>();
@@ -279,7 +279,7 @@ namespace SharpStation {
 		}
 
 		static Value Call(string methodName, params object[] args) {
-			var mi = typeof(Cpu).GetMethod(methodName,
+			var mi = typeof(BaseCpu).GetMethod(methodName,
 				BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
 			if(mi == null)
 				mi = typeof(Recompiler).GetMethod(methodName,

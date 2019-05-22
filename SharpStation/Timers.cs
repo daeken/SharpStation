@@ -9,7 +9,7 @@ namespace SharpStation {
 		
 		public uint CurrentValue {
 			get {
-				$"Timer {Index} get current value ({currentValue:X08})".Debug();
+				$"Timer {Index} get current value ({currentValue:X08}) -- {counterMode:X}".Debug();
 				return currentValue;
 			}
 			set {

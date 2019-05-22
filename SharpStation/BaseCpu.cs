@@ -1,6 +1,6 @@
 ﻿using System;
-using PrettyPrinter;
-using static System.Console;
+using System.Diagnostics;
+using static SharpStation.Globals;
 
 namespace SharpStation {
 	public interface ICoprocessor {
@@ -37,46 +37,46 @@ namespace SharpStation {
 		}
 	}
 
-	public abstract partial class Cpu {
-		public readonly Memory Memory;
-
+	public abstract partial class BaseCpu {
 		public readonly uint[] Gpr = new uint[36];
 		public uint Lo, Hi;
+		public uint Pc;
 		public uint LdWhich, LdValue, LdAbsorb;
 		public const uint NoBranch = ~0U;
 		public uint BranchTo = NoBranch, DeferBranch = NoBranch;
 
-		public readonly ICoprocessor[] Coprocessors = new ICoprocessor[4];
-
 		public readonly uint[] ReadAbsorb = new uint[36];
 		public uint ReadAbsorbWhich, ReadFudge;
 
-		public bool IsolateCache;
+		public bool IsolateCache, Halted;
+
+		public uint IPCache;
 
 		public uint Timestamp;
 		uint MuldivTsDone;
 
-		protected Cpu() {
-			Memory = new Memory(this);
-			Coprocessors[0] = new Cop0(this);
-		}
-
 		public void Run() {
-			var pc = 0xBFC00000U;
+			Pc = 0xBFC00000U;
 			while(true)
 				try {
-					RunFrom(pc);
+					//$"Foo? {Pc:X}".Debug();
+					if(IPCache != 0) {
+						//"IPCache != 0!".Debug();
+						if(Halted) {
+						} else if((CP0.StatusRegister & 1) != 0)
+							DispatchException(new CpuException(ExceptionType.INT, Pc, Pc, 0xFF, 0));
+					}
+					RunFrom();
 				} catch (CpuException ce) {
-					pc = DispatchException(ce);
+					DispatchException(ce);
 				}
 		}
 
-		uint DispatchException(CpuException exc) {
+		void DispatchException(CpuException exc) {
 			var afterBranchInst = (exc.NPM & 0x1) == 0;
 			var branchTaken = (exc.NPM & 0x3) == 0;
 			var handler = 0x80000080;
 
-			var CP0 = (Cop0) Coprocessors[0];
 			if((CP0.StatusRegister & (1 << 22)) != 0) // BEV
 				handler = 0xBFC00180;
 
@@ -98,10 +98,32 @@ namespace SharpStation {
 			CP0.Cause |= (branchTaken ? 1U : 0) << 30;
 			CP0.Cause |= (exc.Inst << 2) & (3 << 28); // CE
 			
-			return handler;
+			RecalcIPCache();
+
+			Pc = handler;
 		}
 
-		public abstract void RunFrom(uint pc);
+		public void RecalcIPCache() {
+			$"Recalc {CP0.StatusRegister:X} -- {CP0.Cause:X}".Debug();
+			IPCache = (CP0.StatusRegister & CP0.Cause & 0xFF00) != 0 && (CP0.StatusRegister & 1) != 0 || Halted
+				? 0x80U
+				: 0;
+		}
+
+		public void AssertIrq(int which, bool asserted) {
+			$"Asserting {which} {asserted}".Debug();
+			Debug.Assert(which <= 5);
+			
+			var mask = 1U << (10 + which);
+			CP0.Cause &= ~mask;
+
+			if(asserted)
+				CP0.Cause |= mask;
+
+			RecalcIPCache();
+		}
+
+		protected abstract void RunFrom();
 
 		public void Alignment(uint addr, int size, bool store, uint pc) {
 			if(size == 16 && (addr & 1) != 0 || size == 32 && (addr & 3) != 0)
@@ -116,16 +138,17 @@ namespace SharpStation {
 
 		public uint ReadCopreg(uint cop, uint reg) {
 			//WriteLine($"Read cop{cop}r{reg}");
-			if(Coprocessors[cop] == null)
-				throw new Exception($"Read from null coprocessor {cop}");
-			return Coprocessors[cop][reg];
+			if(cop == 0)
+				return CP0[reg];
+			throw new NotSupportedException($"Read from unknown coprocessor {cop}");
 		}
 
 		public void WriteCopreg(uint cop, uint reg, uint value) {
 			//WriteLine($"Write cop{cop}r{reg} <- 0x{value:X}");
-			if(Coprocessors[cop] == null)
-				throw new Exception($"Write to null coprocessor {cop}");
-			Coprocessors[cop][reg] = value;
+			if(cop == 0)
+				CP0[reg] = value;
+			else
+				throw new NotSupportedException($"Write to unknown coprocessor {cop}");
 		}
 
 		public uint ReadCopcreg(uint cop, uint reg) {
@@ -135,10 +158,11 @@ namespace SharpStation {
 		public void WriteCopcreg(uint cop, uint reg, uint value) { }
 
 		public void Copfun(uint cop, uint cofun, uint inst) {
-			WriteLine($"Call cop{cop} function {cofun}");
-			if(Coprocessors[cop] == null)
-				throw new Exception($"Call to null coprocessor {cop}");
-			Coprocessors[cop].Call(cofun, inst);
+			//WriteLine($"Call cop{cop} function {cofun}");
+			if(cop == 0)
+				CP0.Call(cofun, inst);
+			else
+				throw new NotSupportedException($"Call to unknown coprocessor {cop}");
 		}
 
 		public void AbsorbMuldivDelay() {

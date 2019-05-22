@@ -2,9 +2,7 @@ using PrettyPrinter;
 
 #pragma warning disable 169
 namespace SharpStation {
-	public class Dma {
-		static readonly Dma Instance = new Dma();
-		
+	public class CoreDma {
 		[Port(0x1F8010F0)] uint Control;
 		[Port(0x1F8010F4)] uint Interrupt;
 

@@ -795,12 +795,12 @@ def genRecomp((iname, type, dasm, dag)):
 		elif op == 'raise':
 			return [('emit', ('raise', dag[1]))]
 		elif op == 'break':
-			has_branch[0] = True
-			no_delay[0] = True
+			#has_branch[0] = True
+			#no_delay[0] = True
 			return [('emit', ('Break', dag[1], subgen(dag[2]), subgen(dag[3])))]
 		elif op == 'syscall':
-			has_branch[0] = True
-			no_delay[0] = True
+			#has_branch[0] = True
+			#no_delay[0] = True
 			return [('emit', ('Syscall', subgen(dag[1]), subgen(dag[2]), subgen(dag[3])))]
 		elif op == 'branch':
 			has_branch[0] = True

@@ -1,11 +1,10 @@
 // ReSharper disable UnusedMember.Global
 
 using System;
-using System.ComponentModel.Design.Serialization;
 using System.Linq;
 using System.Reflection;
 using MoreLinq;
-using PrettyPrinter;
+using static SharpStation.Globals;
 #pragma warning disable 414
 
 namespace SharpStation {
@@ -34,19 +33,17 @@ namespace SharpStation {
 		public void Add(uint value) => Fifo[Off++] = value;
 	}
 	
-	public class Gpu {
-		static readonly Gpu Instance = new Gpu();
-		
+	public class CoreGpu {
 		readonly (int Count, MethodInfo Func)[] Gp0Commands = new (int, MethodInfo)[0x100];
 		readonly (int Count, MethodInfo Func)[] Gp1Commands = new (int, MethodInfo)[0x100];
 
 		CurCommand? CurGp0, CurGp1;
 
-		Gpu() {
-			typeof(Gpu).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+		public CoreGpu() {
+			typeof(CoreGpu).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
 				.Select(x => (Method: x, Attr: x.GetCustomAttribute<Gp0Command>())).Where(x => x.Attr != null)
 				.ForEach(x => Gp0Commands[x.Attr.Command] = (x.Method.GetParameters().Length, x.Method));
-			typeof(Gpu).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+			typeof(CoreGpu).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
 				.Select(x => (Method: x, Attr: x.GetCustomAttribute<Gp1Command>())).Where(x => x.Attr != null)
 				.ForEach(x => Gp1Commands[x.Attr.Command] = (x.Method.GetParameters().Length, x.Method));
 		}
@@ -112,7 +109,11 @@ namespace SharpStation {
 		void Reset() => "GPU reset!".Debug();
 
 		[Gp1Command(0x04)]
-		void DmaDirectionDataRequest(uint value) => $"DMA direction {value & 3}".Debug();
+		void DmaDirectionDataRequest(uint value) {
+			$"DMA direction {value & 3}".Debug();
+			Irq.Assert(IrqType.VBlank, true);
+			Irq.Assert(IrqType.VBlank, false);
+		}
 
 		[Gp1Command(0x08)]
 		void DisplayMode(uint value) => $"Display mode {value:X06}".Debug();

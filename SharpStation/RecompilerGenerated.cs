@@ -210,8 +210,6 @@ namespace SharpStation {
 								var code = ((inst) >> ((int) 0x6)) & (0xfffff);
 								if(need_load) { DoLds(); }
 								Syscall(code, pc, inst);
-								branched = true;
-								no_delay = true;
 								return(true);
 								break;
 							}
@@ -228,8 +226,6 @@ namespace SharpStation {
 								var code = ((inst) >> ((int) 0x6)) & (0xfffff);
 								if(need_load) { DoLds(); }
 								Break(code, pc, inst);
-								branched = true;
-								no_delay = true;
 								return(true);
 								break;
 							}

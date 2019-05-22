@@ -110,8 +110,6 @@ namespace SharpStation {
 		readonly Dictionary<uint, Port<ushort>> Ports16 = new Dictionary<uint, Port<ushort>>();
 		readonly Dictionary<uint, Port<uint>> Ports32 = new Dictionary<uint, Port<uint>>();
 
-		readonly Cpu Cpu;
-
 		[Port(0x1F802041)] static void POST(byte value) => WriteLine($"BIOS boot status: {value:X2}");
 
 		void Add(Port<byte> port) {
@@ -154,7 +152,7 @@ namespace SharpStation {
 			Ports32[port.Addr] = port;
 		}
 		
-		public IoPorts(Cpu cpu) {
+		public IoPorts() {
 			Port<T> MapProperty<T>(object? instance, uint addr, string name, PropertyInfo pi) where T : struct {
 				var port = new Port<T>(addr, name);
 				if(pi.GetMethod != null) port.Add(() => (T) pi.GetValue(instance));
@@ -162,8 +160,6 @@ namespace SharpStation {
 				return port;
 			}
 			
-			Cpu = cpu;
-
 			AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
 				.SelectMany(x => x.GetMembers(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
 				.Where(x => x.GetCustomAttributes(typeof(PortAttribute)).Count() != 0)
@@ -173,6 +169,10 @@ namespace SharpStation {
 					var name = $"{x.DeclaringType.Name}.{x.Name}";
 					var instance = x.DeclaringType.GetField("Instance",
 						BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)?.GetValue(null);
+					instance ??=
+						typeof(Globals)
+							.GetFields(BindingFlags.Public | BindingFlags.Static)
+							.FirstOrDefault(y => y.FieldType == x.DeclaringType)?.GetValue(null);
 					if(attr.Count == 0 && x is FieldInfo fi) {
 						if(!fi.IsStatic && instance == null)
 							throw new Exception($"Port {name} is not static and no instance available");
@@ -304,18 +304,12 @@ namespace SharpStation {
 		public void Store32(uint addr, uint value) {}
 	}
 	
-	public class Memory {
-		public readonly Cpu Cpu;
+	public class CoreMemory {
 		readonly Ram Ram = new Ram();
 		readonly Scratchpad Scratchpad = new Scratchpad();
-		readonly IoPorts IoPorts;
+		readonly IoPorts IoPorts = new IoPorts();
 		readonly Bios Bios = new Bios();
 		readonly Blackhole Blackhole = new Blackhole();
-
-		public Memory(Cpu cpu) {
-			Cpu = cpu;
-			IoPorts = new IoPorts(Cpu);
-		}
 
 		T FindMemory<T>(uint vaddr, Func<IMemory, uint, T> func) {
 			var rvaddr = vaddr;
@@ -340,11 +334,11 @@ namespace SharpStation {
 			});
 		}
 
-		Memory LogLoad(uint addr, int size) {
+		CoreMemory LogLoad(uint addr, int size) {
 			//WriteLine($"Load {size} bytes from {addr:X}");
 			return this;
 		}
-		Memory LogStore(uint addr, uint value, int size) {
+		CoreMemory LogStore(uint addr, uint value, int size) {
 			//WriteLine($"Store {size} bytes ({value:X}) to {addr:X}");
 			return this;
 		}

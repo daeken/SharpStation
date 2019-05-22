@@ -11,7 +11,7 @@
 using System;
 
 namespace SharpStation {
-	public partial class Cpu {
+	public partial class BaseCpu {
 		internal string Disassemble(uint pc, uint inst) {
 			switch((inst) >> ((int) 0x1a)) {
 				case 0x0: {
