@@ -16,27 +16,6 @@ using Label = SigilLite.Label;
 using static System.Console;
 
 namespace SharpStation {
-	public class Value {
-		readonly Action Generate;
-
-		public Value(Action generate) => Generate = generate;
-
-		public void Emit() => Generate();
-
-		public void EmitThen(Action next) {
-			Generate();
-			next();
-		}
-	}
-
-	public class SettableValue : Value {
-		readonly Action<Value> GenerateSetter;
-
-		public SettableValue(Action generateGetter, Action<Value> generateSetter) : base(generateGetter) => GenerateSetter = generateSetter;
-
-		public void Set(Value value) => GenerateSetter(value);
-	}
-
 	public class Block {
 		public readonly uint Addr;
 		public uint End;
@@ -46,7 +25,69 @@ namespace SharpStation {
 	}
 
 	public partial class Recompiler : BaseCpu {
-		public struct RGprs {
+		public class Value {
+			readonly Action Generate;
+
+			public Value(Action generate) => Generate = generate;
+
+			public void Emit() => Generate();
+
+			public void EmitThen(Action next) {
+				Generate();
+				next();
+			}
+			
+			public static Value operator +(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Add())));
+			public static Value operator -(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Subtract())));
+			public static Value operator *(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Multiply())));
+			public static Value operator /(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Divide())));
+			public static Value operator %(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Remainder())));
+			
+			public static Value operator &(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.And())));
+			public static Value operator |(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Or())));
+			public static Value operator ^(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Xor())));
+			public static Value operator ~(Value v) => new Value(() => v.EmitThen(() => Ilg.Not()));
+
+			static Value Comp(Value a, Value b, Action<Label> op) => new Value(() => {
+				Label _if = Ilg.DefineLabel(), end = Ilg.DefineLabel();
+				a.Emit();
+				b.Emit();
+				op(_if);
+				Ilg.LoadConstant(0);
+				Ilg.Branch(end);
+				Ilg.MarkLabel(_if);
+				Ilg.LoadConstant(1);
+				Ilg.MarkLabel(end);
+			});
+			public static Value operator ==(Value a, Value b) => Comp(a, b, l => Ilg.BranchIfEqual(l));
+			public static Value operator !=(Value a, Value b) => Comp(a, b, l => Ilg.UnsignedBranchIfNotEqual(l));
+			public static Value operator <(Value a, Value b) => Comp(a, b, l => Ilg.BranchIfLess(l));
+			public static Value operator >(Value a, Value b) => Comp(a, b, l => Ilg.BranchIfGreater(l));
+			public static Value operator <=(Value a, Value b) => Comp(a, b, l => Ilg.BranchIfLessOrEqual(l));
+			public static Value operator >=(Value a, Value b) => Comp(a, b, l => Ilg.BranchIfGreaterOrEqual(l));
+
+			public override bool Equals(object obj) => throw new NotImplementedException();
+			public override int GetHashCode() => throw new NotImplementedException();
+		}
+
+		public class SettableValue : Value {
+			readonly Action<Value> GenerateSetter;
+
+			public SettableValue(Action generateGetter, Action<Value> generateSetter) : base(generateGetter) => GenerateSetter = generateSetter;
+
+			public void Set(Value value) => GenerateSetter(value);
+		}
+		
+		struct StaticRef<T> {
+			static readonly Type Type = typeof(T);
+		
+			public Value this[string fieldName] {
+				get => new Value(() => Ilg.LoadField(Type.GetField(fieldName)));
+				set => value.EmitThen(() => Ilg.StoreField(Type.GetField(fieldName)));
+			}
+		}
+
+		struct RGprs {
 			public Value this[uint reg] {
 				get => reg == 0 ? MakeValue(0U)
 					: new SettableValue(() => {
@@ -81,6 +122,7 @@ namespace SharpStation {
 			get => new Value(() => CpuRef.EmitThen(() => Ilg.LoadField(typeof(Recompiler).GetField(fieldName))));
 			set => CpuRef.EmitThen(() => value.EmitThen(() => Ilg.StoreField(typeof(Recompiler).GetField(fieldName))));
 		}
+		StaticRef<Globals> GlobalRef;
 
 		Value ReadAbsorbRef { get => this[nameof(ReadAbsorb)]; set => this[nameof(ReadAbsorb)] = value; }
 		Value ReadAbsorbWhichRef { get => this[nameof(ReadAbsorbWhich)]; set => this[nameof(ReadAbsorbWhich)] = value; }
@@ -108,25 +150,23 @@ namespace SharpStation {
 			}
 		}
 
-		protected override void RunFrom() {
-			do {
-				//$"Running block {pc:X}".Debug();
-				if(BranchToBlock != null) {
-					var func = LastBlock = BranchToBlock.Func;
-					Pc = LastBlockAddr = BranchToBlock.Addr;
-					BranchToBlock = null;
-					InterceptBlock(Pc);
-					if(func == null)
-						Pc = RecompileBlock(Pc);
-					else {
-						func(this);
-						Pc = BranchTo;
-					}
-				} else {
-					InterceptBlock(Pc);
+		protected override void Run() {
+			//$"Running block {Pc:X}".Debug();
+			if(BranchToBlock != null) {
+				var func = LastBlock = BranchToBlock.Func;
+				Pc = LastBlockAddr = BranchToBlock.Addr;
+				BranchToBlock = null;
+				InterceptBlock(Pc);
+				if(func == null)
 					Pc = RecompileBlock(Pc);
+				else {
+					func(this);
+					Pc = BranchTo;
 				}
-			} while(IPCache == 0);
+			} else {
+				InterceptBlock(Pc);
+				Pc = RecompileBlock(Pc);
+			}
 		}
 
 		readonly Dictionary<uint, Block> BlockCache = new Dictionary<uint, Block>();
@@ -317,12 +357,12 @@ namespace SharpStation {
 			Ilg.StoreElement<uint>();
 			
 			ReadFudgeRef = LDWhichRef;
-			
-			ReadAbsorbWhichRef = Or(ReadAbsorbWhichRef, 
-				Ternary(Ne(LDWhichRef, MakeValue(35U)), 
-					And(LDWhichRef, MakeValue(0x1FU)), 
+
+			ReadAbsorbWhichRef |=
+				Ternary(LDWhichRef != MakeValue(35U),
+					LDWhichRef & MakeValue(0x1FU),
 					MakeValue(0U)
-				));
+				);
 			LDWhichRef = MakeValue(35U);
 		}
 		
@@ -367,7 +407,7 @@ namespace SharpStation {
 			Ilg.StoreElement<uint>();
 		}
 
-		void TimestampInc(uint inc) => this[nameof(Timestamp)] = Add(this[nameof(Timestamp)], MakeValue(inc));
+		void TimestampInc(uint inc) => GlobalRef[nameof(Timestamp)] += MakeValue(inc);
 		void GenAbsorbMuldivDelay() => Call(nameof(AbsorbMuldivDelay));
 		void MulDelay(Value a, Value b, bool signed) => Call(nameof(MulDelay), a, b, signed);
 		void GenDivDelay() => Call(nameof(DivDelay));
@@ -392,9 +432,6 @@ namespace SharpStation {
 		void WriteCopcreg(uint cop, uint reg, Value value) => Call(nameof(WriteCopcreg), cop, reg, value);
 		void GenCopfun(uint cop, uint cofun, uint inst) => Call(nameof(Copfun), cop, cofun, inst);
 
-		Value Add(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Add())));
-		Value Sub(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Subtract())));
-		Value Mul(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Multiply())));
 		Value Mul64(Value a, Value b) {
 			var tempLocal = Ilg.DeclareLocal<long>();
 			a.Emit();
@@ -411,34 +448,9 @@ namespace SharpStation {
 			Ilg.StoreLocal(tempLocal);
 			return new Value(() => Ilg.LoadLocal(tempLocal));
 		}
-		Value Div(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Divide())));
-		Value Mod(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Remainder())));
-		
-		Value Shl(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.ShiftLeft())));
-		Value SShr(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.ShiftRight())));
-		Value UShr(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.UnsignedShiftRight())));
-		Value And(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.And())));
-		Value Or(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Or())));
-		Value Xor(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Xor())));
-		Value Not(Value v) => new Value(() => v.EmitThen(() => Ilg.Not()));
-
-		Value Comp(Value a, Value b, Action<Label> op) => new Value(() => {
-			Label _if = Ilg.DefineLabel(), end = Ilg.DefineLabel();
-			a.Emit();
-			b.Emit();
-			op(_if);
-			Ilg.LoadConstant(0);
-			Ilg.Branch(end);
-			Ilg.MarkLabel(_if);
-			Ilg.LoadConstant(1);
-			Ilg.MarkLabel(end);
-		});
-		Value Eq(Value a, Value b) => Comp(a, b, l => Ilg.BranchIfEqual(l));
-		Value Ne(Value a, Value b) => Comp(a, b, l => Ilg.UnsignedBranchIfNotEqual(l));
-		Value Lt(Value a, Value b) => Comp(a, b, l => Ilg.BranchIfLess(l));
-		Value Gt(Value a, Value b) => Comp(a, b, l => Ilg.BranchIfGreater(l));
-		Value Le(Value a, Value b) => Comp(a, b, l => Ilg.BranchIfLessOrEqual(l));
-		Value Ge(Value a, Value b) => Comp(a, b, l => Ilg.BranchIfGreaterOrEqual(l));
+		public static Value Shl(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.ShiftLeft())));
+		public static Value SShr(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.ShiftRight())));
+		public static Value UShr(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.UnsignedShiftRight())));
 
 		Value ToI32(Value v) => new Value(() => v.EmitThen(() => Ilg.Convert<int>()));
 		Value ToI64(Value v) => new Value(() => v.EmitThen(() => Ilg.Convert<long>()));

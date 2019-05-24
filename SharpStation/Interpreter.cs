@@ -27,23 +27,21 @@ namespace SharpStation {
 		
 		string TtyBuf = "";
 
-		protected override void RunFrom() {
-			do {
-				var insn = Memory.Load32(Pc);
-				//WriteLine($"{pc:X}:  {Disassemble(pc, insn)}");
+		protected override void Run() {
+			var insn = Memory.Load32(Pc);
+			//$"{Pc:X}:  {Disassemble(Pc, insn)}".Debug();
 
-				BranchTo = NoBranch;
-				RunOne(Pc, insn);
+			BranchTo = NoBranch;
+			RunOne(Pc, insn);
 
-				Pc += 4;
+			Pc += 4;
 
-				if(BranchTo != NoBranch && DeferBranch == NoBranch) {
-					DeferBranch = BranchTo;
-				} else if(DeferBranch != NoBranch) {
-					Pc = DeferBranch;
-					DeferBranch = NoBranch;
-				}
-			} while(IPCache == 0);
+			if(BranchTo != NoBranch && DeferBranch == NoBranch) {
+				DeferBranch = BranchTo;
+			} else if(DeferBranch != NoBranch) {
+				Pc = DeferBranch;
+				DeferBranch = NoBranch;
+			}
 		}
 
 		void RunOne(uint pc, uint inst) {

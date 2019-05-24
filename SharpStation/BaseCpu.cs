@@ -40,24 +40,25 @@ namespace SharpStation {
 	public abstract partial class BaseCpu {
 		public readonly uint[] Gpr = new uint[36];
 		public uint Lo, Hi;
-		public uint Pc;
+		public uint Pc = 0xBFC00000U;
 		public uint LdWhich, LdValue, LdAbsorb;
+		public readonly uint[] ReadAbsorb = new uint[36];
+		public uint ReadAbsorbWhich, ReadFudge;
+		public bool IsolateCache;
+
 		public const uint NoBranch = ~0U;
 		public uint BranchTo = NoBranch, DeferBranch = NoBranch;
 
-		public readonly uint[] ReadAbsorb = new uint[36];
-		public uint ReadAbsorbWhich, ReadFudge;
-
-		public bool IsolateCache, Halted;
-
 		public uint IPCache;
 
-		public uint Timestamp;
+		public bool Running, Halted;
+
 		uint MuldivTsDone;
 
-		public void Run() {
-			Pc = 0xBFC00000U;
-			while(true)
+		public void RunOneFrame() {
+			Running = true;
+			
+			while(Timestamp < Events.NextTimestamp || Events.RunEvents())
 				try {
 					//$"Foo? {Pc:X}".Debug();
 					if(IPCache != 0) {
@@ -66,7 +67,7 @@ namespace SharpStation {
 						} else if((CP0.StatusRegister & 1) != 0)
 							DispatchException(new CpuException(ExceptionType.INT, Pc, Pc, 0xFF, 0));
 					}
-					RunFrom();
+					Run();
 				} catch (CpuException ce) {
 					DispatchException(ce);
 				}
@@ -104,7 +105,6 @@ namespace SharpStation {
 		}
 
 		public void RecalcIPCache() {
-			$"Recalc {CP0.StatusRegister:X} -- {CP0.Cause:X}".Debug();
 			IPCache = (CP0.StatusRegister & CP0.Cause & 0xFF00) != 0 && (CP0.StatusRegister & 1) != 0 || Halted
 				? 0x80U
 				: 0;
@@ -123,7 +123,7 @@ namespace SharpStation {
 			RecalcIPCache();
 		}
 
-		protected abstract void RunFrom();
+		protected abstract void Run();
 
 		public void Alignment(uint addr, int size, bool store, uint pc) {
 			if(size == 16 && (addr & 1) != 0 || size == 32 && (addr & 3) != 0)
@@ -215,7 +215,7 @@ namespace SharpStation {
 		}
 
 		public uint LoadMemory(int size, uint addr, uint pc) {
-			//WriteLine($"Load {size/8} bytes from {addr:X8}");
+			//$"Load {size/8} bytes from {addr:X8} -- {Pc:X8}".Debug();
 			switch(size) {
 				case 8: return Memory.Load8(addr);
 				case 16: return Memory.Load16(addr);
@@ -228,7 +228,7 @@ namespace SharpStation {
 			if(IsolateCache)
 				return;
 			
-			//WriteLine($"Store {size/8} bytes to {addr:X8} <- {value:X}");
+			//$"Store {size/8} bytes to {addr:X8} <- {value:X} -- {Pc:X8}".Debug();
 			switch(size) {
 				case 8: Memory.Store8(addr, (byte) value); break;
 				case 16: Memory.Store16(addr, (ushort) value); break;

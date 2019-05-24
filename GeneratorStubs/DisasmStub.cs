@@ -10,7 +10,7 @@
 using System;
 
 namespace SharpStation {
-	public partial class Cpu {
+	public partial class BaseCpu {
 		internal string Disassemble(uint pc, uint inst) {
 			/*<<GENERATED>>*/
 			return $"Unknown instruction at {pc:X8}: {inst:X8}";

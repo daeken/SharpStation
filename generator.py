@@ -151,6 +151,7 @@ def flatten(x):
 	else:
 		return [x]
 
+aops = '+', '-', '&', '|', '~', '^', '*', '/', '%', '==', '>=', '>', '<=', '<', '!='
 
 gops = {
 	'add': lambda a, b: ('+', a, b),
@@ -177,27 +178,27 @@ gops = {
 }
 
 eops = {
-	'add': lambda a, b: ('call', 'Add', a, b),
-	'sub': lambda a, b: ('call', 'Sub', a, b),
-	'and': lambda a, b: ('call', 'And', a, b),
-	'or': lambda a, b: ('call', 'Or', a, b),
-	'nor': lambda a, b: ('call', 'Not', ('call', 'Or', a, b)),
-	'xor': lambda a, b: ('call', 'Xor', a, b),
-	'mul': lambda a, b: ('call', 'Mul', a, b),
+	'add': lambda a, b: ('+', a, b),
+	'sub': lambda a, b: ('-', a, b),
+	'and': lambda a, b: ('&', a, b),
+	'or': lambda a, b: ('|', a, b),
+	'nor': lambda a, b: ('~', ('|', a, b)),
+	'xor': lambda a, b: ('^', a, b),
+	'mul': lambda a, b: ('*', a, b),
 	'mul64': lambda a, b: ('call', 'Mul64', ('cast-signed', 64, ('cast-signed', 32, a)), ('cast-signed', 64, ('cast-signed', 32, b))),
 	'umul64': lambda a, b: ('call', 'UMul64', ('cast', 64, a), ('cast', 64, b)),
-	'div': lambda a, b: ('call', 'Div', a, b),
-	'mod': lambda a, b: ('call', 'Mod', a, b),
+	'div': lambda a, b: ('/', a, b),
+	'mod': lambda a, b: ('%', a, b),
 	'shl': lambda a, b: ('call', 'Shl', a, b),
 	'shra': lambda a, b: ('call', 'SShr', a, b),
 	'shrl': lambda a, b: ('call', 'UShr', a, b),
 
-	'eq': lambda a, b: ('call', 'Eq', a, b),
-	'ge': lambda a, b: ('call', 'Ge', a, b),
-	'gt': lambda a, b: ('call', 'Gt', a, b),
-	'le': lambda a, b: ('call', 'Le', a, b),
-	'lt': lambda a, b: ('call', 'Lt', a, b),
-	'neq': lambda a, b: ('call', 'Ne', a, b),
+	'eq': lambda a, b: ('==', a, b),
+	'ge': lambda a, b: ('>=', a, b),
+	'gt': lambda a, b: ('>', a, b),
+	'le': lambda a, b: ('<=', a, b),
+	'lt': lambda a, b: ('<', a, b),
+	'neq': lambda a, b: ('!=', a, b),
 }
 
 
@@ -433,7 +434,7 @@ def _emitter(sexp, storing=False, locals=None):
 			'Label %s = Ilg.DefineLabel(), %s = Ilg.DefineLabel();' % (_else, _end),
 			'Value %s = ReadAbsorbWhichRef, %s = RRA(%s);' % (raw, ra, raw),
 			'BranchIf(%s, %s);' % (emitter(('eq', ra, 'MakeValue<uint>(0)')), _else),
-			'WRA(%s, Sub(%s, MakeValue<uint>(1)));' % (raw, ra),
+			'WRA(%s, %s - MakeValue<uint>(1));' % (raw, ra),
 			'Branch(%s);' % _end,
 			'Label(%s);' % _else,
 			'TimestampInc(1);',
@@ -460,6 +461,11 @@ def _emitter(sexp, storing=False, locals=None):
 	elif op == 'bool2uint':
 		#return 'BoolToUint(%s)' % emitter(sexp[1])
 		return emitter(sexp[1])
+	elif op in aops:
+		if len(sexp) == 2:
+			return '%s(%s)' % (op, to_val(emitter(sexp[1])))
+		else:
+			return '(%s) %s (%s)' % (to_val(emitter(sexp[1])), op, to_val(emitter(sexp[2])))
 	else:
 		print 'Unknown', sexp
 	sys.exit(1)

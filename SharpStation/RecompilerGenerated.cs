@@ -26,8 +26,8 @@ namespace SharpStation {
 								/* SLL */
 								Label temp_231 = Ilg.DefineLabel(), temp_232 = Ilg.DefineLabel();
 								Value temp_234 = ReadAbsorbWhichRef, temp_233 = RRA(temp_234);
-								BranchIf(Eq(temp_233, MakeValue<uint>(0)), temp_231);
-								WRA(temp_234, Sub(temp_233, MakeValue<uint>(1)));
+								BranchIf((temp_233) == (MakeValue<uint>(0)), temp_231);
+								WRA(temp_234, temp_233 - MakeValue<uint>(1));
 								Branch(temp_232);
 								Label(temp_231);
 								TimestampInc(1);
@@ -47,8 +47,8 @@ namespace SharpStation {
 								/* SRL */
 								Label temp_235 = Ilg.DefineLabel(), temp_236 = Ilg.DefineLabel();
 								Value temp_238 = ReadAbsorbWhichRef, temp_237 = RRA(temp_238);
-								BranchIf(Eq(temp_237, MakeValue<uint>(0)), temp_235);
-								WRA(temp_238, Sub(temp_237, MakeValue<uint>(1)));
+								BranchIf((temp_237) == (MakeValue<uint>(0)), temp_235);
+								WRA(temp_238, temp_237 - MakeValue<uint>(1));
 								Branch(temp_236);
 								Label(temp_235);
 								TimestampInc(1);
@@ -68,8 +68,8 @@ namespace SharpStation {
 								/* SRA */
 								Label temp_239 = Ilg.DefineLabel(), temp_240 = Ilg.DefineLabel();
 								Value temp_242 = ReadAbsorbWhichRef, temp_241 = RRA(temp_242);
-								BranchIf(Eq(temp_241, MakeValue<uint>(0)), temp_239);
-								WRA(temp_242, Sub(temp_241, MakeValue<uint>(1)));
+								BranchIf((temp_241) == (MakeValue<uint>(0)), temp_239);
+								WRA(temp_242, temp_241 - MakeValue<uint>(1));
 								Branch(temp_240);
 								Label(temp_239);
 								TimestampInc(1);
@@ -89,8 +89,8 @@ namespace SharpStation {
 								/* SLLV */
 								Label temp_243 = Ilg.DefineLabel(), temp_244 = Ilg.DefineLabel();
 								Value temp_246 = ReadAbsorbWhichRef, temp_245 = RRA(temp_246);
-								BranchIf(Eq(temp_245, MakeValue<uint>(0)), temp_243);
-								WRA(temp_246, Sub(temp_245, MakeValue<uint>(1)));
+								BranchIf((temp_245) == (MakeValue<uint>(0)), temp_243);
+								WRA(temp_246, temp_245 - MakeValue<uint>(1));
 								Branch(temp_244);
 								Label(temp_243);
 								TimestampInc(1);
@@ -112,8 +112,8 @@ namespace SharpStation {
 								/* SRLV */
 								Label temp_247 = Ilg.DefineLabel(), temp_248 = Ilg.DefineLabel();
 								Value temp_250 = ReadAbsorbWhichRef, temp_249 = RRA(temp_250);
-								BranchIf(Eq(temp_249, MakeValue<uint>(0)), temp_247);
-								WRA(temp_250, Sub(temp_249, MakeValue<uint>(1)));
+								BranchIf((temp_249) == (MakeValue<uint>(0)), temp_247);
+								WRA(temp_250, temp_249 - MakeValue<uint>(1));
 								Branch(temp_248);
 								Label(temp_247);
 								TimestampInc(1);
@@ -135,8 +135,8 @@ namespace SharpStation {
 								/* SRAV */
 								Label temp_251 = Ilg.DefineLabel(), temp_252 = Ilg.DefineLabel();
 								Value temp_254 = ReadAbsorbWhichRef, temp_253 = RRA(temp_254);
-								BranchIf(Eq(temp_253, MakeValue<uint>(0)), temp_251);
-								WRA(temp_254, Sub(temp_253, MakeValue<uint>(1)));
+								BranchIf((temp_253) == (MakeValue<uint>(0)), temp_251);
+								WRA(temp_254, temp_253 - MakeValue<uint>(1));
 								Branch(temp_252);
 								Label(temp_251);
 								TimestampInc(1);
@@ -158,8 +158,8 @@ namespace SharpStation {
 								/* JR */
 								Label temp_255 = Ilg.DefineLabel(), temp_256 = Ilg.DefineLabel();
 								Value temp_258 = ReadAbsorbWhichRef, temp_257 = RRA(temp_258);
-								BranchIf(Eq(temp_257, MakeValue<uint>(0)), temp_255);
-								WRA(temp_258, Sub(temp_257, MakeValue<uint>(1)));
+								BranchIf((temp_257) == (MakeValue<uint>(0)), temp_255);
+								WRA(temp_258, temp_257 - MakeValue<uint>(1));
 								Branch(temp_256);
 								Label(temp_255);
 								TimestampInc(1);
@@ -178,8 +178,8 @@ namespace SharpStation {
 								/* JALR */
 								Label temp_259 = Ilg.DefineLabel(), temp_260 = Ilg.DefineLabel();
 								Value temp_262 = ReadAbsorbWhichRef, temp_261 = RRA(temp_262);
-								BranchIf(Eq(temp_261, MakeValue<uint>(0)), temp_259);
-								WRA(temp_262, Sub(temp_261, MakeValue<uint>(1)));
+								BranchIf((temp_261) == (MakeValue<uint>(0)), temp_259);
+								WRA(temp_262, temp_261 - MakeValue<uint>(1));
 								Branch(temp_260);
 								Label(temp_259);
 								TimestampInc(1);
@@ -190,7 +190,7 @@ namespace SharpStation {
 								RES(rd);
 								var temp_126 = (Gprs)[rs];
 								if(need_load) { DoLds(); }
-								Gprs[rd] = Add(Add(MakeValue<uint>(pc), MakeValue<uint>(0x4)), MakeValue<uint>(0x4));
+								Gprs[rd] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 								Alignment(temp_126, 32, false, pc);
 								if(!branched) Branch(temp_126);
 								branched = true;
@@ -201,8 +201,8 @@ namespace SharpStation {
 								/* SYSCALL */
 								Label temp_263 = Ilg.DefineLabel(), temp_264 = Ilg.DefineLabel();
 								Value temp_266 = ReadAbsorbWhichRef, temp_265 = RRA(temp_266);
-								BranchIf(Eq(temp_265, MakeValue<uint>(0)), temp_263);
-								WRA(temp_266, Sub(temp_265, MakeValue<uint>(1)));
+								BranchIf((temp_265) == (MakeValue<uint>(0)), temp_263);
+								WRA(temp_266, temp_265 - MakeValue<uint>(1));
 								Branch(temp_264);
 								Label(temp_263);
 								TimestampInc(1);
@@ -217,8 +217,8 @@ namespace SharpStation {
 								/* BREAK */
 								Label temp_267 = Ilg.DefineLabel(), temp_268 = Ilg.DefineLabel();
 								Value temp_270 = ReadAbsorbWhichRef, temp_269 = RRA(temp_270);
-								BranchIf(Eq(temp_269, MakeValue<uint>(0)), temp_267);
-								WRA(temp_270, Sub(temp_269, MakeValue<uint>(1)));
+								BranchIf((temp_269) == (MakeValue<uint>(0)), temp_267);
+								WRA(temp_270, temp_269 - MakeValue<uint>(1));
 								Branch(temp_268);
 								Label(temp_267);
 								TimestampInc(1);
@@ -233,8 +233,8 @@ namespace SharpStation {
 								/* MFHI */
 								Label temp_271 = Ilg.DefineLabel(), temp_272 = Ilg.DefineLabel();
 								Value temp_274 = ReadAbsorbWhichRef, temp_273 = RRA(temp_274);
-								BranchIf(Eq(temp_273, MakeValue<uint>(0)), temp_271);
-								WRA(temp_274, Sub(temp_273, MakeValue<uint>(1)));
+								BranchIf((temp_273) == (MakeValue<uint>(0)), temp_271);
+								WRA(temp_274, temp_273 - MakeValue<uint>(1));
 								Branch(temp_272);
 								Label(temp_271);
 								TimestampInc(1);
@@ -251,8 +251,8 @@ namespace SharpStation {
 								/* MTHI */
 								Label temp_275 = Ilg.DefineLabel(), temp_276 = Ilg.DefineLabel();
 								Value temp_278 = ReadAbsorbWhichRef, temp_277 = RRA(temp_278);
-								BranchIf(Eq(temp_277, MakeValue<uint>(0)), temp_275);
-								WRA(temp_278, Sub(temp_277, MakeValue<uint>(1)));
+								BranchIf((temp_277) == (MakeValue<uint>(0)), temp_275);
+								WRA(temp_278, temp_277 - MakeValue<uint>(1));
 								Branch(temp_276);
 								Label(temp_275);
 								TimestampInc(1);
@@ -269,8 +269,8 @@ namespace SharpStation {
 								/* MFLO */
 								Label temp_279 = Ilg.DefineLabel(), temp_280 = Ilg.DefineLabel();
 								Value temp_282 = ReadAbsorbWhichRef, temp_281 = RRA(temp_282);
-								BranchIf(Eq(temp_281, MakeValue<uint>(0)), temp_279);
-								WRA(temp_282, Sub(temp_281, MakeValue<uint>(1)));
+								BranchIf((temp_281) == (MakeValue<uint>(0)), temp_279);
+								WRA(temp_282, temp_281 - MakeValue<uint>(1));
 								Branch(temp_280);
 								Label(temp_279);
 								TimestampInc(1);
@@ -287,8 +287,8 @@ namespace SharpStation {
 								/* MTLO */
 								Label temp_283 = Ilg.DefineLabel(), temp_284 = Ilg.DefineLabel();
 								Value temp_286 = ReadAbsorbWhichRef, temp_285 = RRA(temp_286);
-								BranchIf(Eq(temp_285, MakeValue<uint>(0)), temp_283);
-								WRA(temp_286, Sub(temp_285, MakeValue<uint>(1)));
+								BranchIf((temp_285) == (MakeValue<uint>(0)), temp_283);
+								WRA(temp_286, temp_285 - MakeValue<uint>(1));
 								Branch(temp_284);
 								Label(temp_283);
 								TimestampInc(1);
@@ -305,8 +305,8 @@ namespace SharpStation {
 								/* MULT */
 								Label temp_287 = Ilg.DefineLabel(), temp_288 = Ilg.DefineLabel();
 								Value temp_290 = ReadAbsorbWhichRef, temp_289 = RRA(temp_290);
-								BranchIf(Eq(temp_289, MakeValue<uint>(0)), temp_287);
-								WRA(temp_290, Sub(temp_289, MakeValue<uint>(1)));
+								BranchIf((temp_289) == (MakeValue<uint>(0)), temp_287);
+								WRA(temp_290, temp_289 - MakeValue<uint>(1));
 								Branch(temp_288);
 								Label(temp_287);
 								TimestampInc(1);
@@ -329,8 +329,8 @@ namespace SharpStation {
 								/* MULTU */
 								Label temp_291 = Ilg.DefineLabel(), temp_292 = Ilg.DefineLabel();
 								Value temp_294 = ReadAbsorbWhichRef, temp_293 = RRA(temp_294);
-								BranchIf(Eq(temp_293, MakeValue<uint>(0)), temp_291);
-								WRA(temp_294, Sub(temp_293, MakeValue<uint>(1)));
+								BranchIf((temp_293) == (MakeValue<uint>(0)), temp_291);
+								WRA(temp_294, temp_293 - MakeValue<uint>(1));
 								Branch(temp_292);
 								Label(temp_291);
 								TimestampInc(1);
@@ -353,8 +353,8 @@ namespace SharpStation {
 								/* DIV */
 								Label temp_295 = Ilg.DefineLabel(), temp_296 = Ilg.DefineLabel();
 								Value temp_298 = ReadAbsorbWhichRef, temp_297 = RRA(temp_298);
-								BranchIf(Eq(temp_297, MakeValue<uint>(0)), temp_295);
-								WRA(temp_298, Sub(temp_297, MakeValue<uint>(1)));
+								BranchIf((temp_297) == (MakeValue<uint>(0)), temp_295);
+								WRA(temp_298, temp_297 - MakeValue<uint>(1));
 								Branch(temp_296);
 								Label(temp_295);
 								TimestampInc(1);
@@ -367,11 +367,11 @@ namespace SharpStation {
 								var temp_134 = (Gprs)[rt];
 								if(need_load) { DoLds(); }
 								Label temp_299 = Ilg.DefineLabel(), temp_300 = Ilg.DefineLabel();
-								BranchIf(Eq(temp_134, MakeValue<uint>(0x0)), temp_299);
+								BranchIf((temp_134) == (MakeValue<uint>(0x0)), temp_299);
 								Label temp_301 = Ilg.DefineLabel(), temp_302 = Ilg.DefineLabel();
-								BranchIf(And(Eq(temp_133, MakeValue<uint>(0x80000000)), Eq(temp_134, MakeValue<uint>(0xffffffff))), temp_301);
-								LoRef = Unsigned(Div(Signed(temp_133), Signed(temp_134)));
-								HiRef = Unsigned(Mod(Signed(temp_133), Signed(temp_134)));
+								BranchIf(((temp_133) == (MakeValue<uint>(0x80000000))) & ((temp_134) == (MakeValue<uint>(0xffffffff))), temp_301);
+								LoRef = Unsigned((Signed(temp_133)) / (Signed(temp_134)));
+								HiRef = Unsigned((Signed(temp_133)) % (Signed(temp_134)));
 								GenDivDelay();
 								Branch(temp_302);
 								Label(temp_301);
@@ -381,7 +381,7 @@ namespace SharpStation {
 								Branch(temp_300);
 								Label(temp_299);
 								Label temp_303 = Ilg.DefineLabel(), temp_304 = Ilg.DefineLabel();
-								BranchIf(Ne(And(temp_133, MakeValue<uint>(0x80000000)), MakeValue<uint>(0x0)), temp_303);
+								BranchIf(((temp_133) & (MakeValue<uint>(0x80000000))) != (MakeValue<uint>(0x0)), temp_303);
 								LoRef = MakeValue<uint>(0xffffffff);
 								Branch(temp_304);
 								Label(temp_303);
@@ -396,8 +396,8 @@ namespace SharpStation {
 								/* DIVU */
 								Label temp_305 = Ilg.DefineLabel(), temp_306 = Ilg.DefineLabel();
 								Value temp_308 = ReadAbsorbWhichRef, temp_307 = RRA(temp_308);
-								BranchIf(Eq(temp_307, MakeValue<uint>(0)), temp_305);
-								WRA(temp_308, Sub(temp_307, MakeValue<uint>(1)));
+								BranchIf((temp_307) == (MakeValue<uint>(0)), temp_305);
+								WRA(temp_308, temp_307 - MakeValue<uint>(1));
 								Branch(temp_306);
 								Label(temp_305);
 								TimestampInc(1);
@@ -410,9 +410,9 @@ namespace SharpStation {
 								var temp_136 = (Gprs)[rt];
 								if(need_load) { DoLds(); }
 								Label temp_309 = Ilg.DefineLabel(), temp_310 = Ilg.DefineLabel();
-								BranchIf(Eq(temp_136, MakeValue<uint>(0x0)), temp_309);
-								LoRef = Div(temp_135, temp_136);
-								HiRef = Mod(temp_135, temp_136);
+								BranchIf((temp_136) == (MakeValue<uint>(0x0)), temp_309);
+								LoRef = (temp_135) / (temp_136);
+								HiRef = (temp_135) % (temp_136);
 								GenDivDelay();
 								Branch(temp_310);
 								Label(temp_309);
@@ -426,8 +426,8 @@ namespace SharpStation {
 								/* ADD */
 								Label temp_311 = Ilg.DefineLabel(), temp_312 = Ilg.DefineLabel();
 								Value temp_314 = ReadAbsorbWhichRef, temp_313 = RRA(temp_314);
-								BranchIf(Eq(temp_313, MakeValue<uint>(0)), temp_311);
-								WRA(temp_314, Sub(temp_313, MakeValue<uint>(1)));
+								BranchIf((temp_313) == (MakeValue<uint>(0)), temp_311);
+								WRA(temp_314, temp_313 - MakeValue<uint>(1));
 								Branch(temp_312);
 								Label(temp_311);
 								TimestampInc(1);
@@ -442,7 +442,7 @@ namespace SharpStation {
 								var temp_138 = (Gprs)[rt];
 								if(need_load) { DoLds(); }
 								Overflow(temp_137, temp_138, 1, pc, inst);
-								Gprs[rd] = Add(temp_137, temp_138);
+								Gprs[rd] = (temp_137) + (temp_138);
 								return(true);
 								break;
 							}
@@ -450,8 +450,8 @@ namespace SharpStation {
 								/* ADDU */
 								Label temp_315 = Ilg.DefineLabel(), temp_316 = Ilg.DefineLabel();
 								Value temp_318 = ReadAbsorbWhichRef, temp_317 = RRA(temp_318);
-								BranchIf(Eq(temp_317, MakeValue<uint>(0)), temp_315);
-								WRA(temp_318, Sub(temp_317, MakeValue<uint>(1)));
+								BranchIf((temp_317) == (MakeValue<uint>(0)), temp_315);
+								WRA(temp_318, temp_317 - MakeValue<uint>(1));
 								Branch(temp_316);
 								Label(temp_315);
 								TimestampInc(1);
@@ -465,7 +465,7 @@ namespace SharpStation {
 								var temp_139 = (Gprs)[rs];
 								var temp_140 = (Gprs)[rt];
 								if(need_load) { DoLds(); }
-								Gprs[rd] = Add(temp_139, temp_140);
+								Gprs[rd] = (temp_139) + (temp_140);
 								return(true);
 								break;
 							}
@@ -473,8 +473,8 @@ namespace SharpStation {
 								/* SUB */
 								Label temp_319 = Ilg.DefineLabel(), temp_320 = Ilg.DefineLabel();
 								Value temp_322 = ReadAbsorbWhichRef, temp_321 = RRA(temp_322);
-								BranchIf(Eq(temp_321, MakeValue<uint>(0)), temp_319);
-								WRA(temp_322, Sub(temp_321, MakeValue<uint>(1)));
+								BranchIf((temp_321) == (MakeValue<uint>(0)), temp_319);
+								WRA(temp_322, temp_321 - MakeValue<uint>(1));
 								Branch(temp_320);
 								Label(temp_319);
 								TimestampInc(1);
@@ -489,7 +489,7 @@ namespace SharpStation {
 								var temp_142 = (Gprs)[rt];
 								if(need_load) { DoLds(); }
 								Overflow(temp_141, temp_142, -1, pc, inst);
-								Gprs[rd] = Sub(temp_141, temp_142);
+								Gprs[rd] = (temp_141) - (temp_142);
 								return(true);
 								break;
 							}
@@ -497,8 +497,8 @@ namespace SharpStation {
 								/* SUBU */
 								Label temp_323 = Ilg.DefineLabel(), temp_324 = Ilg.DefineLabel();
 								Value temp_326 = ReadAbsorbWhichRef, temp_325 = RRA(temp_326);
-								BranchIf(Eq(temp_325, MakeValue<uint>(0)), temp_323);
-								WRA(temp_326, Sub(temp_325, MakeValue<uint>(1)));
+								BranchIf((temp_325) == (MakeValue<uint>(0)), temp_323);
+								WRA(temp_326, temp_325 - MakeValue<uint>(1));
 								Branch(temp_324);
 								Label(temp_323);
 								TimestampInc(1);
@@ -512,7 +512,7 @@ namespace SharpStation {
 								var temp_143 = (Gprs)[rs];
 								var temp_144 = (Gprs)[rt];
 								if(need_load) { DoLds(); }
-								Gprs[rd] = Sub(temp_143, temp_144);
+								Gprs[rd] = (temp_143) - (temp_144);
 								return(true);
 								break;
 							}
@@ -520,8 +520,8 @@ namespace SharpStation {
 								/* AND */
 								Label temp_327 = Ilg.DefineLabel(), temp_328 = Ilg.DefineLabel();
 								Value temp_330 = ReadAbsorbWhichRef, temp_329 = RRA(temp_330);
-								BranchIf(Eq(temp_329, MakeValue<uint>(0)), temp_327);
-								WRA(temp_330, Sub(temp_329, MakeValue<uint>(1)));
+								BranchIf((temp_329) == (MakeValue<uint>(0)), temp_327);
+								WRA(temp_330, temp_329 - MakeValue<uint>(1));
 								Branch(temp_328);
 								Label(temp_327);
 								TimestampInc(1);
@@ -535,7 +535,7 @@ namespace SharpStation {
 								var temp_145 = (Gprs)[rs];
 								var temp_146 = (Gprs)[rt];
 								if(need_load) { DoLds(); }
-								Gprs[rd] = And(temp_145, temp_146);
+								Gprs[rd] = (temp_145) & (temp_146);
 								return(true);
 								break;
 							}
@@ -543,8 +543,8 @@ namespace SharpStation {
 								/* OR */
 								Label temp_331 = Ilg.DefineLabel(), temp_332 = Ilg.DefineLabel();
 								Value temp_334 = ReadAbsorbWhichRef, temp_333 = RRA(temp_334);
-								BranchIf(Eq(temp_333, MakeValue<uint>(0)), temp_331);
-								WRA(temp_334, Sub(temp_333, MakeValue<uint>(1)));
+								BranchIf((temp_333) == (MakeValue<uint>(0)), temp_331);
+								WRA(temp_334, temp_333 - MakeValue<uint>(1));
 								Branch(temp_332);
 								Label(temp_331);
 								TimestampInc(1);
@@ -558,7 +558,7 @@ namespace SharpStation {
 								var temp_147 = (Gprs)[rs];
 								var temp_148 = (Gprs)[rt];
 								if(need_load) { DoLds(); }
-								Gprs[rd] = Or(temp_147, temp_148);
+								Gprs[rd] = (temp_147) | (temp_148);
 								return(true);
 								break;
 							}
@@ -566,8 +566,8 @@ namespace SharpStation {
 								/* XOR */
 								Label temp_335 = Ilg.DefineLabel(), temp_336 = Ilg.DefineLabel();
 								Value temp_338 = ReadAbsorbWhichRef, temp_337 = RRA(temp_338);
-								BranchIf(Eq(temp_337, MakeValue<uint>(0)), temp_335);
-								WRA(temp_338, Sub(temp_337, MakeValue<uint>(1)));
+								BranchIf((temp_337) == (MakeValue<uint>(0)), temp_335);
+								WRA(temp_338, temp_337 - MakeValue<uint>(1));
 								Branch(temp_336);
 								Label(temp_335);
 								TimestampInc(1);
@@ -581,7 +581,7 @@ namespace SharpStation {
 								var temp_149 = (Gprs)[rs];
 								var temp_150 = (Gprs)[rt];
 								if(need_load) { DoLds(); }
-								Gprs[rd] = Xor(temp_149, temp_150);
+								Gprs[rd] = (temp_149) ^ (temp_150);
 								return(true);
 								break;
 							}
@@ -589,8 +589,8 @@ namespace SharpStation {
 								/* NOR */
 								Label temp_339 = Ilg.DefineLabel(), temp_340 = Ilg.DefineLabel();
 								Value temp_342 = ReadAbsorbWhichRef, temp_341 = RRA(temp_342);
-								BranchIf(Eq(temp_341, MakeValue<uint>(0)), temp_339);
-								WRA(temp_342, Sub(temp_341, MakeValue<uint>(1)));
+								BranchIf((temp_341) == (MakeValue<uint>(0)), temp_339);
+								WRA(temp_342, temp_341 - MakeValue<uint>(1));
 								Branch(temp_340);
 								Label(temp_339);
 								TimestampInc(1);
@@ -604,7 +604,7 @@ namespace SharpStation {
 								var temp_151 = (Gprs)[rs];
 								var temp_152 = (Gprs)[rt];
 								if(need_load) { DoLds(); }
-								Gprs[rd] = Not(Or(temp_151, temp_152));
+								Gprs[rd] = ~((temp_151) | (temp_152));
 								return(true);
 								break;
 							}
@@ -612,8 +612,8 @@ namespace SharpStation {
 								/* SLT */
 								Label temp_343 = Ilg.DefineLabel(), temp_344 = Ilg.DefineLabel();
 								Value temp_346 = ReadAbsorbWhichRef, temp_345 = RRA(temp_346);
-								BranchIf(Eq(temp_345, MakeValue<uint>(0)), temp_343);
-								WRA(temp_346, Sub(temp_345, MakeValue<uint>(1)));
+								BranchIf((temp_345) == (MakeValue<uint>(0)), temp_343);
+								WRA(temp_346, temp_345 - MakeValue<uint>(1));
 								Branch(temp_344);
 								Label(temp_343);
 								TimestampInc(1);
@@ -627,7 +627,7 @@ namespace SharpStation {
 								var temp_153 = (Gprs)[rs];
 								var temp_154 = (Gprs)[rt];
 								if(need_load) { DoLds(); }
-								Gprs[rd] = Lt(Signed(temp_153), Signed(temp_154));
+								Gprs[rd] = (Signed(temp_153)) < (Signed(temp_154));
 								return(true);
 								break;
 							}
@@ -635,8 +635,8 @@ namespace SharpStation {
 								/* SLTU */
 								Label temp_347 = Ilg.DefineLabel(), temp_348 = Ilg.DefineLabel();
 								Value temp_350 = ReadAbsorbWhichRef, temp_349 = RRA(temp_350);
-								BranchIf(Eq(temp_349, MakeValue<uint>(0)), temp_347);
-								WRA(temp_350, Sub(temp_349, MakeValue<uint>(1)));
+								BranchIf((temp_349) == (MakeValue<uint>(0)), temp_347);
+								WRA(temp_350, temp_349 - MakeValue<uint>(1));
 								Branch(temp_348);
 								Label(temp_347);
 								TimestampInc(1);
@@ -650,7 +650,7 @@ namespace SharpStation {
 								var temp_155 = (Gprs)[rs];
 								var temp_156 = (Gprs)[rt];
 								if(need_load) { DoLds(); }
-								Gprs[rd] = Lt(temp_155, temp_156);
+								Gprs[rd] = (temp_155) < (temp_156);
 								return(true);
 								break;
 							}
@@ -663,8 +663,8 @@ namespace SharpStation {
 								/* BLTZanonymous_0 */
 								Label temp_351 = Ilg.DefineLabel(), temp_352 = Ilg.DefineLabel();
 								Value temp_354 = ReadAbsorbWhichRef, temp_353 = RRA(temp_354);
-								BranchIf(Eq(temp_353, MakeValue<uint>(0)), temp_351);
-								WRA(temp_354, Sub(temp_353, MakeValue<uint>(1)));
+								BranchIf((temp_353) == (MakeValue<uint>(0)), temp_351);
+								WRA(temp_354, temp_353 - MakeValue<uint>(1));
 								Branch(temp_352);
 								Label(temp_351);
 								TimestampInc(1);
@@ -676,7 +676,7 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_355 = Ilg.DefineLabel(), temp_356 = Ilg.DefineLabel();
-								BranchIf(Lt(Signed(temp_157), MakeValue<uint>(0x0)), temp_355);
+								BranchIf((Signed(temp_157)) < (MakeValue<uint>(0x0)), temp_355);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_356);
 								Label(temp_355);
@@ -690,8 +690,8 @@ namespace SharpStation {
 								/* BGEZanonymous_0 */
 								Label temp_357 = Ilg.DefineLabel(), temp_358 = Ilg.DefineLabel();
 								Value temp_360 = ReadAbsorbWhichRef, temp_359 = RRA(temp_360);
-								BranchIf(Eq(temp_359, MakeValue<uint>(0)), temp_357);
-								WRA(temp_360, Sub(temp_359, MakeValue<uint>(1)));
+								BranchIf((temp_359) == (MakeValue<uint>(0)), temp_357);
+								WRA(temp_360, temp_359 - MakeValue<uint>(1));
 								Branch(temp_358);
 								Label(temp_357);
 								TimestampInc(1);
@@ -703,7 +703,7 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_361 = Ilg.DefineLabel(), temp_362 = Ilg.DefineLabel();
-								BranchIf(Ge(Signed(temp_158), MakeValue<uint>(0x0)), temp_361);
+								BranchIf((Signed(temp_158)) >= (MakeValue<uint>(0x0)), temp_361);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_362);
 								Label(temp_361);
@@ -717,8 +717,8 @@ namespace SharpStation {
 								/* BLTZanonymous_1 */
 								Label temp_363 = Ilg.DefineLabel(), temp_364 = Ilg.DefineLabel();
 								Value temp_366 = ReadAbsorbWhichRef, temp_365 = RRA(temp_366);
-								BranchIf(Eq(temp_365, MakeValue<uint>(0)), temp_363);
-								WRA(temp_366, Sub(temp_365, MakeValue<uint>(1)));
+								BranchIf((temp_365) == (MakeValue<uint>(0)), temp_363);
+								WRA(temp_366, temp_365 - MakeValue<uint>(1));
 								Branch(temp_364);
 								Label(temp_363);
 								TimestampInc(1);
@@ -730,7 +730,7 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_367 = Ilg.DefineLabel(), temp_368 = Ilg.DefineLabel();
-								BranchIf(Lt(Signed(temp_159), MakeValue<uint>(0x0)), temp_367);
+								BranchIf((Signed(temp_159)) < (MakeValue<uint>(0x0)), temp_367);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_368);
 								Label(temp_367);
@@ -744,8 +744,8 @@ namespace SharpStation {
 								/* BGEZanonymous_1 */
 								Label temp_369 = Ilg.DefineLabel(), temp_370 = Ilg.DefineLabel();
 								Value temp_372 = ReadAbsorbWhichRef, temp_371 = RRA(temp_372);
-								BranchIf(Eq(temp_371, MakeValue<uint>(0)), temp_369);
-								WRA(temp_372, Sub(temp_371, MakeValue<uint>(1)));
+								BranchIf((temp_371) == (MakeValue<uint>(0)), temp_369);
+								WRA(temp_372, temp_371 - MakeValue<uint>(1));
 								Branch(temp_370);
 								Label(temp_369);
 								TimestampInc(1);
@@ -757,7 +757,7 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_373 = Ilg.DefineLabel(), temp_374 = Ilg.DefineLabel();
-								BranchIf(Ge(Signed(temp_160), MakeValue<uint>(0x0)), temp_373);
+								BranchIf((Signed(temp_160)) >= (MakeValue<uint>(0x0)), temp_373);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_374);
 								Label(temp_373);
@@ -771,8 +771,8 @@ namespace SharpStation {
 								/* BLTZanonymous_2 */
 								Label temp_375 = Ilg.DefineLabel(), temp_376 = Ilg.DefineLabel();
 								Value temp_378 = ReadAbsorbWhichRef, temp_377 = RRA(temp_378);
-								BranchIf(Eq(temp_377, MakeValue<uint>(0)), temp_375);
-								WRA(temp_378, Sub(temp_377, MakeValue<uint>(1)));
+								BranchIf((temp_377) == (MakeValue<uint>(0)), temp_375);
+								WRA(temp_378, temp_377 - MakeValue<uint>(1));
 								Branch(temp_376);
 								Label(temp_375);
 								TimestampInc(1);
@@ -784,7 +784,7 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_379 = Ilg.DefineLabel(), temp_380 = Ilg.DefineLabel();
-								BranchIf(Lt(Signed(temp_161), MakeValue<uint>(0x0)), temp_379);
+								BranchIf((Signed(temp_161)) < (MakeValue<uint>(0x0)), temp_379);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_380);
 								Label(temp_379);
@@ -798,8 +798,8 @@ namespace SharpStation {
 								/* BGEZanonymous_2 */
 								Label temp_381 = Ilg.DefineLabel(), temp_382 = Ilg.DefineLabel();
 								Value temp_384 = ReadAbsorbWhichRef, temp_383 = RRA(temp_384);
-								BranchIf(Eq(temp_383, MakeValue<uint>(0)), temp_381);
-								WRA(temp_384, Sub(temp_383, MakeValue<uint>(1)));
+								BranchIf((temp_383) == (MakeValue<uint>(0)), temp_381);
+								WRA(temp_384, temp_383 - MakeValue<uint>(1));
 								Branch(temp_382);
 								Label(temp_381);
 								TimestampInc(1);
@@ -811,7 +811,7 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_385 = Ilg.DefineLabel(), temp_386 = Ilg.DefineLabel();
-								BranchIf(Ge(Signed(temp_162), MakeValue<uint>(0x0)), temp_385);
+								BranchIf((Signed(temp_162)) >= (MakeValue<uint>(0x0)), temp_385);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_386);
 								Label(temp_385);
@@ -825,8 +825,8 @@ namespace SharpStation {
 								/* BLTZanonymous_3 */
 								Label temp_387 = Ilg.DefineLabel(), temp_388 = Ilg.DefineLabel();
 								Value temp_390 = ReadAbsorbWhichRef, temp_389 = RRA(temp_390);
-								BranchIf(Eq(temp_389, MakeValue<uint>(0)), temp_387);
-								WRA(temp_390, Sub(temp_389, MakeValue<uint>(1)));
+								BranchIf((temp_389) == (MakeValue<uint>(0)), temp_387);
+								WRA(temp_390, temp_389 - MakeValue<uint>(1));
 								Branch(temp_388);
 								Label(temp_387);
 								TimestampInc(1);
@@ -838,7 +838,7 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_391 = Ilg.DefineLabel(), temp_392 = Ilg.DefineLabel();
-								BranchIf(Lt(Signed(temp_163), MakeValue<uint>(0x0)), temp_391);
+								BranchIf((Signed(temp_163)) < (MakeValue<uint>(0x0)), temp_391);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_392);
 								Label(temp_391);
@@ -852,8 +852,8 @@ namespace SharpStation {
 								/* BGEZanonymous_3 */
 								Label temp_393 = Ilg.DefineLabel(), temp_394 = Ilg.DefineLabel();
 								Value temp_396 = ReadAbsorbWhichRef, temp_395 = RRA(temp_396);
-								BranchIf(Eq(temp_395, MakeValue<uint>(0)), temp_393);
-								WRA(temp_396, Sub(temp_395, MakeValue<uint>(1)));
+								BranchIf((temp_395) == (MakeValue<uint>(0)), temp_393);
+								WRA(temp_396, temp_395 - MakeValue<uint>(1));
 								Branch(temp_394);
 								Label(temp_393);
 								TimestampInc(1);
@@ -865,7 +865,7 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_397 = Ilg.DefineLabel(), temp_398 = Ilg.DefineLabel();
-								BranchIf(Ge(Signed(temp_164), MakeValue<uint>(0x0)), temp_397);
+								BranchIf((Signed(temp_164)) >= (MakeValue<uint>(0x0)), temp_397);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_398);
 								Label(temp_397);
@@ -879,8 +879,8 @@ namespace SharpStation {
 								/* BLTZanonymous_4 */
 								Label temp_399 = Ilg.DefineLabel(), temp_400 = Ilg.DefineLabel();
 								Value temp_402 = ReadAbsorbWhichRef, temp_401 = RRA(temp_402);
-								BranchIf(Eq(temp_401, MakeValue<uint>(0)), temp_399);
-								WRA(temp_402, Sub(temp_401, MakeValue<uint>(1)));
+								BranchIf((temp_401) == (MakeValue<uint>(0)), temp_399);
+								WRA(temp_402, temp_401 - MakeValue<uint>(1));
 								Branch(temp_400);
 								Label(temp_399);
 								TimestampInc(1);
@@ -892,7 +892,7 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_403 = Ilg.DefineLabel(), temp_404 = Ilg.DefineLabel();
-								BranchIf(Lt(Signed(temp_165), MakeValue<uint>(0x0)), temp_403);
+								BranchIf((Signed(temp_165)) < (MakeValue<uint>(0x0)), temp_403);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_404);
 								Label(temp_403);
@@ -906,8 +906,8 @@ namespace SharpStation {
 								/* BGEZanonymous_4 */
 								Label temp_405 = Ilg.DefineLabel(), temp_406 = Ilg.DefineLabel();
 								Value temp_408 = ReadAbsorbWhichRef, temp_407 = RRA(temp_408);
-								BranchIf(Eq(temp_407, MakeValue<uint>(0)), temp_405);
-								WRA(temp_408, Sub(temp_407, MakeValue<uint>(1)));
+								BranchIf((temp_407) == (MakeValue<uint>(0)), temp_405);
+								WRA(temp_408, temp_407 - MakeValue<uint>(1));
 								Branch(temp_406);
 								Label(temp_405);
 								TimestampInc(1);
@@ -919,7 +919,7 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_409 = Ilg.DefineLabel(), temp_410 = Ilg.DefineLabel();
-								BranchIf(Ge(Signed(temp_166), MakeValue<uint>(0x0)), temp_409);
+								BranchIf((Signed(temp_166)) >= (MakeValue<uint>(0x0)), temp_409);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_410);
 								Label(temp_409);
@@ -933,8 +933,8 @@ namespace SharpStation {
 								/* BLTZanonymous_5 */
 								Label temp_411 = Ilg.DefineLabel(), temp_412 = Ilg.DefineLabel();
 								Value temp_414 = ReadAbsorbWhichRef, temp_413 = RRA(temp_414);
-								BranchIf(Eq(temp_413, MakeValue<uint>(0)), temp_411);
-								WRA(temp_414, Sub(temp_413, MakeValue<uint>(1)));
+								BranchIf((temp_413) == (MakeValue<uint>(0)), temp_411);
+								WRA(temp_414, temp_413 - MakeValue<uint>(1));
 								Branch(temp_412);
 								Label(temp_411);
 								TimestampInc(1);
@@ -946,7 +946,7 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_415 = Ilg.DefineLabel(), temp_416 = Ilg.DefineLabel();
-								BranchIf(Lt(Signed(temp_167), MakeValue<uint>(0x0)), temp_415);
+								BranchIf((Signed(temp_167)) < (MakeValue<uint>(0x0)), temp_415);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_416);
 								Label(temp_415);
@@ -960,8 +960,8 @@ namespace SharpStation {
 								/* BGEZanonymous_5 */
 								Label temp_417 = Ilg.DefineLabel(), temp_418 = Ilg.DefineLabel();
 								Value temp_420 = ReadAbsorbWhichRef, temp_419 = RRA(temp_420);
-								BranchIf(Eq(temp_419, MakeValue<uint>(0)), temp_417);
-								WRA(temp_420, Sub(temp_419, MakeValue<uint>(1)));
+								BranchIf((temp_419) == (MakeValue<uint>(0)), temp_417);
+								WRA(temp_420, temp_419 - MakeValue<uint>(1));
 								Branch(temp_418);
 								Label(temp_417);
 								TimestampInc(1);
@@ -973,7 +973,7 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_421 = Ilg.DefineLabel(), temp_422 = Ilg.DefineLabel();
-								BranchIf(Ge(Signed(temp_168), MakeValue<uint>(0x0)), temp_421);
+								BranchIf((Signed(temp_168)) >= (MakeValue<uint>(0x0)), temp_421);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_422);
 								Label(temp_421);
@@ -987,8 +987,8 @@ namespace SharpStation {
 								/* BLTZanonymous_6 */
 								Label temp_423 = Ilg.DefineLabel(), temp_424 = Ilg.DefineLabel();
 								Value temp_426 = ReadAbsorbWhichRef, temp_425 = RRA(temp_426);
-								BranchIf(Eq(temp_425, MakeValue<uint>(0)), temp_423);
-								WRA(temp_426, Sub(temp_425, MakeValue<uint>(1)));
+								BranchIf((temp_425) == (MakeValue<uint>(0)), temp_423);
+								WRA(temp_426, temp_425 - MakeValue<uint>(1));
 								Branch(temp_424);
 								Label(temp_423);
 								TimestampInc(1);
@@ -1000,7 +1000,7 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_427 = Ilg.DefineLabel(), temp_428 = Ilg.DefineLabel();
-								BranchIf(Lt(Signed(temp_169), MakeValue<uint>(0x0)), temp_427);
+								BranchIf((Signed(temp_169)) < (MakeValue<uint>(0x0)), temp_427);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_428);
 								Label(temp_427);
@@ -1014,8 +1014,8 @@ namespace SharpStation {
 								/* BGEZanonymous_6 */
 								Label temp_429 = Ilg.DefineLabel(), temp_430 = Ilg.DefineLabel();
 								Value temp_432 = ReadAbsorbWhichRef, temp_431 = RRA(temp_432);
-								BranchIf(Eq(temp_431, MakeValue<uint>(0)), temp_429);
-								WRA(temp_432, Sub(temp_431, MakeValue<uint>(1)));
+								BranchIf((temp_431) == (MakeValue<uint>(0)), temp_429);
+								WRA(temp_432, temp_431 - MakeValue<uint>(1));
 								Branch(temp_430);
 								Label(temp_429);
 								TimestampInc(1);
@@ -1027,7 +1027,7 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_433 = Ilg.DefineLabel(), temp_434 = Ilg.DefineLabel();
-								BranchIf(Ge(Signed(temp_170), MakeValue<uint>(0x0)), temp_433);
+								BranchIf((Signed(temp_170)) >= (MakeValue<uint>(0x0)), temp_433);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_434);
 								Label(temp_433);
@@ -1041,8 +1041,8 @@ namespace SharpStation {
 								/* BLTZanonymous_7 */
 								Label temp_435 = Ilg.DefineLabel(), temp_436 = Ilg.DefineLabel();
 								Value temp_438 = ReadAbsorbWhichRef, temp_437 = RRA(temp_438);
-								BranchIf(Eq(temp_437, MakeValue<uint>(0)), temp_435);
-								WRA(temp_438, Sub(temp_437, MakeValue<uint>(1)));
+								BranchIf((temp_437) == (MakeValue<uint>(0)), temp_435);
+								WRA(temp_438, temp_437 - MakeValue<uint>(1));
 								Branch(temp_436);
 								Label(temp_435);
 								TimestampInc(1);
@@ -1054,7 +1054,7 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_439 = Ilg.DefineLabel(), temp_440 = Ilg.DefineLabel();
-								BranchIf(Lt(Signed(temp_171), MakeValue<uint>(0x0)), temp_439);
+								BranchIf((Signed(temp_171)) < (MakeValue<uint>(0x0)), temp_439);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_440);
 								Label(temp_439);
@@ -1068,8 +1068,8 @@ namespace SharpStation {
 								/* BGEZanonymous_7 */
 								Label temp_441 = Ilg.DefineLabel(), temp_442 = Ilg.DefineLabel();
 								Value temp_444 = ReadAbsorbWhichRef, temp_443 = RRA(temp_444);
-								BranchIf(Eq(temp_443, MakeValue<uint>(0)), temp_441);
-								WRA(temp_444, Sub(temp_443, MakeValue<uint>(1)));
+								BranchIf((temp_443) == (MakeValue<uint>(0)), temp_441);
+								WRA(temp_444, temp_443 - MakeValue<uint>(1));
 								Branch(temp_442);
 								Label(temp_441);
 								TimestampInc(1);
@@ -1081,7 +1081,7 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_445 = Ilg.DefineLabel(), temp_446 = Ilg.DefineLabel();
-								BranchIf(Ge(Signed(temp_172), MakeValue<uint>(0x0)), temp_445);
+								BranchIf((Signed(temp_172)) >= (MakeValue<uint>(0x0)), temp_445);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_446);
 								Label(temp_445);
@@ -1095,8 +1095,8 @@ namespace SharpStation {
 								/* BLTZALanonymous_0 */
 								Label temp_447 = Ilg.DefineLabel(), temp_448 = Ilg.DefineLabel();
 								Value temp_450 = ReadAbsorbWhichRef, temp_449 = RRA(temp_450);
-								BranchIf(Eq(temp_449, MakeValue<uint>(0)), temp_447);
-								WRA(temp_450, Sub(temp_449, MakeValue<uint>(1)));
+								BranchIf((temp_449) == (MakeValue<uint>(0)), temp_447);
+								WRA(temp_450, temp_449 - MakeValue<uint>(1));
 								Branch(temp_448);
 								Label(temp_447);
 								TimestampInc(1);
@@ -1107,10 +1107,10 @@ namespace SharpStation {
 								RES(0x1f);
 								var temp_173 = (Gprs)[rs];
 								if(need_load) { DoLds(); }
-								Gprs[0x1f] = Add(Add(MakeValue<uint>(pc), MakeValue<uint>(0x4)), MakeValue<uint>(0x4));
+								Gprs[0x1f] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_451 = Ilg.DefineLabel(), temp_452 = Ilg.DefineLabel();
-								BranchIf(Lt(Signed(temp_173), MakeValue<uint>(0x0)), temp_451);
+								BranchIf((Signed(temp_173)) < (MakeValue<uint>(0x0)), temp_451);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_452);
 								Label(temp_451);
@@ -1124,8 +1124,8 @@ namespace SharpStation {
 								/* BGEZALanonymous_0 */
 								Label temp_453 = Ilg.DefineLabel(), temp_454 = Ilg.DefineLabel();
 								Value temp_456 = ReadAbsorbWhichRef, temp_455 = RRA(temp_456);
-								BranchIf(Eq(temp_455, MakeValue<uint>(0)), temp_453);
-								WRA(temp_456, Sub(temp_455, MakeValue<uint>(1)));
+								BranchIf((temp_455) == (MakeValue<uint>(0)), temp_453);
+								WRA(temp_456, temp_455 - MakeValue<uint>(1));
 								Branch(temp_454);
 								Label(temp_453);
 								TimestampInc(1);
@@ -1136,10 +1136,10 @@ namespace SharpStation {
 								RES(0x1f);
 								var temp_174 = (Gprs)[rs];
 								if(need_load) { DoLds(); }
-								Gprs[0x1f] = Add(Add(MakeValue<uint>(pc), MakeValue<uint>(0x4)), MakeValue<uint>(0x4));
+								Gprs[0x1f] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_457 = Ilg.DefineLabel(), temp_458 = Ilg.DefineLabel();
-								BranchIf(Ge(Signed(temp_174), MakeValue<uint>(0x0)), temp_457);
+								BranchIf((Signed(temp_174)) >= (MakeValue<uint>(0x0)), temp_457);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_458);
 								Label(temp_457);
@@ -1153,8 +1153,8 @@ namespace SharpStation {
 								/* BLTZALanonymous_1 */
 								Label temp_459 = Ilg.DefineLabel(), temp_460 = Ilg.DefineLabel();
 								Value temp_462 = ReadAbsorbWhichRef, temp_461 = RRA(temp_462);
-								BranchIf(Eq(temp_461, MakeValue<uint>(0)), temp_459);
-								WRA(temp_462, Sub(temp_461, MakeValue<uint>(1)));
+								BranchIf((temp_461) == (MakeValue<uint>(0)), temp_459);
+								WRA(temp_462, temp_461 - MakeValue<uint>(1));
 								Branch(temp_460);
 								Label(temp_459);
 								TimestampInc(1);
@@ -1165,10 +1165,10 @@ namespace SharpStation {
 								RES(0x1f);
 								var temp_175 = (Gprs)[rs];
 								if(need_load) { DoLds(); }
-								Gprs[0x1f] = Add(Add(MakeValue<uint>(pc), MakeValue<uint>(0x4)), MakeValue<uint>(0x4));
+								Gprs[0x1f] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_463 = Ilg.DefineLabel(), temp_464 = Ilg.DefineLabel();
-								BranchIf(Lt(Signed(temp_175), MakeValue<uint>(0x0)), temp_463);
+								BranchIf((Signed(temp_175)) < (MakeValue<uint>(0x0)), temp_463);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_464);
 								Label(temp_463);
@@ -1182,8 +1182,8 @@ namespace SharpStation {
 								/* BGEZALanonymous_1 */
 								Label temp_465 = Ilg.DefineLabel(), temp_466 = Ilg.DefineLabel();
 								Value temp_468 = ReadAbsorbWhichRef, temp_467 = RRA(temp_468);
-								BranchIf(Eq(temp_467, MakeValue<uint>(0)), temp_465);
-								WRA(temp_468, Sub(temp_467, MakeValue<uint>(1)));
+								BranchIf((temp_467) == (MakeValue<uint>(0)), temp_465);
+								WRA(temp_468, temp_467 - MakeValue<uint>(1));
 								Branch(temp_466);
 								Label(temp_465);
 								TimestampInc(1);
@@ -1194,10 +1194,10 @@ namespace SharpStation {
 								RES(0x1f);
 								var temp_176 = (Gprs)[rs];
 								if(need_load) { DoLds(); }
-								Gprs[0x1f] = Add(Add(MakeValue<uint>(pc), MakeValue<uint>(0x4)), MakeValue<uint>(0x4));
+								Gprs[0x1f] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_469 = Ilg.DefineLabel(), temp_470 = Ilg.DefineLabel();
-								BranchIf(Ge(Signed(temp_176), MakeValue<uint>(0x0)), temp_469);
+								BranchIf((Signed(temp_176)) >= (MakeValue<uint>(0x0)), temp_469);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_470);
 								Label(temp_469);
@@ -1211,8 +1211,8 @@ namespace SharpStation {
 								/* BLTZALanonymous_2 */
 								Label temp_471 = Ilg.DefineLabel(), temp_472 = Ilg.DefineLabel();
 								Value temp_474 = ReadAbsorbWhichRef, temp_473 = RRA(temp_474);
-								BranchIf(Eq(temp_473, MakeValue<uint>(0)), temp_471);
-								WRA(temp_474, Sub(temp_473, MakeValue<uint>(1)));
+								BranchIf((temp_473) == (MakeValue<uint>(0)), temp_471);
+								WRA(temp_474, temp_473 - MakeValue<uint>(1));
 								Branch(temp_472);
 								Label(temp_471);
 								TimestampInc(1);
@@ -1223,10 +1223,10 @@ namespace SharpStation {
 								RES(0x1f);
 								var temp_177 = (Gprs)[rs];
 								if(need_load) { DoLds(); }
-								Gprs[0x1f] = Add(Add(MakeValue<uint>(pc), MakeValue<uint>(0x4)), MakeValue<uint>(0x4));
+								Gprs[0x1f] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_475 = Ilg.DefineLabel(), temp_476 = Ilg.DefineLabel();
-								BranchIf(Lt(Signed(temp_177), MakeValue<uint>(0x0)), temp_475);
+								BranchIf((Signed(temp_177)) < (MakeValue<uint>(0x0)), temp_475);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_476);
 								Label(temp_475);
@@ -1240,8 +1240,8 @@ namespace SharpStation {
 								/* BGEZALanonymous_2 */
 								Label temp_477 = Ilg.DefineLabel(), temp_478 = Ilg.DefineLabel();
 								Value temp_480 = ReadAbsorbWhichRef, temp_479 = RRA(temp_480);
-								BranchIf(Eq(temp_479, MakeValue<uint>(0)), temp_477);
-								WRA(temp_480, Sub(temp_479, MakeValue<uint>(1)));
+								BranchIf((temp_479) == (MakeValue<uint>(0)), temp_477);
+								WRA(temp_480, temp_479 - MakeValue<uint>(1));
 								Branch(temp_478);
 								Label(temp_477);
 								TimestampInc(1);
@@ -1252,10 +1252,10 @@ namespace SharpStation {
 								RES(0x1f);
 								var temp_178 = (Gprs)[rs];
 								if(need_load) { DoLds(); }
-								Gprs[0x1f] = Add(Add(MakeValue<uint>(pc), MakeValue<uint>(0x4)), MakeValue<uint>(0x4));
+								Gprs[0x1f] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_481 = Ilg.DefineLabel(), temp_482 = Ilg.DefineLabel();
-								BranchIf(Ge(Signed(temp_178), MakeValue<uint>(0x0)), temp_481);
+								BranchIf((Signed(temp_178)) >= (MakeValue<uint>(0x0)), temp_481);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_482);
 								Label(temp_481);
@@ -1269,8 +1269,8 @@ namespace SharpStation {
 								/* BLTZALanonymous_3 */
 								Label temp_483 = Ilg.DefineLabel(), temp_484 = Ilg.DefineLabel();
 								Value temp_486 = ReadAbsorbWhichRef, temp_485 = RRA(temp_486);
-								BranchIf(Eq(temp_485, MakeValue<uint>(0)), temp_483);
-								WRA(temp_486, Sub(temp_485, MakeValue<uint>(1)));
+								BranchIf((temp_485) == (MakeValue<uint>(0)), temp_483);
+								WRA(temp_486, temp_485 - MakeValue<uint>(1));
 								Branch(temp_484);
 								Label(temp_483);
 								TimestampInc(1);
@@ -1281,10 +1281,10 @@ namespace SharpStation {
 								RES(0x1f);
 								var temp_179 = (Gprs)[rs];
 								if(need_load) { DoLds(); }
-								Gprs[0x1f] = Add(Add(MakeValue<uint>(pc), MakeValue<uint>(0x4)), MakeValue<uint>(0x4));
+								Gprs[0x1f] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_487 = Ilg.DefineLabel(), temp_488 = Ilg.DefineLabel();
-								BranchIf(Lt(Signed(temp_179), MakeValue<uint>(0x0)), temp_487);
+								BranchIf((Signed(temp_179)) < (MakeValue<uint>(0x0)), temp_487);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_488);
 								Label(temp_487);
@@ -1298,8 +1298,8 @@ namespace SharpStation {
 								/* BGEZALanonymous_3 */
 								Label temp_489 = Ilg.DefineLabel(), temp_490 = Ilg.DefineLabel();
 								Value temp_492 = ReadAbsorbWhichRef, temp_491 = RRA(temp_492);
-								BranchIf(Eq(temp_491, MakeValue<uint>(0)), temp_489);
-								WRA(temp_492, Sub(temp_491, MakeValue<uint>(1)));
+								BranchIf((temp_491) == (MakeValue<uint>(0)), temp_489);
+								WRA(temp_492, temp_491 - MakeValue<uint>(1));
 								Branch(temp_490);
 								Label(temp_489);
 								TimestampInc(1);
@@ -1310,10 +1310,10 @@ namespace SharpStation {
 								RES(0x1f);
 								var temp_180 = (Gprs)[rs];
 								if(need_load) { DoLds(); }
-								Gprs[0x1f] = Add(Add(MakeValue<uint>(pc), MakeValue<uint>(0x4)), MakeValue<uint>(0x4));
+								Gprs[0x1f] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_493 = Ilg.DefineLabel(), temp_494 = Ilg.DefineLabel();
-								BranchIf(Ge(Signed(temp_180), MakeValue<uint>(0x0)), temp_493);
+								BranchIf((Signed(temp_180)) >= (MakeValue<uint>(0x0)), temp_493);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_494);
 								Label(temp_493);
@@ -1327,8 +1327,8 @@ namespace SharpStation {
 								/* BLTZALanonymous_4 */
 								Label temp_495 = Ilg.DefineLabel(), temp_496 = Ilg.DefineLabel();
 								Value temp_498 = ReadAbsorbWhichRef, temp_497 = RRA(temp_498);
-								BranchIf(Eq(temp_497, MakeValue<uint>(0)), temp_495);
-								WRA(temp_498, Sub(temp_497, MakeValue<uint>(1)));
+								BranchIf((temp_497) == (MakeValue<uint>(0)), temp_495);
+								WRA(temp_498, temp_497 - MakeValue<uint>(1));
 								Branch(temp_496);
 								Label(temp_495);
 								TimestampInc(1);
@@ -1339,10 +1339,10 @@ namespace SharpStation {
 								RES(0x1f);
 								var temp_181 = (Gprs)[rs];
 								if(need_load) { DoLds(); }
-								Gprs[0x1f] = Add(Add(MakeValue<uint>(pc), MakeValue<uint>(0x4)), MakeValue<uint>(0x4));
+								Gprs[0x1f] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_499 = Ilg.DefineLabel(), temp_500 = Ilg.DefineLabel();
-								BranchIf(Lt(Signed(temp_181), MakeValue<uint>(0x0)), temp_499);
+								BranchIf((Signed(temp_181)) < (MakeValue<uint>(0x0)), temp_499);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_500);
 								Label(temp_499);
@@ -1356,8 +1356,8 @@ namespace SharpStation {
 								/* BGEZALanonymous_4 */
 								Label temp_501 = Ilg.DefineLabel(), temp_502 = Ilg.DefineLabel();
 								Value temp_504 = ReadAbsorbWhichRef, temp_503 = RRA(temp_504);
-								BranchIf(Eq(temp_503, MakeValue<uint>(0)), temp_501);
-								WRA(temp_504, Sub(temp_503, MakeValue<uint>(1)));
+								BranchIf((temp_503) == (MakeValue<uint>(0)), temp_501);
+								WRA(temp_504, temp_503 - MakeValue<uint>(1));
 								Branch(temp_502);
 								Label(temp_501);
 								TimestampInc(1);
@@ -1368,10 +1368,10 @@ namespace SharpStation {
 								RES(0x1f);
 								var temp_182 = (Gprs)[rs];
 								if(need_load) { DoLds(); }
-								Gprs[0x1f] = Add(Add(MakeValue<uint>(pc), MakeValue<uint>(0x4)), MakeValue<uint>(0x4));
+								Gprs[0x1f] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_505 = Ilg.DefineLabel(), temp_506 = Ilg.DefineLabel();
-								BranchIf(Ge(Signed(temp_182), MakeValue<uint>(0x0)), temp_505);
+								BranchIf((Signed(temp_182)) >= (MakeValue<uint>(0x0)), temp_505);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_506);
 								Label(temp_505);
@@ -1385,8 +1385,8 @@ namespace SharpStation {
 								/* BLTZALanonymous_5 */
 								Label temp_507 = Ilg.DefineLabel(), temp_508 = Ilg.DefineLabel();
 								Value temp_510 = ReadAbsorbWhichRef, temp_509 = RRA(temp_510);
-								BranchIf(Eq(temp_509, MakeValue<uint>(0)), temp_507);
-								WRA(temp_510, Sub(temp_509, MakeValue<uint>(1)));
+								BranchIf((temp_509) == (MakeValue<uint>(0)), temp_507);
+								WRA(temp_510, temp_509 - MakeValue<uint>(1));
 								Branch(temp_508);
 								Label(temp_507);
 								TimestampInc(1);
@@ -1397,10 +1397,10 @@ namespace SharpStation {
 								RES(0x1f);
 								var temp_183 = (Gprs)[rs];
 								if(need_load) { DoLds(); }
-								Gprs[0x1f] = Add(Add(MakeValue<uint>(pc), MakeValue<uint>(0x4)), MakeValue<uint>(0x4));
+								Gprs[0x1f] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_511 = Ilg.DefineLabel(), temp_512 = Ilg.DefineLabel();
-								BranchIf(Lt(Signed(temp_183), MakeValue<uint>(0x0)), temp_511);
+								BranchIf((Signed(temp_183)) < (MakeValue<uint>(0x0)), temp_511);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_512);
 								Label(temp_511);
@@ -1414,8 +1414,8 @@ namespace SharpStation {
 								/* BGEZALanonymous_5 */
 								Label temp_513 = Ilg.DefineLabel(), temp_514 = Ilg.DefineLabel();
 								Value temp_516 = ReadAbsorbWhichRef, temp_515 = RRA(temp_516);
-								BranchIf(Eq(temp_515, MakeValue<uint>(0)), temp_513);
-								WRA(temp_516, Sub(temp_515, MakeValue<uint>(1)));
+								BranchIf((temp_515) == (MakeValue<uint>(0)), temp_513);
+								WRA(temp_516, temp_515 - MakeValue<uint>(1));
 								Branch(temp_514);
 								Label(temp_513);
 								TimestampInc(1);
@@ -1426,10 +1426,10 @@ namespace SharpStation {
 								RES(0x1f);
 								var temp_184 = (Gprs)[rs];
 								if(need_load) { DoLds(); }
-								Gprs[0x1f] = Add(Add(MakeValue<uint>(pc), MakeValue<uint>(0x4)), MakeValue<uint>(0x4));
+								Gprs[0x1f] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_517 = Ilg.DefineLabel(), temp_518 = Ilg.DefineLabel();
-								BranchIf(Ge(Signed(temp_184), MakeValue<uint>(0x0)), temp_517);
+								BranchIf((Signed(temp_184)) >= (MakeValue<uint>(0x0)), temp_517);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_518);
 								Label(temp_517);
@@ -1443,8 +1443,8 @@ namespace SharpStation {
 								/* BLTZALanonymous_6 */
 								Label temp_519 = Ilg.DefineLabel(), temp_520 = Ilg.DefineLabel();
 								Value temp_522 = ReadAbsorbWhichRef, temp_521 = RRA(temp_522);
-								BranchIf(Eq(temp_521, MakeValue<uint>(0)), temp_519);
-								WRA(temp_522, Sub(temp_521, MakeValue<uint>(1)));
+								BranchIf((temp_521) == (MakeValue<uint>(0)), temp_519);
+								WRA(temp_522, temp_521 - MakeValue<uint>(1));
 								Branch(temp_520);
 								Label(temp_519);
 								TimestampInc(1);
@@ -1455,10 +1455,10 @@ namespace SharpStation {
 								RES(0x1f);
 								var temp_185 = (Gprs)[rs];
 								if(need_load) { DoLds(); }
-								Gprs[0x1f] = Add(Add(MakeValue<uint>(pc), MakeValue<uint>(0x4)), MakeValue<uint>(0x4));
+								Gprs[0x1f] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_523 = Ilg.DefineLabel(), temp_524 = Ilg.DefineLabel();
-								BranchIf(Lt(Signed(temp_185), MakeValue<uint>(0x0)), temp_523);
+								BranchIf((Signed(temp_185)) < (MakeValue<uint>(0x0)), temp_523);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_524);
 								Label(temp_523);
@@ -1472,8 +1472,8 @@ namespace SharpStation {
 								/* BGEZALanonymous_6 */
 								Label temp_525 = Ilg.DefineLabel(), temp_526 = Ilg.DefineLabel();
 								Value temp_528 = ReadAbsorbWhichRef, temp_527 = RRA(temp_528);
-								BranchIf(Eq(temp_527, MakeValue<uint>(0)), temp_525);
-								WRA(temp_528, Sub(temp_527, MakeValue<uint>(1)));
+								BranchIf((temp_527) == (MakeValue<uint>(0)), temp_525);
+								WRA(temp_528, temp_527 - MakeValue<uint>(1));
 								Branch(temp_526);
 								Label(temp_525);
 								TimestampInc(1);
@@ -1484,10 +1484,10 @@ namespace SharpStation {
 								RES(0x1f);
 								var temp_186 = (Gprs)[rs];
 								if(need_load) { DoLds(); }
-								Gprs[0x1f] = Add(Add(MakeValue<uint>(pc), MakeValue<uint>(0x4)), MakeValue<uint>(0x4));
+								Gprs[0x1f] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_529 = Ilg.DefineLabel(), temp_530 = Ilg.DefineLabel();
-								BranchIf(Ge(Signed(temp_186), MakeValue<uint>(0x0)), temp_529);
+								BranchIf((Signed(temp_186)) >= (MakeValue<uint>(0x0)), temp_529);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_530);
 								Label(temp_529);
@@ -1501,8 +1501,8 @@ namespace SharpStation {
 								/* BLTZALanonymous_7 */
 								Label temp_531 = Ilg.DefineLabel(), temp_532 = Ilg.DefineLabel();
 								Value temp_534 = ReadAbsorbWhichRef, temp_533 = RRA(temp_534);
-								BranchIf(Eq(temp_533, MakeValue<uint>(0)), temp_531);
-								WRA(temp_534, Sub(temp_533, MakeValue<uint>(1)));
+								BranchIf((temp_533) == (MakeValue<uint>(0)), temp_531);
+								WRA(temp_534, temp_533 - MakeValue<uint>(1));
 								Branch(temp_532);
 								Label(temp_531);
 								TimestampInc(1);
@@ -1513,10 +1513,10 @@ namespace SharpStation {
 								RES(0x1f);
 								var temp_187 = (Gprs)[rs];
 								if(need_load) { DoLds(); }
-								Gprs[0x1f] = Add(Add(MakeValue<uint>(pc), MakeValue<uint>(0x4)), MakeValue<uint>(0x4));
+								Gprs[0x1f] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_535 = Ilg.DefineLabel(), temp_536 = Ilg.DefineLabel();
-								BranchIf(Lt(Signed(temp_187), MakeValue<uint>(0x0)), temp_535);
+								BranchIf((Signed(temp_187)) < (MakeValue<uint>(0x0)), temp_535);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_536);
 								Label(temp_535);
@@ -1530,8 +1530,8 @@ namespace SharpStation {
 								/* BGEZALanonymous_7 */
 								Label temp_537 = Ilg.DefineLabel(), temp_538 = Ilg.DefineLabel();
 								Value temp_540 = ReadAbsorbWhichRef, temp_539 = RRA(temp_540);
-								BranchIf(Eq(temp_539, MakeValue<uint>(0)), temp_537);
-								WRA(temp_540, Sub(temp_539, MakeValue<uint>(1)));
+								BranchIf((temp_539) == (MakeValue<uint>(0)), temp_537);
+								WRA(temp_540, temp_539 - MakeValue<uint>(1));
 								Branch(temp_538);
 								Label(temp_537);
 								TimestampInc(1);
@@ -1542,10 +1542,10 @@ namespace SharpStation {
 								RES(0x1f);
 								var temp_188 = (Gprs)[rs];
 								if(need_load) { DoLds(); }
-								Gprs[0x1f] = Add(Add(MakeValue<uint>(pc), MakeValue<uint>(0x4)), MakeValue<uint>(0x4));
+								Gprs[0x1f] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_541 = Ilg.DefineLabel(), temp_542 = Ilg.DefineLabel();
-								BranchIf(Ge(Signed(temp_188), MakeValue<uint>(0x0)), temp_541);
+								BranchIf((Signed(temp_188)) >= (MakeValue<uint>(0x0)), temp_541);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_542);
 								Label(temp_541);
@@ -1562,8 +1562,8 @@ namespace SharpStation {
 						/* J */
 						Label temp_543 = Ilg.DefineLabel(), temp_544 = Ilg.DefineLabel();
 						Value temp_546 = ReadAbsorbWhichRef, temp_545 = RRA(temp_546);
-						BranchIf(Eq(temp_545, MakeValue<uint>(0)), temp_543);
-						WRA(temp_546, Sub(temp_545, MakeValue<uint>(1)));
+						BranchIf((temp_545) == (MakeValue<uint>(0)), temp_543);
+						WRA(temp_546, temp_545 - MakeValue<uint>(1));
 						Branch(temp_544);
 						Label(temp_543);
 						TimestampInc(1);
@@ -1580,8 +1580,8 @@ namespace SharpStation {
 						/* JAL */
 						Label temp_547 = Ilg.DefineLabel(), temp_548 = Ilg.DefineLabel();
 						Value temp_550 = ReadAbsorbWhichRef, temp_549 = RRA(temp_550);
-						BranchIf(Eq(temp_549, MakeValue<uint>(0)), temp_547);
-						WRA(temp_550, Sub(temp_549, MakeValue<uint>(1)));
+						BranchIf((temp_549) == (MakeValue<uint>(0)), temp_547);
+						WRA(temp_550, temp_549 - MakeValue<uint>(1));
 						Branch(temp_548);
 						Label(temp_547);
 						TimestampInc(1);
@@ -1589,7 +1589,7 @@ namespace SharpStation {
 						var imm = (inst) & (0x3ffffff);
 						RES(0x1f);
 						if(need_load) { DoLds(); }
-						Gprs[0x1f] = Add(Add(MakeValue<uint>(pc), MakeValue<uint>(0x4)), MakeValue<uint>(0x4));
+						Gprs[0x1f] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 						var target = (((pc) + (0x4)) & (0xf0000000)) + ((imm) << ((int) 0x2));
 						if(!branched) Branch(target);
 						branched = true;
@@ -1600,8 +1600,8 @@ namespace SharpStation {
 						/* BEQ */
 						Label temp_551 = Ilg.DefineLabel(), temp_552 = Ilg.DefineLabel();
 						Value temp_554 = ReadAbsorbWhichRef, temp_553 = RRA(temp_554);
-						BranchIf(Eq(temp_553, MakeValue<uint>(0)), temp_551);
-						WRA(temp_554, Sub(temp_553, MakeValue<uint>(1)));
+						BranchIf((temp_553) == (MakeValue<uint>(0)), temp_551);
+						WRA(temp_554, temp_553 - MakeValue<uint>(1));
 						Branch(temp_552);
 						Label(temp_551);
 						TimestampInc(1);
@@ -1616,7 +1616,7 @@ namespace SharpStation {
 						if(need_load) { DoLds(); }
 						var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 						Label temp_555 = Ilg.DefineLabel(), temp_556 = Ilg.DefineLabel();
-						BranchIf(Eq(temp_189, temp_190), temp_555);
+						BranchIf((temp_189) == (temp_190), temp_555);
 						if(!branched) Branch(pc + 8);
 						Branch(temp_556);
 						Label(temp_555);
@@ -1630,8 +1630,8 @@ namespace SharpStation {
 						/* BNE */
 						Label temp_557 = Ilg.DefineLabel(), temp_558 = Ilg.DefineLabel();
 						Value temp_560 = ReadAbsorbWhichRef, temp_559 = RRA(temp_560);
-						BranchIf(Eq(temp_559, MakeValue<uint>(0)), temp_557);
-						WRA(temp_560, Sub(temp_559, MakeValue<uint>(1)));
+						BranchIf((temp_559) == (MakeValue<uint>(0)), temp_557);
+						WRA(temp_560, temp_559 - MakeValue<uint>(1));
 						Branch(temp_558);
 						Label(temp_557);
 						TimestampInc(1);
@@ -1646,7 +1646,7 @@ namespace SharpStation {
 						if(need_load) { DoLds(); }
 						var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 						Label temp_561 = Ilg.DefineLabel(), temp_562 = Ilg.DefineLabel();
-						BranchIf(Ne(temp_191, temp_192), temp_561);
+						BranchIf((temp_191) != (temp_192), temp_561);
 						if(!branched) Branch(pc + 8);
 						Branch(temp_562);
 						Label(temp_561);
@@ -1662,8 +1662,8 @@ namespace SharpStation {
 								/* BLEZ */
 								Label temp_563 = Ilg.DefineLabel(), temp_564 = Ilg.DefineLabel();
 								Value temp_566 = ReadAbsorbWhichRef, temp_565 = RRA(temp_566);
-								BranchIf(Eq(temp_565, MakeValue<uint>(0)), temp_563);
-								WRA(temp_566, Sub(temp_565, MakeValue<uint>(1)));
+								BranchIf((temp_565) == (MakeValue<uint>(0)), temp_563);
+								WRA(temp_566, temp_565 - MakeValue<uint>(1));
 								Branch(temp_564);
 								Label(temp_563);
 								TimestampInc(1);
@@ -1675,7 +1675,7 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_567 = Ilg.DefineLabel(), temp_568 = Ilg.DefineLabel();
-								BranchIf(Le(Signed(temp_193), MakeValue<uint>(0x0)), temp_567);
+								BranchIf((Signed(temp_193)) <= (MakeValue<uint>(0x0)), temp_567);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_568);
 								Label(temp_567);
@@ -1694,8 +1694,8 @@ namespace SharpStation {
 								/* BGTZ */
 								Label temp_569 = Ilg.DefineLabel(), temp_570 = Ilg.DefineLabel();
 								Value temp_572 = ReadAbsorbWhichRef, temp_571 = RRA(temp_572);
-								BranchIf(Eq(temp_571, MakeValue<uint>(0)), temp_569);
-								WRA(temp_572, Sub(temp_571, MakeValue<uint>(1)));
+								BranchIf((temp_571) == (MakeValue<uint>(0)), temp_569);
+								WRA(temp_572, temp_571 - MakeValue<uint>(1));
 								Branch(temp_570);
 								Label(temp_569);
 								TimestampInc(1);
@@ -1707,7 +1707,7 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								var target = (uint) (((pc) + (0x4)) + ((SignExt(0x10, imm)) << ((int) 0x2)));
 								Label temp_573 = Ilg.DefineLabel(), temp_574 = Ilg.DefineLabel();
-								BranchIf(Gt(Signed(temp_194), MakeValue<uint>(0x0)), temp_573);
+								BranchIf((Signed(temp_194)) > (MakeValue<uint>(0x0)), temp_573);
 								if(!branched) Branch(pc + 8);
 								Branch(temp_574);
 								Label(temp_573);
@@ -1724,8 +1724,8 @@ namespace SharpStation {
 						/* ADDI */
 						Label temp_575 = Ilg.DefineLabel(), temp_576 = Ilg.DefineLabel();
 						Value temp_578 = ReadAbsorbWhichRef, temp_577 = RRA(temp_578);
-						BranchIf(Eq(temp_577, MakeValue<uint>(0)), temp_575);
-						WRA(temp_578, Sub(temp_577, MakeValue<uint>(1)));
+						BranchIf((temp_577) == (MakeValue<uint>(0)), temp_575);
+						WRA(temp_578, temp_577 - MakeValue<uint>(1));
 						Branch(temp_576);
 						Label(temp_575);
 						TimestampInc(1);
@@ -1739,7 +1739,7 @@ namespace SharpStation {
 						if(need_load) { DoLds(); }
 						var eimm = (uint) (SignExt(0x10, imm));
 						Overflow(temp_195, MakeValue<uint>(eimm), 1, pc, inst);
-						Gprs[rt] = Add(temp_195, MakeValue<uint>(eimm));
+						Gprs[rt] = (temp_195) + (MakeValue<uint>(eimm));
 						return(true);
 						break;
 					}
@@ -1747,8 +1747,8 @@ namespace SharpStation {
 						/* ADDIU */
 						Label temp_579 = Ilg.DefineLabel(), temp_580 = Ilg.DefineLabel();
 						Value temp_582 = ReadAbsorbWhichRef, temp_581 = RRA(temp_582);
-						BranchIf(Eq(temp_581, MakeValue<uint>(0)), temp_579);
-						WRA(temp_582, Sub(temp_581, MakeValue<uint>(1)));
+						BranchIf((temp_581) == (MakeValue<uint>(0)), temp_579);
+						WRA(temp_582, temp_581 - MakeValue<uint>(1));
 						Branch(temp_580);
 						Label(temp_579);
 						TimestampInc(1);
@@ -1761,7 +1761,7 @@ namespace SharpStation {
 						var temp_196 = (Gprs)[rs];
 						if(need_load) { DoLds(); }
 						var eimm = (uint) (SignExt(0x10, imm));
-						Gprs[rt] = Add(temp_196, MakeValue<uint>(eimm));
+						Gprs[rt] = (temp_196) + (MakeValue<uint>(eimm));
 						return(true);
 						break;
 					}
@@ -1769,8 +1769,8 @@ namespace SharpStation {
 						/* SLTI */
 						Label temp_583 = Ilg.DefineLabel(), temp_584 = Ilg.DefineLabel();
 						Value temp_586 = ReadAbsorbWhichRef, temp_585 = RRA(temp_586);
-						BranchIf(Eq(temp_585, MakeValue<uint>(0)), temp_583);
-						WRA(temp_586, Sub(temp_585, MakeValue<uint>(1)));
+						BranchIf((temp_585) == (MakeValue<uint>(0)), temp_583);
+						WRA(temp_586, temp_585 - MakeValue<uint>(1));
 						Branch(temp_584);
 						Label(temp_583);
 						TimestampInc(1);
@@ -1783,7 +1783,7 @@ namespace SharpStation {
 						var temp_197 = (Gprs)[rs];
 						if(need_load) { DoLds(); }
 						var eimm = (uint) (SignExt(0x10, imm));
-						Gprs[rt] = Lt(Signed(temp_197), Signed(MakeValue<uint>(eimm)));
+						Gprs[rt] = (Signed(temp_197)) < (Signed(MakeValue<uint>(eimm)));
 						return(true);
 						break;
 					}
@@ -1791,8 +1791,8 @@ namespace SharpStation {
 						/* SLTIU */
 						Label temp_587 = Ilg.DefineLabel(), temp_588 = Ilg.DefineLabel();
 						Value temp_590 = ReadAbsorbWhichRef, temp_589 = RRA(temp_590);
-						BranchIf(Eq(temp_589, MakeValue<uint>(0)), temp_587);
-						WRA(temp_590, Sub(temp_589, MakeValue<uint>(1)));
+						BranchIf((temp_589) == (MakeValue<uint>(0)), temp_587);
+						WRA(temp_590, temp_589 - MakeValue<uint>(1));
 						Branch(temp_588);
 						Label(temp_587);
 						TimestampInc(1);
@@ -1805,7 +1805,7 @@ namespace SharpStation {
 						var temp_198 = (Gprs)[rs];
 						if(need_load) { DoLds(); }
 						var eimm = (uint) (SignExt(0x10, imm));
-						Gprs[rt] = Lt(temp_198, MakeValue<uint>(eimm));
+						Gprs[rt] = (temp_198) < (MakeValue<uint>(eimm));
 						return(true);
 						break;
 					}
@@ -1813,8 +1813,8 @@ namespace SharpStation {
 						/* ANDI */
 						Label temp_591 = Ilg.DefineLabel(), temp_592 = Ilg.DefineLabel();
 						Value temp_594 = ReadAbsorbWhichRef, temp_593 = RRA(temp_594);
-						BranchIf(Eq(temp_593, MakeValue<uint>(0)), temp_591);
-						WRA(temp_594, Sub(temp_593, MakeValue<uint>(1)));
+						BranchIf((temp_593) == (MakeValue<uint>(0)), temp_591);
+						WRA(temp_594, temp_593 - MakeValue<uint>(1));
 						Branch(temp_592);
 						Label(temp_591);
 						TimestampInc(1);
@@ -1827,7 +1827,7 @@ namespace SharpStation {
 						var temp_199 = (Gprs)[rs];
 						if(need_load) { DoLds(); }
 						var eimm = imm;
-						Gprs[rt] = And(temp_199, MakeValue<uint>(eimm));
+						Gprs[rt] = (temp_199) & (MakeValue<uint>(eimm));
 						return(true);
 						break;
 					}
@@ -1835,8 +1835,8 @@ namespace SharpStation {
 						/* ORI */
 						Label temp_595 = Ilg.DefineLabel(), temp_596 = Ilg.DefineLabel();
 						Value temp_598 = ReadAbsorbWhichRef, temp_597 = RRA(temp_598);
-						BranchIf(Eq(temp_597, MakeValue<uint>(0)), temp_595);
-						WRA(temp_598, Sub(temp_597, MakeValue<uint>(1)));
+						BranchIf((temp_597) == (MakeValue<uint>(0)), temp_595);
+						WRA(temp_598, temp_597 - MakeValue<uint>(1));
 						Branch(temp_596);
 						Label(temp_595);
 						TimestampInc(1);
@@ -1849,7 +1849,7 @@ namespace SharpStation {
 						var temp_200 = (Gprs)[rs];
 						if(need_load) { DoLds(); }
 						var eimm = imm;
-						Gprs[rt] = Or(temp_200, MakeValue<uint>(eimm));
+						Gprs[rt] = (temp_200) | (MakeValue<uint>(eimm));
 						return(true);
 						break;
 					}
@@ -1857,8 +1857,8 @@ namespace SharpStation {
 						/* XORI */
 						Label temp_599 = Ilg.DefineLabel(), temp_600 = Ilg.DefineLabel();
 						Value temp_602 = ReadAbsorbWhichRef, temp_601 = RRA(temp_602);
-						BranchIf(Eq(temp_601, MakeValue<uint>(0)), temp_599);
-						WRA(temp_602, Sub(temp_601, MakeValue<uint>(1)));
+						BranchIf((temp_601) == (MakeValue<uint>(0)), temp_599);
+						WRA(temp_602, temp_601 - MakeValue<uint>(1));
 						Branch(temp_600);
 						Label(temp_599);
 						TimestampInc(1);
@@ -1871,7 +1871,7 @@ namespace SharpStation {
 						var temp_201 = (Gprs)[rs];
 						if(need_load) { DoLds(); }
 						var eimm = imm;
-						Gprs[rt] = Xor(temp_201, MakeValue<uint>(eimm));
+						Gprs[rt] = (temp_201) ^ (MakeValue<uint>(eimm));
 						return(true);
 						break;
 					}
@@ -1879,8 +1879,8 @@ namespace SharpStation {
 						/* LUI */
 						Label temp_603 = Ilg.DefineLabel(), temp_604 = Ilg.DefineLabel();
 						Value temp_606 = ReadAbsorbWhichRef, temp_605 = RRA(temp_606);
-						BranchIf(Eq(temp_605, MakeValue<uint>(0)), temp_603);
-						WRA(temp_606, Sub(temp_605, MakeValue<uint>(1)));
+						BranchIf((temp_605) == (MakeValue<uint>(0)), temp_603);
+						WRA(temp_606, temp_605 - MakeValue<uint>(1));
 						Branch(temp_604);
 						Label(temp_603);
 						TimestampInc(1);
@@ -1899,8 +1899,8 @@ namespace SharpStation {
 								/* MFCzanonymous_8 */
 								Label temp_607 = Ilg.DefineLabel(), temp_608 = Ilg.DefineLabel();
 								Value temp_610 = ReadAbsorbWhichRef, temp_609 = RRA(temp_610);
-								BranchIf(Eq(temp_609, MakeValue<uint>(0)), temp_607);
-								WRA(temp_610, Sub(temp_609, MakeValue<uint>(1)));
+								BranchIf((temp_609) == (MakeValue<uint>(0)), temp_607);
+								WRA(temp_610, temp_609 - MakeValue<uint>(1));
 								Branch(temp_608);
 								Label(temp_607);
 								TimestampInc(1);
@@ -1919,8 +1919,8 @@ namespace SharpStation {
 								/* CFCzanonymous_8 */
 								Label temp_611 = Ilg.DefineLabel(), temp_612 = Ilg.DefineLabel();
 								Value temp_614 = ReadAbsorbWhichRef, temp_613 = RRA(temp_614);
-								BranchIf(Eq(temp_613, MakeValue<uint>(0)), temp_611);
-								WRA(temp_614, Sub(temp_613, MakeValue<uint>(1)));
+								BranchIf((temp_613) == (MakeValue<uint>(0)), temp_611);
+								WRA(temp_614, temp_613 - MakeValue<uint>(1));
 								Branch(temp_612);
 								Label(temp_611);
 								TimestampInc(1);
@@ -1938,8 +1938,8 @@ namespace SharpStation {
 								/* MTCzanonymous_8 */
 								Label temp_615 = Ilg.DefineLabel(), temp_616 = Ilg.DefineLabel();
 								Value temp_618 = ReadAbsorbWhichRef, temp_617 = RRA(temp_618);
-								BranchIf(Eq(temp_617, MakeValue<uint>(0)), temp_615);
-								WRA(temp_618, Sub(temp_617, MakeValue<uint>(1)));
+								BranchIf((temp_617) == (MakeValue<uint>(0)), temp_615);
+								WRA(temp_618, temp_617 - MakeValue<uint>(1));
 								Branch(temp_616);
 								Label(temp_615);
 								TimestampInc(1);
@@ -1958,8 +1958,8 @@ namespace SharpStation {
 								/* CTCzanonymous_8 */
 								Label temp_619 = Ilg.DefineLabel(), temp_620 = Ilg.DefineLabel();
 								Value temp_622 = ReadAbsorbWhichRef, temp_621 = RRA(temp_622);
-								BranchIf(Eq(temp_621, MakeValue<uint>(0)), temp_619);
-								WRA(temp_622, Sub(temp_621, MakeValue<uint>(1)));
+								BranchIf((temp_621) == (MakeValue<uint>(0)), temp_619);
+								WRA(temp_622, temp_621 - MakeValue<uint>(1));
 								Branch(temp_620);
 								Label(temp_619);
 								TimestampInc(1);
@@ -1978,8 +1978,8 @@ namespace SharpStation {
 								/* COPzanonymous_12anonymous_8 */
 								Label temp_623 = Ilg.DefineLabel(), temp_624 = Ilg.DefineLabel();
 								Value temp_626 = ReadAbsorbWhichRef, temp_625 = RRA(temp_626);
-								BranchIf(Eq(temp_625, MakeValue<uint>(0)), temp_623);
-								WRA(temp_626, Sub(temp_625, MakeValue<uint>(1)));
+								BranchIf((temp_625) == (MakeValue<uint>(0)), temp_623);
+								WRA(temp_626, temp_625 - MakeValue<uint>(1));
 								Branch(temp_624);
 								Label(temp_623);
 								TimestampInc(1);
@@ -1995,8 +1995,8 @@ namespace SharpStation {
 								/* COPzanonymous_13anonymous_8 */
 								Label temp_627 = Ilg.DefineLabel(), temp_628 = Ilg.DefineLabel();
 								Value temp_630 = ReadAbsorbWhichRef, temp_629 = RRA(temp_630);
-								BranchIf(Eq(temp_629, MakeValue<uint>(0)), temp_627);
-								WRA(temp_630, Sub(temp_629, MakeValue<uint>(1)));
+								BranchIf((temp_629) == (MakeValue<uint>(0)), temp_627);
+								WRA(temp_630, temp_629 - MakeValue<uint>(1));
 								Branch(temp_628);
 								Label(temp_627);
 								TimestampInc(1);
@@ -2012,8 +2012,8 @@ namespace SharpStation {
 								/* COPzanonymous_14anonymous_8 */
 								Label temp_631 = Ilg.DefineLabel(), temp_632 = Ilg.DefineLabel();
 								Value temp_634 = ReadAbsorbWhichRef, temp_633 = RRA(temp_634);
-								BranchIf(Eq(temp_633, MakeValue<uint>(0)), temp_631);
-								WRA(temp_634, Sub(temp_633, MakeValue<uint>(1)));
+								BranchIf((temp_633) == (MakeValue<uint>(0)), temp_631);
+								WRA(temp_634, temp_633 - MakeValue<uint>(1));
 								Branch(temp_632);
 								Label(temp_631);
 								TimestampInc(1);
@@ -2029,8 +2029,8 @@ namespace SharpStation {
 								/* COPzanonymous_15anonymous_8 */
 								Label temp_635 = Ilg.DefineLabel(), temp_636 = Ilg.DefineLabel();
 								Value temp_638 = ReadAbsorbWhichRef, temp_637 = RRA(temp_638);
-								BranchIf(Eq(temp_637, MakeValue<uint>(0)), temp_635);
-								WRA(temp_638, Sub(temp_637, MakeValue<uint>(1)));
+								BranchIf((temp_637) == (MakeValue<uint>(0)), temp_635);
+								WRA(temp_638, temp_637 - MakeValue<uint>(1));
 								Branch(temp_636);
 								Label(temp_635);
 								TimestampInc(1);
@@ -2046,8 +2046,8 @@ namespace SharpStation {
 								/* COPzanonymous_16anonymous_8 */
 								Label temp_639 = Ilg.DefineLabel(), temp_640 = Ilg.DefineLabel();
 								Value temp_642 = ReadAbsorbWhichRef, temp_641 = RRA(temp_642);
-								BranchIf(Eq(temp_641, MakeValue<uint>(0)), temp_639);
-								WRA(temp_642, Sub(temp_641, MakeValue<uint>(1)));
+								BranchIf((temp_641) == (MakeValue<uint>(0)), temp_639);
+								WRA(temp_642, temp_641 - MakeValue<uint>(1));
 								Branch(temp_640);
 								Label(temp_639);
 								TimestampInc(1);
@@ -2063,8 +2063,8 @@ namespace SharpStation {
 								/* COPzanonymous_17anonymous_8 */
 								Label temp_643 = Ilg.DefineLabel(), temp_644 = Ilg.DefineLabel();
 								Value temp_646 = ReadAbsorbWhichRef, temp_645 = RRA(temp_646);
-								BranchIf(Eq(temp_645, MakeValue<uint>(0)), temp_643);
-								WRA(temp_646, Sub(temp_645, MakeValue<uint>(1)));
+								BranchIf((temp_645) == (MakeValue<uint>(0)), temp_643);
+								WRA(temp_646, temp_645 - MakeValue<uint>(1));
 								Branch(temp_644);
 								Label(temp_643);
 								TimestampInc(1);
@@ -2080,8 +2080,8 @@ namespace SharpStation {
 								/* COPzanonymous_18anonymous_8 */
 								Label temp_647 = Ilg.DefineLabel(), temp_648 = Ilg.DefineLabel();
 								Value temp_650 = ReadAbsorbWhichRef, temp_649 = RRA(temp_650);
-								BranchIf(Eq(temp_649, MakeValue<uint>(0)), temp_647);
-								WRA(temp_650, Sub(temp_649, MakeValue<uint>(1)));
+								BranchIf((temp_649) == (MakeValue<uint>(0)), temp_647);
+								WRA(temp_650, temp_649 - MakeValue<uint>(1));
 								Branch(temp_648);
 								Label(temp_647);
 								TimestampInc(1);
@@ -2097,8 +2097,8 @@ namespace SharpStation {
 								/* COPzanonymous_19anonymous_8 */
 								Label temp_651 = Ilg.DefineLabel(), temp_652 = Ilg.DefineLabel();
 								Value temp_654 = ReadAbsorbWhichRef, temp_653 = RRA(temp_654);
-								BranchIf(Eq(temp_653, MakeValue<uint>(0)), temp_651);
-								WRA(temp_654, Sub(temp_653, MakeValue<uint>(1)));
+								BranchIf((temp_653) == (MakeValue<uint>(0)), temp_651);
+								WRA(temp_654, temp_653 - MakeValue<uint>(1));
 								Branch(temp_652);
 								Label(temp_651);
 								TimestampInc(1);
@@ -2114,8 +2114,8 @@ namespace SharpStation {
 								/* COPzanonymous_20anonymous_8 */
 								Label temp_655 = Ilg.DefineLabel(), temp_656 = Ilg.DefineLabel();
 								Value temp_658 = ReadAbsorbWhichRef, temp_657 = RRA(temp_658);
-								BranchIf(Eq(temp_657, MakeValue<uint>(0)), temp_655);
-								WRA(temp_658, Sub(temp_657, MakeValue<uint>(1)));
+								BranchIf((temp_657) == (MakeValue<uint>(0)), temp_655);
+								WRA(temp_658, temp_657 - MakeValue<uint>(1));
 								Branch(temp_656);
 								Label(temp_655);
 								TimestampInc(1);
@@ -2131,8 +2131,8 @@ namespace SharpStation {
 								/* COPzanonymous_21anonymous_8 */
 								Label temp_659 = Ilg.DefineLabel(), temp_660 = Ilg.DefineLabel();
 								Value temp_662 = ReadAbsorbWhichRef, temp_661 = RRA(temp_662);
-								BranchIf(Eq(temp_661, MakeValue<uint>(0)), temp_659);
-								WRA(temp_662, Sub(temp_661, MakeValue<uint>(1)));
+								BranchIf((temp_661) == (MakeValue<uint>(0)), temp_659);
+								WRA(temp_662, temp_661 - MakeValue<uint>(1));
 								Branch(temp_660);
 								Label(temp_659);
 								TimestampInc(1);
@@ -2148,8 +2148,8 @@ namespace SharpStation {
 								/* COPzanonymous_22anonymous_8 */
 								Label temp_663 = Ilg.DefineLabel(), temp_664 = Ilg.DefineLabel();
 								Value temp_666 = ReadAbsorbWhichRef, temp_665 = RRA(temp_666);
-								BranchIf(Eq(temp_665, MakeValue<uint>(0)), temp_663);
-								WRA(temp_666, Sub(temp_665, MakeValue<uint>(1)));
+								BranchIf((temp_665) == (MakeValue<uint>(0)), temp_663);
+								WRA(temp_666, temp_665 - MakeValue<uint>(1));
 								Branch(temp_664);
 								Label(temp_663);
 								TimestampInc(1);
@@ -2165,8 +2165,8 @@ namespace SharpStation {
 								/* COPzanonymous_23anonymous_8 */
 								Label temp_667 = Ilg.DefineLabel(), temp_668 = Ilg.DefineLabel();
 								Value temp_670 = ReadAbsorbWhichRef, temp_669 = RRA(temp_670);
-								BranchIf(Eq(temp_669, MakeValue<uint>(0)), temp_667);
-								WRA(temp_670, Sub(temp_669, MakeValue<uint>(1)));
+								BranchIf((temp_669) == (MakeValue<uint>(0)), temp_667);
+								WRA(temp_670, temp_669 - MakeValue<uint>(1));
 								Branch(temp_668);
 								Label(temp_667);
 								TimestampInc(1);
@@ -2182,8 +2182,8 @@ namespace SharpStation {
 								/* COPzanonymous_24anonymous_8 */
 								Label temp_671 = Ilg.DefineLabel(), temp_672 = Ilg.DefineLabel();
 								Value temp_674 = ReadAbsorbWhichRef, temp_673 = RRA(temp_674);
-								BranchIf(Eq(temp_673, MakeValue<uint>(0)), temp_671);
-								WRA(temp_674, Sub(temp_673, MakeValue<uint>(1)));
+								BranchIf((temp_673) == (MakeValue<uint>(0)), temp_671);
+								WRA(temp_674, temp_673 - MakeValue<uint>(1));
 								Branch(temp_672);
 								Label(temp_671);
 								TimestampInc(1);
@@ -2199,8 +2199,8 @@ namespace SharpStation {
 								/* COPzanonymous_25anonymous_8 */
 								Label temp_675 = Ilg.DefineLabel(), temp_676 = Ilg.DefineLabel();
 								Value temp_678 = ReadAbsorbWhichRef, temp_677 = RRA(temp_678);
-								BranchIf(Eq(temp_677, MakeValue<uint>(0)), temp_675);
-								WRA(temp_678, Sub(temp_677, MakeValue<uint>(1)));
+								BranchIf((temp_677) == (MakeValue<uint>(0)), temp_675);
+								WRA(temp_678, temp_677 - MakeValue<uint>(1));
 								Branch(temp_676);
 								Label(temp_675);
 								TimestampInc(1);
@@ -2216,8 +2216,8 @@ namespace SharpStation {
 								/* COPzanonymous_26anonymous_8 */
 								Label temp_679 = Ilg.DefineLabel(), temp_680 = Ilg.DefineLabel();
 								Value temp_682 = ReadAbsorbWhichRef, temp_681 = RRA(temp_682);
-								BranchIf(Eq(temp_681, MakeValue<uint>(0)), temp_679);
-								WRA(temp_682, Sub(temp_681, MakeValue<uint>(1)));
+								BranchIf((temp_681) == (MakeValue<uint>(0)), temp_679);
+								WRA(temp_682, temp_681 - MakeValue<uint>(1));
 								Branch(temp_680);
 								Label(temp_679);
 								TimestampInc(1);
@@ -2233,8 +2233,8 @@ namespace SharpStation {
 								/* COPzanonymous_27anonymous_8 */
 								Label temp_683 = Ilg.DefineLabel(), temp_684 = Ilg.DefineLabel();
 								Value temp_686 = ReadAbsorbWhichRef, temp_685 = RRA(temp_686);
-								BranchIf(Eq(temp_685, MakeValue<uint>(0)), temp_683);
-								WRA(temp_686, Sub(temp_685, MakeValue<uint>(1)));
+								BranchIf((temp_685) == (MakeValue<uint>(0)), temp_683);
+								WRA(temp_686, temp_685 - MakeValue<uint>(1));
 								Branch(temp_684);
 								Label(temp_683);
 								TimestampInc(1);
@@ -2255,8 +2255,8 @@ namespace SharpStation {
 								/* MFCzanonymous_9 */
 								Label temp_687 = Ilg.DefineLabel(), temp_688 = Ilg.DefineLabel();
 								Value temp_690 = ReadAbsorbWhichRef, temp_689 = RRA(temp_690);
-								BranchIf(Eq(temp_689, MakeValue<uint>(0)), temp_687);
-								WRA(temp_690, Sub(temp_689, MakeValue<uint>(1)));
+								BranchIf((temp_689) == (MakeValue<uint>(0)), temp_687);
+								WRA(temp_690, temp_689 - MakeValue<uint>(1));
 								Branch(temp_688);
 								Label(temp_687);
 								TimestampInc(1);
@@ -2275,8 +2275,8 @@ namespace SharpStation {
 								/* CFCzanonymous_9 */
 								Label temp_691 = Ilg.DefineLabel(), temp_692 = Ilg.DefineLabel();
 								Value temp_694 = ReadAbsorbWhichRef, temp_693 = RRA(temp_694);
-								BranchIf(Eq(temp_693, MakeValue<uint>(0)), temp_691);
-								WRA(temp_694, Sub(temp_693, MakeValue<uint>(1)));
+								BranchIf((temp_693) == (MakeValue<uint>(0)), temp_691);
+								WRA(temp_694, temp_693 - MakeValue<uint>(1));
 								Branch(temp_692);
 								Label(temp_691);
 								TimestampInc(1);
@@ -2294,8 +2294,8 @@ namespace SharpStation {
 								/* MTCzanonymous_9 */
 								Label temp_695 = Ilg.DefineLabel(), temp_696 = Ilg.DefineLabel();
 								Value temp_698 = ReadAbsorbWhichRef, temp_697 = RRA(temp_698);
-								BranchIf(Eq(temp_697, MakeValue<uint>(0)), temp_695);
-								WRA(temp_698, Sub(temp_697, MakeValue<uint>(1)));
+								BranchIf((temp_697) == (MakeValue<uint>(0)), temp_695);
+								WRA(temp_698, temp_697 - MakeValue<uint>(1));
 								Branch(temp_696);
 								Label(temp_695);
 								TimestampInc(1);
@@ -2314,8 +2314,8 @@ namespace SharpStation {
 								/* CTCzanonymous_9 */
 								Label temp_699 = Ilg.DefineLabel(), temp_700 = Ilg.DefineLabel();
 								Value temp_702 = ReadAbsorbWhichRef, temp_701 = RRA(temp_702);
-								BranchIf(Eq(temp_701, MakeValue<uint>(0)), temp_699);
-								WRA(temp_702, Sub(temp_701, MakeValue<uint>(1)));
+								BranchIf((temp_701) == (MakeValue<uint>(0)), temp_699);
+								WRA(temp_702, temp_701 - MakeValue<uint>(1));
 								Branch(temp_700);
 								Label(temp_699);
 								TimestampInc(1);
@@ -2334,8 +2334,8 @@ namespace SharpStation {
 								/* COPzanonymous_12anonymous_9 */
 								Label temp_703 = Ilg.DefineLabel(), temp_704 = Ilg.DefineLabel();
 								Value temp_706 = ReadAbsorbWhichRef, temp_705 = RRA(temp_706);
-								BranchIf(Eq(temp_705, MakeValue<uint>(0)), temp_703);
-								WRA(temp_706, Sub(temp_705, MakeValue<uint>(1)));
+								BranchIf((temp_705) == (MakeValue<uint>(0)), temp_703);
+								WRA(temp_706, temp_705 - MakeValue<uint>(1));
 								Branch(temp_704);
 								Label(temp_703);
 								TimestampInc(1);
@@ -2351,8 +2351,8 @@ namespace SharpStation {
 								/* COPzanonymous_13anonymous_9 */
 								Label temp_707 = Ilg.DefineLabel(), temp_708 = Ilg.DefineLabel();
 								Value temp_710 = ReadAbsorbWhichRef, temp_709 = RRA(temp_710);
-								BranchIf(Eq(temp_709, MakeValue<uint>(0)), temp_707);
-								WRA(temp_710, Sub(temp_709, MakeValue<uint>(1)));
+								BranchIf((temp_709) == (MakeValue<uint>(0)), temp_707);
+								WRA(temp_710, temp_709 - MakeValue<uint>(1));
 								Branch(temp_708);
 								Label(temp_707);
 								TimestampInc(1);
@@ -2368,8 +2368,8 @@ namespace SharpStation {
 								/* COPzanonymous_14anonymous_9 */
 								Label temp_711 = Ilg.DefineLabel(), temp_712 = Ilg.DefineLabel();
 								Value temp_714 = ReadAbsorbWhichRef, temp_713 = RRA(temp_714);
-								BranchIf(Eq(temp_713, MakeValue<uint>(0)), temp_711);
-								WRA(temp_714, Sub(temp_713, MakeValue<uint>(1)));
+								BranchIf((temp_713) == (MakeValue<uint>(0)), temp_711);
+								WRA(temp_714, temp_713 - MakeValue<uint>(1));
 								Branch(temp_712);
 								Label(temp_711);
 								TimestampInc(1);
@@ -2385,8 +2385,8 @@ namespace SharpStation {
 								/* COPzanonymous_15anonymous_9 */
 								Label temp_715 = Ilg.DefineLabel(), temp_716 = Ilg.DefineLabel();
 								Value temp_718 = ReadAbsorbWhichRef, temp_717 = RRA(temp_718);
-								BranchIf(Eq(temp_717, MakeValue<uint>(0)), temp_715);
-								WRA(temp_718, Sub(temp_717, MakeValue<uint>(1)));
+								BranchIf((temp_717) == (MakeValue<uint>(0)), temp_715);
+								WRA(temp_718, temp_717 - MakeValue<uint>(1));
 								Branch(temp_716);
 								Label(temp_715);
 								TimestampInc(1);
@@ -2402,8 +2402,8 @@ namespace SharpStation {
 								/* COPzanonymous_16anonymous_9 */
 								Label temp_719 = Ilg.DefineLabel(), temp_720 = Ilg.DefineLabel();
 								Value temp_722 = ReadAbsorbWhichRef, temp_721 = RRA(temp_722);
-								BranchIf(Eq(temp_721, MakeValue<uint>(0)), temp_719);
-								WRA(temp_722, Sub(temp_721, MakeValue<uint>(1)));
+								BranchIf((temp_721) == (MakeValue<uint>(0)), temp_719);
+								WRA(temp_722, temp_721 - MakeValue<uint>(1));
 								Branch(temp_720);
 								Label(temp_719);
 								TimestampInc(1);
@@ -2419,8 +2419,8 @@ namespace SharpStation {
 								/* COPzanonymous_17anonymous_9 */
 								Label temp_723 = Ilg.DefineLabel(), temp_724 = Ilg.DefineLabel();
 								Value temp_726 = ReadAbsorbWhichRef, temp_725 = RRA(temp_726);
-								BranchIf(Eq(temp_725, MakeValue<uint>(0)), temp_723);
-								WRA(temp_726, Sub(temp_725, MakeValue<uint>(1)));
+								BranchIf((temp_725) == (MakeValue<uint>(0)), temp_723);
+								WRA(temp_726, temp_725 - MakeValue<uint>(1));
 								Branch(temp_724);
 								Label(temp_723);
 								TimestampInc(1);
@@ -2436,8 +2436,8 @@ namespace SharpStation {
 								/* COPzanonymous_18anonymous_9 */
 								Label temp_727 = Ilg.DefineLabel(), temp_728 = Ilg.DefineLabel();
 								Value temp_730 = ReadAbsorbWhichRef, temp_729 = RRA(temp_730);
-								BranchIf(Eq(temp_729, MakeValue<uint>(0)), temp_727);
-								WRA(temp_730, Sub(temp_729, MakeValue<uint>(1)));
+								BranchIf((temp_729) == (MakeValue<uint>(0)), temp_727);
+								WRA(temp_730, temp_729 - MakeValue<uint>(1));
 								Branch(temp_728);
 								Label(temp_727);
 								TimestampInc(1);
@@ -2453,8 +2453,8 @@ namespace SharpStation {
 								/* COPzanonymous_19anonymous_9 */
 								Label temp_731 = Ilg.DefineLabel(), temp_732 = Ilg.DefineLabel();
 								Value temp_734 = ReadAbsorbWhichRef, temp_733 = RRA(temp_734);
-								BranchIf(Eq(temp_733, MakeValue<uint>(0)), temp_731);
-								WRA(temp_734, Sub(temp_733, MakeValue<uint>(1)));
+								BranchIf((temp_733) == (MakeValue<uint>(0)), temp_731);
+								WRA(temp_734, temp_733 - MakeValue<uint>(1));
 								Branch(temp_732);
 								Label(temp_731);
 								TimestampInc(1);
@@ -2470,8 +2470,8 @@ namespace SharpStation {
 								/* COPzanonymous_20anonymous_9 */
 								Label temp_735 = Ilg.DefineLabel(), temp_736 = Ilg.DefineLabel();
 								Value temp_738 = ReadAbsorbWhichRef, temp_737 = RRA(temp_738);
-								BranchIf(Eq(temp_737, MakeValue<uint>(0)), temp_735);
-								WRA(temp_738, Sub(temp_737, MakeValue<uint>(1)));
+								BranchIf((temp_737) == (MakeValue<uint>(0)), temp_735);
+								WRA(temp_738, temp_737 - MakeValue<uint>(1));
 								Branch(temp_736);
 								Label(temp_735);
 								TimestampInc(1);
@@ -2487,8 +2487,8 @@ namespace SharpStation {
 								/* COPzanonymous_21anonymous_9 */
 								Label temp_739 = Ilg.DefineLabel(), temp_740 = Ilg.DefineLabel();
 								Value temp_742 = ReadAbsorbWhichRef, temp_741 = RRA(temp_742);
-								BranchIf(Eq(temp_741, MakeValue<uint>(0)), temp_739);
-								WRA(temp_742, Sub(temp_741, MakeValue<uint>(1)));
+								BranchIf((temp_741) == (MakeValue<uint>(0)), temp_739);
+								WRA(temp_742, temp_741 - MakeValue<uint>(1));
 								Branch(temp_740);
 								Label(temp_739);
 								TimestampInc(1);
@@ -2504,8 +2504,8 @@ namespace SharpStation {
 								/* COPzanonymous_22anonymous_9 */
 								Label temp_743 = Ilg.DefineLabel(), temp_744 = Ilg.DefineLabel();
 								Value temp_746 = ReadAbsorbWhichRef, temp_745 = RRA(temp_746);
-								BranchIf(Eq(temp_745, MakeValue<uint>(0)), temp_743);
-								WRA(temp_746, Sub(temp_745, MakeValue<uint>(1)));
+								BranchIf((temp_745) == (MakeValue<uint>(0)), temp_743);
+								WRA(temp_746, temp_745 - MakeValue<uint>(1));
 								Branch(temp_744);
 								Label(temp_743);
 								TimestampInc(1);
@@ -2521,8 +2521,8 @@ namespace SharpStation {
 								/* COPzanonymous_23anonymous_9 */
 								Label temp_747 = Ilg.DefineLabel(), temp_748 = Ilg.DefineLabel();
 								Value temp_750 = ReadAbsorbWhichRef, temp_749 = RRA(temp_750);
-								BranchIf(Eq(temp_749, MakeValue<uint>(0)), temp_747);
-								WRA(temp_750, Sub(temp_749, MakeValue<uint>(1)));
+								BranchIf((temp_749) == (MakeValue<uint>(0)), temp_747);
+								WRA(temp_750, temp_749 - MakeValue<uint>(1));
 								Branch(temp_748);
 								Label(temp_747);
 								TimestampInc(1);
@@ -2538,8 +2538,8 @@ namespace SharpStation {
 								/* COPzanonymous_24anonymous_9 */
 								Label temp_751 = Ilg.DefineLabel(), temp_752 = Ilg.DefineLabel();
 								Value temp_754 = ReadAbsorbWhichRef, temp_753 = RRA(temp_754);
-								BranchIf(Eq(temp_753, MakeValue<uint>(0)), temp_751);
-								WRA(temp_754, Sub(temp_753, MakeValue<uint>(1)));
+								BranchIf((temp_753) == (MakeValue<uint>(0)), temp_751);
+								WRA(temp_754, temp_753 - MakeValue<uint>(1));
 								Branch(temp_752);
 								Label(temp_751);
 								TimestampInc(1);
@@ -2555,8 +2555,8 @@ namespace SharpStation {
 								/* COPzanonymous_25anonymous_9 */
 								Label temp_755 = Ilg.DefineLabel(), temp_756 = Ilg.DefineLabel();
 								Value temp_758 = ReadAbsorbWhichRef, temp_757 = RRA(temp_758);
-								BranchIf(Eq(temp_757, MakeValue<uint>(0)), temp_755);
-								WRA(temp_758, Sub(temp_757, MakeValue<uint>(1)));
+								BranchIf((temp_757) == (MakeValue<uint>(0)), temp_755);
+								WRA(temp_758, temp_757 - MakeValue<uint>(1));
 								Branch(temp_756);
 								Label(temp_755);
 								TimestampInc(1);
@@ -2572,8 +2572,8 @@ namespace SharpStation {
 								/* COPzanonymous_26anonymous_9 */
 								Label temp_759 = Ilg.DefineLabel(), temp_760 = Ilg.DefineLabel();
 								Value temp_762 = ReadAbsorbWhichRef, temp_761 = RRA(temp_762);
-								BranchIf(Eq(temp_761, MakeValue<uint>(0)), temp_759);
-								WRA(temp_762, Sub(temp_761, MakeValue<uint>(1)));
+								BranchIf((temp_761) == (MakeValue<uint>(0)), temp_759);
+								WRA(temp_762, temp_761 - MakeValue<uint>(1));
 								Branch(temp_760);
 								Label(temp_759);
 								TimestampInc(1);
@@ -2589,8 +2589,8 @@ namespace SharpStation {
 								/* COPzanonymous_27anonymous_9 */
 								Label temp_763 = Ilg.DefineLabel(), temp_764 = Ilg.DefineLabel();
 								Value temp_766 = ReadAbsorbWhichRef, temp_765 = RRA(temp_766);
-								BranchIf(Eq(temp_765, MakeValue<uint>(0)), temp_763);
-								WRA(temp_766, Sub(temp_765, MakeValue<uint>(1)));
+								BranchIf((temp_765) == (MakeValue<uint>(0)), temp_763);
+								WRA(temp_766, temp_765 - MakeValue<uint>(1));
 								Branch(temp_764);
 								Label(temp_763);
 								TimestampInc(1);
@@ -2611,8 +2611,8 @@ namespace SharpStation {
 								/* MFCzanonymous_10 */
 								Label temp_767 = Ilg.DefineLabel(), temp_768 = Ilg.DefineLabel();
 								Value temp_770 = ReadAbsorbWhichRef, temp_769 = RRA(temp_770);
-								BranchIf(Eq(temp_769, MakeValue<uint>(0)), temp_767);
-								WRA(temp_770, Sub(temp_769, MakeValue<uint>(1)));
+								BranchIf((temp_769) == (MakeValue<uint>(0)), temp_767);
+								WRA(temp_770, temp_769 - MakeValue<uint>(1));
 								Branch(temp_768);
 								Label(temp_767);
 								TimestampInc(1);
@@ -2631,8 +2631,8 @@ namespace SharpStation {
 								/* CFCzanonymous_10 */
 								Label temp_771 = Ilg.DefineLabel(), temp_772 = Ilg.DefineLabel();
 								Value temp_774 = ReadAbsorbWhichRef, temp_773 = RRA(temp_774);
-								BranchIf(Eq(temp_773, MakeValue<uint>(0)), temp_771);
-								WRA(temp_774, Sub(temp_773, MakeValue<uint>(1)));
+								BranchIf((temp_773) == (MakeValue<uint>(0)), temp_771);
+								WRA(temp_774, temp_773 - MakeValue<uint>(1));
 								Branch(temp_772);
 								Label(temp_771);
 								TimestampInc(1);
@@ -2650,8 +2650,8 @@ namespace SharpStation {
 								/* MTCzanonymous_10 */
 								Label temp_775 = Ilg.DefineLabel(), temp_776 = Ilg.DefineLabel();
 								Value temp_778 = ReadAbsorbWhichRef, temp_777 = RRA(temp_778);
-								BranchIf(Eq(temp_777, MakeValue<uint>(0)), temp_775);
-								WRA(temp_778, Sub(temp_777, MakeValue<uint>(1)));
+								BranchIf((temp_777) == (MakeValue<uint>(0)), temp_775);
+								WRA(temp_778, temp_777 - MakeValue<uint>(1));
 								Branch(temp_776);
 								Label(temp_775);
 								TimestampInc(1);
@@ -2670,8 +2670,8 @@ namespace SharpStation {
 								/* CTCzanonymous_10 */
 								Label temp_779 = Ilg.DefineLabel(), temp_780 = Ilg.DefineLabel();
 								Value temp_782 = ReadAbsorbWhichRef, temp_781 = RRA(temp_782);
-								BranchIf(Eq(temp_781, MakeValue<uint>(0)), temp_779);
-								WRA(temp_782, Sub(temp_781, MakeValue<uint>(1)));
+								BranchIf((temp_781) == (MakeValue<uint>(0)), temp_779);
+								WRA(temp_782, temp_781 - MakeValue<uint>(1));
 								Branch(temp_780);
 								Label(temp_779);
 								TimestampInc(1);
@@ -2690,8 +2690,8 @@ namespace SharpStation {
 								/* COPzanonymous_12anonymous_10 */
 								Label temp_783 = Ilg.DefineLabel(), temp_784 = Ilg.DefineLabel();
 								Value temp_786 = ReadAbsorbWhichRef, temp_785 = RRA(temp_786);
-								BranchIf(Eq(temp_785, MakeValue<uint>(0)), temp_783);
-								WRA(temp_786, Sub(temp_785, MakeValue<uint>(1)));
+								BranchIf((temp_785) == (MakeValue<uint>(0)), temp_783);
+								WRA(temp_786, temp_785 - MakeValue<uint>(1));
 								Branch(temp_784);
 								Label(temp_783);
 								TimestampInc(1);
@@ -2707,8 +2707,8 @@ namespace SharpStation {
 								/* COPzanonymous_13anonymous_10 */
 								Label temp_787 = Ilg.DefineLabel(), temp_788 = Ilg.DefineLabel();
 								Value temp_790 = ReadAbsorbWhichRef, temp_789 = RRA(temp_790);
-								BranchIf(Eq(temp_789, MakeValue<uint>(0)), temp_787);
-								WRA(temp_790, Sub(temp_789, MakeValue<uint>(1)));
+								BranchIf((temp_789) == (MakeValue<uint>(0)), temp_787);
+								WRA(temp_790, temp_789 - MakeValue<uint>(1));
 								Branch(temp_788);
 								Label(temp_787);
 								TimestampInc(1);
@@ -2724,8 +2724,8 @@ namespace SharpStation {
 								/* COPzanonymous_14anonymous_10 */
 								Label temp_791 = Ilg.DefineLabel(), temp_792 = Ilg.DefineLabel();
 								Value temp_794 = ReadAbsorbWhichRef, temp_793 = RRA(temp_794);
-								BranchIf(Eq(temp_793, MakeValue<uint>(0)), temp_791);
-								WRA(temp_794, Sub(temp_793, MakeValue<uint>(1)));
+								BranchIf((temp_793) == (MakeValue<uint>(0)), temp_791);
+								WRA(temp_794, temp_793 - MakeValue<uint>(1));
 								Branch(temp_792);
 								Label(temp_791);
 								TimestampInc(1);
@@ -2741,8 +2741,8 @@ namespace SharpStation {
 								/* COPzanonymous_15anonymous_10 */
 								Label temp_795 = Ilg.DefineLabel(), temp_796 = Ilg.DefineLabel();
 								Value temp_798 = ReadAbsorbWhichRef, temp_797 = RRA(temp_798);
-								BranchIf(Eq(temp_797, MakeValue<uint>(0)), temp_795);
-								WRA(temp_798, Sub(temp_797, MakeValue<uint>(1)));
+								BranchIf((temp_797) == (MakeValue<uint>(0)), temp_795);
+								WRA(temp_798, temp_797 - MakeValue<uint>(1));
 								Branch(temp_796);
 								Label(temp_795);
 								TimestampInc(1);
@@ -2758,8 +2758,8 @@ namespace SharpStation {
 								/* COPzanonymous_16anonymous_10 */
 								Label temp_799 = Ilg.DefineLabel(), temp_800 = Ilg.DefineLabel();
 								Value temp_802 = ReadAbsorbWhichRef, temp_801 = RRA(temp_802);
-								BranchIf(Eq(temp_801, MakeValue<uint>(0)), temp_799);
-								WRA(temp_802, Sub(temp_801, MakeValue<uint>(1)));
+								BranchIf((temp_801) == (MakeValue<uint>(0)), temp_799);
+								WRA(temp_802, temp_801 - MakeValue<uint>(1));
 								Branch(temp_800);
 								Label(temp_799);
 								TimestampInc(1);
@@ -2775,8 +2775,8 @@ namespace SharpStation {
 								/* COPzanonymous_17anonymous_10 */
 								Label temp_803 = Ilg.DefineLabel(), temp_804 = Ilg.DefineLabel();
 								Value temp_806 = ReadAbsorbWhichRef, temp_805 = RRA(temp_806);
-								BranchIf(Eq(temp_805, MakeValue<uint>(0)), temp_803);
-								WRA(temp_806, Sub(temp_805, MakeValue<uint>(1)));
+								BranchIf((temp_805) == (MakeValue<uint>(0)), temp_803);
+								WRA(temp_806, temp_805 - MakeValue<uint>(1));
 								Branch(temp_804);
 								Label(temp_803);
 								TimestampInc(1);
@@ -2792,8 +2792,8 @@ namespace SharpStation {
 								/* COPzanonymous_18anonymous_10 */
 								Label temp_807 = Ilg.DefineLabel(), temp_808 = Ilg.DefineLabel();
 								Value temp_810 = ReadAbsorbWhichRef, temp_809 = RRA(temp_810);
-								BranchIf(Eq(temp_809, MakeValue<uint>(0)), temp_807);
-								WRA(temp_810, Sub(temp_809, MakeValue<uint>(1)));
+								BranchIf((temp_809) == (MakeValue<uint>(0)), temp_807);
+								WRA(temp_810, temp_809 - MakeValue<uint>(1));
 								Branch(temp_808);
 								Label(temp_807);
 								TimestampInc(1);
@@ -2809,8 +2809,8 @@ namespace SharpStation {
 								/* COPzanonymous_19anonymous_10 */
 								Label temp_811 = Ilg.DefineLabel(), temp_812 = Ilg.DefineLabel();
 								Value temp_814 = ReadAbsorbWhichRef, temp_813 = RRA(temp_814);
-								BranchIf(Eq(temp_813, MakeValue<uint>(0)), temp_811);
-								WRA(temp_814, Sub(temp_813, MakeValue<uint>(1)));
+								BranchIf((temp_813) == (MakeValue<uint>(0)), temp_811);
+								WRA(temp_814, temp_813 - MakeValue<uint>(1));
 								Branch(temp_812);
 								Label(temp_811);
 								TimestampInc(1);
@@ -2826,8 +2826,8 @@ namespace SharpStation {
 								/* COPzanonymous_20anonymous_10 */
 								Label temp_815 = Ilg.DefineLabel(), temp_816 = Ilg.DefineLabel();
 								Value temp_818 = ReadAbsorbWhichRef, temp_817 = RRA(temp_818);
-								BranchIf(Eq(temp_817, MakeValue<uint>(0)), temp_815);
-								WRA(temp_818, Sub(temp_817, MakeValue<uint>(1)));
+								BranchIf((temp_817) == (MakeValue<uint>(0)), temp_815);
+								WRA(temp_818, temp_817 - MakeValue<uint>(1));
 								Branch(temp_816);
 								Label(temp_815);
 								TimestampInc(1);
@@ -2843,8 +2843,8 @@ namespace SharpStation {
 								/* COPzanonymous_21anonymous_10 */
 								Label temp_819 = Ilg.DefineLabel(), temp_820 = Ilg.DefineLabel();
 								Value temp_822 = ReadAbsorbWhichRef, temp_821 = RRA(temp_822);
-								BranchIf(Eq(temp_821, MakeValue<uint>(0)), temp_819);
-								WRA(temp_822, Sub(temp_821, MakeValue<uint>(1)));
+								BranchIf((temp_821) == (MakeValue<uint>(0)), temp_819);
+								WRA(temp_822, temp_821 - MakeValue<uint>(1));
 								Branch(temp_820);
 								Label(temp_819);
 								TimestampInc(1);
@@ -2860,8 +2860,8 @@ namespace SharpStation {
 								/* COPzanonymous_22anonymous_10 */
 								Label temp_823 = Ilg.DefineLabel(), temp_824 = Ilg.DefineLabel();
 								Value temp_826 = ReadAbsorbWhichRef, temp_825 = RRA(temp_826);
-								BranchIf(Eq(temp_825, MakeValue<uint>(0)), temp_823);
-								WRA(temp_826, Sub(temp_825, MakeValue<uint>(1)));
+								BranchIf((temp_825) == (MakeValue<uint>(0)), temp_823);
+								WRA(temp_826, temp_825 - MakeValue<uint>(1));
 								Branch(temp_824);
 								Label(temp_823);
 								TimestampInc(1);
@@ -2877,8 +2877,8 @@ namespace SharpStation {
 								/* COPzanonymous_23anonymous_10 */
 								Label temp_827 = Ilg.DefineLabel(), temp_828 = Ilg.DefineLabel();
 								Value temp_830 = ReadAbsorbWhichRef, temp_829 = RRA(temp_830);
-								BranchIf(Eq(temp_829, MakeValue<uint>(0)), temp_827);
-								WRA(temp_830, Sub(temp_829, MakeValue<uint>(1)));
+								BranchIf((temp_829) == (MakeValue<uint>(0)), temp_827);
+								WRA(temp_830, temp_829 - MakeValue<uint>(1));
 								Branch(temp_828);
 								Label(temp_827);
 								TimestampInc(1);
@@ -2894,8 +2894,8 @@ namespace SharpStation {
 								/* COPzanonymous_24anonymous_10 */
 								Label temp_831 = Ilg.DefineLabel(), temp_832 = Ilg.DefineLabel();
 								Value temp_834 = ReadAbsorbWhichRef, temp_833 = RRA(temp_834);
-								BranchIf(Eq(temp_833, MakeValue<uint>(0)), temp_831);
-								WRA(temp_834, Sub(temp_833, MakeValue<uint>(1)));
+								BranchIf((temp_833) == (MakeValue<uint>(0)), temp_831);
+								WRA(temp_834, temp_833 - MakeValue<uint>(1));
 								Branch(temp_832);
 								Label(temp_831);
 								TimestampInc(1);
@@ -2911,8 +2911,8 @@ namespace SharpStation {
 								/* COPzanonymous_25anonymous_10 */
 								Label temp_835 = Ilg.DefineLabel(), temp_836 = Ilg.DefineLabel();
 								Value temp_838 = ReadAbsorbWhichRef, temp_837 = RRA(temp_838);
-								BranchIf(Eq(temp_837, MakeValue<uint>(0)), temp_835);
-								WRA(temp_838, Sub(temp_837, MakeValue<uint>(1)));
+								BranchIf((temp_837) == (MakeValue<uint>(0)), temp_835);
+								WRA(temp_838, temp_837 - MakeValue<uint>(1));
 								Branch(temp_836);
 								Label(temp_835);
 								TimestampInc(1);
@@ -2928,8 +2928,8 @@ namespace SharpStation {
 								/* COPzanonymous_26anonymous_10 */
 								Label temp_839 = Ilg.DefineLabel(), temp_840 = Ilg.DefineLabel();
 								Value temp_842 = ReadAbsorbWhichRef, temp_841 = RRA(temp_842);
-								BranchIf(Eq(temp_841, MakeValue<uint>(0)), temp_839);
-								WRA(temp_842, Sub(temp_841, MakeValue<uint>(1)));
+								BranchIf((temp_841) == (MakeValue<uint>(0)), temp_839);
+								WRA(temp_842, temp_841 - MakeValue<uint>(1));
 								Branch(temp_840);
 								Label(temp_839);
 								TimestampInc(1);
@@ -2945,8 +2945,8 @@ namespace SharpStation {
 								/* COPzanonymous_27anonymous_10 */
 								Label temp_843 = Ilg.DefineLabel(), temp_844 = Ilg.DefineLabel();
 								Value temp_846 = ReadAbsorbWhichRef, temp_845 = RRA(temp_846);
-								BranchIf(Eq(temp_845, MakeValue<uint>(0)), temp_843);
-								WRA(temp_846, Sub(temp_845, MakeValue<uint>(1)));
+								BranchIf((temp_845) == (MakeValue<uint>(0)), temp_843);
+								WRA(temp_846, temp_845 - MakeValue<uint>(1));
 								Branch(temp_844);
 								Label(temp_843);
 								TimestampInc(1);
@@ -2967,8 +2967,8 @@ namespace SharpStation {
 								/* MFCzanonymous_11 */
 								Label temp_847 = Ilg.DefineLabel(), temp_848 = Ilg.DefineLabel();
 								Value temp_850 = ReadAbsorbWhichRef, temp_849 = RRA(temp_850);
-								BranchIf(Eq(temp_849, MakeValue<uint>(0)), temp_847);
-								WRA(temp_850, Sub(temp_849, MakeValue<uint>(1)));
+								BranchIf((temp_849) == (MakeValue<uint>(0)), temp_847);
+								WRA(temp_850, temp_849 - MakeValue<uint>(1));
 								Branch(temp_848);
 								Label(temp_847);
 								TimestampInc(1);
@@ -2987,8 +2987,8 @@ namespace SharpStation {
 								/* CFCzanonymous_11 */
 								Label temp_851 = Ilg.DefineLabel(), temp_852 = Ilg.DefineLabel();
 								Value temp_854 = ReadAbsorbWhichRef, temp_853 = RRA(temp_854);
-								BranchIf(Eq(temp_853, MakeValue<uint>(0)), temp_851);
-								WRA(temp_854, Sub(temp_853, MakeValue<uint>(1)));
+								BranchIf((temp_853) == (MakeValue<uint>(0)), temp_851);
+								WRA(temp_854, temp_853 - MakeValue<uint>(1));
 								Branch(temp_852);
 								Label(temp_851);
 								TimestampInc(1);
@@ -3006,8 +3006,8 @@ namespace SharpStation {
 								/* MTCzanonymous_11 */
 								Label temp_855 = Ilg.DefineLabel(), temp_856 = Ilg.DefineLabel();
 								Value temp_858 = ReadAbsorbWhichRef, temp_857 = RRA(temp_858);
-								BranchIf(Eq(temp_857, MakeValue<uint>(0)), temp_855);
-								WRA(temp_858, Sub(temp_857, MakeValue<uint>(1)));
+								BranchIf((temp_857) == (MakeValue<uint>(0)), temp_855);
+								WRA(temp_858, temp_857 - MakeValue<uint>(1));
 								Branch(temp_856);
 								Label(temp_855);
 								TimestampInc(1);
@@ -3026,8 +3026,8 @@ namespace SharpStation {
 								/* CTCzanonymous_11 */
 								Label temp_859 = Ilg.DefineLabel(), temp_860 = Ilg.DefineLabel();
 								Value temp_862 = ReadAbsorbWhichRef, temp_861 = RRA(temp_862);
-								BranchIf(Eq(temp_861, MakeValue<uint>(0)), temp_859);
-								WRA(temp_862, Sub(temp_861, MakeValue<uint>(1)));
+								BranchIf((temp_861) == (MakeValue<uint>(0)), temp_859);
+								WRA(temp_862, temp_861 - MakeValue<uint>(1));
 								Branch(temp_860);
 								Label(temp_859);
 								TimestampInc(1);
@@ -3046,8 +3046,8 @@ namespace SharpStation {
 								/* COPzanonymous_12anonymous_11 */
 								Label temp_863 = Ilg.DefineLabel(), temp_864 = Ilg.DefineLabel();
 								Value temp_866 = ReadAbsorbWhichRef, temp_865 = RRA(temp_866);
-								BranchIf(Eq(temp_865, MakeValue<uint>(0)), temp_863);
-								WRA(temp_866, Sub(temp_865, MakeValue<uint>(1)));
+								BranchIf((temp_865) == (MakeValue<uint>(0)), temp_863);
+								WRA(temp_866, temp_865 - MakeValue<uint>(1));
 								Branch(temp_864);
 								Label(temp_863);
 								TimestampInc(1);
@@ -3063,8 +3063,8 @@ namespace SharpStation {
 								/* COPzanonymous_13anonymous_11 */
 								Label temp_867 = Ilg.DefineLabel(), temp_868 = Ilg.DefineLabel();
 								Value temp_870 = ReadAbsorbWhichRef, temp_869 = RRA(temp_870);
-								BranchIf(Eq(temp_869, MakeValue<uint>(0)), temp_867);
-								WRA(temp_870, Sub(temp_869, MakeValue<uint>(1)));
+								BranchIf((temp_869) == (MakeValue<uint>(0)), temp_867);
+								WRA(temp_870, temp_869 - MakeValue<uint>(1));
 								Branch(temp_868);
 								Label(temp_867);
 								TimestampInc(1);
@@ -3080,8 +3080,8 @@ namespace SharpStation {
 								/* COPzanonymous_14anonymous_11 */
 								Label temp_871 = Ilg.DefineLabel(), temp_872 = Ilg.DefineLabel();
 								Value temp_874 = ReadAbsorbWhichRef, temp_873 = RRA(temp_874);
-								BranchIf(Eq(temp_873, MakeValue<uint>(0)), temp_871);
-								WRA(temp_874, Sub(temp_873, MakeValue<uint>(1)));
+								BranchIf((temp_873) == (MakeValue<uint>(0)), temp_871);
+								WRA(temp_874, temp_873 - MakeValue<uint>(1));
 								Branch(temp_872);
 								Label(temp_871);
 								TimestampInc(1);
@@ -3097,8 +3097,8 @@ namespace SharpStation {
 								/* COPzanonymous_15anonymous_11 */
 								Label temp_875 = Ilg.DefineLabel(), temp_876 = Ilg.DefineLabel();
 								Value temp_878 = ReadAbsorbWhichRef, temp_877 = RRA(temp_878);
-								BranchIf(Eq(temp_877, MakeValue<uint>(0)), temp_875);
-								WRA(temp_878, Sub(temp_877, MakeValue<uint>(1)));
+								BranchIf((temp_877) == (MakeValue<uint>(0)), temp_875);
+								WRA(temp_878, temp_877 - MakeValue<uint>(1));
 								Branch(temp_876);
 								Label(temp_875);
 								TimestampInc(1);
@@ -3114,8 +3114,8 @@ namespace SharpStation {
 								/* COPzanonymous_16anonymous_11 */
 								Label temp_879 = Ilg.DefineLabel(), temp_880 = Ilg.DefineLabel();
 								Value temp_882 = ReadAbsorbWhichRef, temp_881 = RRA(temp_882);
-								BranchIf(Eq(temp_881, MakeValue<uint>(0)), temp_879);
-								WRA(temp_882, Sub(temp_881, MakeValue<uint>(1)));
+								BranchIf((temp_881) == (MakeValue<uint>(0)), temp_879);
+								WRA(temp_882, temp_881 - MakeValue<uint>(1));
 								Branch(temp_880);
 								Label(temp_879);
 								TimestampInc(1);
@@ -3131,8 +3131,8 @@ namespace SharpStation {
 								/* COPzanonymous_17anonymous_11 */
 								Label temp_883 = Ilg.DefineLabel(), temp_884 = Ilg.DefineLabel();
 								Value temp_886 = ReadAbsorbWhichRef, temp_885 = RRA(temp_886);
-								BranchIf(Eq(temp_885, MakeValue<uint>(0)), temp_883);
-								WRA(temp_886, Sub(temp_885, MakeValue<uint>(1)));
+								BranchIf((temp_885) == (MakeValue<uint>(0)), temp_883);
+								WRA(temp_886, temp_885 - MakeValue<uint>(1));
 								Branch(temp_884);
 								Label(temp_883);
 								TimestampInc(1);
@@ -3148,8 +3148,8 @@ namespace SharpStation {
 								/* COPzanonymous_18anonymous_11 */
 								Label temp_887 = Ilg.DefineLabel(), temp_888 = Ilg.DefineLabel();
 								Value temp_890 = ReadAbsorbWhichRef, temp_889 = RRA(temp_890);
-								BranchIf(Eq(temp_889, MakeValue<uint>(0)), temp_887);
-								WRA(temp_890, Sub(temp_889, MakeValue<uint>(1)));
+								BranchIf((temp_889) == (MakeValue<uint>(0)), temp_887);
+								WRA(temp_890, temp_889 - MakeValue<uint>(1));
 								Branch(temp_888);
 								Label(temp_887);
 								TimestampInc(1);
@@ -3165,8 +3165,8 @@ namespace SharpStation {
 								/* COPzanonymous_19anonymous_11 */
 								Label temp_891 = Ilg.DefineLabel(), temp_892 = Ilg.DefineLabel();
 								Value temp_894 = ReadAbsorbWhichRef, temp_893 = RRA(temp_894);
-								BranchIf(Eq(temp_893, MakeValue<uint>(0)), temp_891);
-								WRA(temp_894, Sub(temp_893, MakeValue<uint>(1)));
+								BranchIf((temp_893) == (MakeValue<uint>(0)), temp_891);
+								WRA(temp_894, temp_893 - MakeValue<uint>(1));
 								Branch(temp_892);
 								Label(temp_891);
 								TimestampInc(1);
@@ -3182,8 +3182,8 @@ namespace SharpStation {
 								/* COPzanonymous_20anonymous_11 */
 								Label temp_895 = Ilg.DefineLabel(), temp_896 = Ilg.DefineLabel();
 								Value temp_898 = ReadAbsorbWhichRef, temp_897 = RRA(temp_898);
-								BranchIf(Eq(temp_897, MakeValue<uint>(0)), temp_895);
-								WRA(temp_898, Sub(temp_897, MakeValue<uint>(1)));
+								BranchIf((temp_897) == (MakeValue<uint>(0)), temp_895);
+								WRA(temp_898, temp_897 - MakeValue<uint>(1));
 								Branch(temp_896);
 								Label(temp_895);
 								TimestampInc(1);
@@ -3199,8 +3199,8 @@ namespace SharpStation {
 								/* COPzanonymous_21anonymous_11 */
 								Label temp_899 = Ilg.DefineLabel(), temp_900 = Ilg.DefineLabel();
 								Value temp_902 = ReadAbsorbWhichRef, temp_901 = RRA(temp_902);
-								BranchIf(Eq(temp_901, MakeValue<uint>(0)), temp_899);
-								WRA(temp_902, Sub(temp_901, MakeValue<uint>(1)));
+								BranchIf((temp_901) == (MakeValue<uint>(0)), temp_899);
+								WRA(temp_902, temp_901 - MakeValue<uint>(1));
 								Branch(temp_900);
 								Label(temp_899);
 								TimestampInc(1);
@@ -3216,8 +3216,8 @@ namespace SharpStation {
 								/* COPzanonymous_22anonymous_11 */
 								Label temp_903 = Ilg.DefineLabel(), temp_904 = Ilg.DefineLabel();
 								Value temp_906 = ReadAbsorbWhichRef, temp_905 = RRA(temp_906);
-								BranchIf(Eq(temp_905, MakeValue<uint>(0)), temp_903);
-								WRA(temp_906, Sub(temp_905, MakeValue<uint>(1)));
+								BranchIf((temp_905) == (MakeValue<uint>(0)), temp_903);
+								WRA(temp_906, temp_905 - MakeValue<uint>(1));
 								Branch(temp_904);
 								Label(temp_903);
 								TimestampInc(1);
@@ -3233,8 +3233,8 @@ namespace SharpStation {
 								/* COPzanonymous_23anonymous_11 */
 								Label temp_907 = Ilg.DefineLabel(), temp_908 = Ilg.DefineLabel();
 								Value temp_910 = ReadAbsorbWhichRef, temp_909 = RRA(temp_910);
-								BranchIf(Eq(temp_909, MakeValue<uint>(0)), temp_907);
-								WRA(temp_910, Sub(temp_909, MakeValue<uint>(1)));
+								BranchIf((temp_909) == (MakeValue<uint>(0)), temp_907);
+								WRA(temp_910, temp_909 - MakeValue<uint>(1));
 								Branch(temp_908);
 								Label(temp_907);
 								TimestampInc(1);
@@ -3250,8 +3250,8 @@ namespace SharpStation {
 								/* COPzanonymous_24anonymous_11 */
 								Label temp_911 = Ilg.DefineLabel(), temp_912 = Ilg.DefineLabel();
 								Value temp_914 = ReadAbsorbWhichRef, temp_913 = RRA(temp_914);
-								BranchIf(Eq(temp_913, MakeValue<uint>(0)), temp_911);
-								WRA(temp_914, Sub(temp_913, MakeValue<uint>(1)));
+								BranchIf((temp_913) == (MakeValue<uint>(0)), temp_911);
+								WRA(temp_914, temp_913 - MakeValue<uint>(1));
 								Branch(temp_912);
 								Label(temp_911);
 								TimestampInc(1);
@@ -3267,8 +3267,8 @@ namespace SharpStation {
 								/* COPzanonymous_25anonymous_11 */
 								Label temp_915 = Ilg.DefineLabel(), temp_916 = Ilg.DefineLabel();
 								Value temp_918 = ReadAbsorbWhichRef, temp_917 = RRA(temp_918);
-								BranchIf(Eq(temp_917, MakeValue<uint>(0)), temp_915);
-								WRA(temp_918, Sub(temp_917, MakeValue<uint>(1)));
+								BranchIf((temp_917) == (MakeValue<uint>(0)), temp_915);
+								WRA(temp_918, temp_917 - MakeValue<uint>(1));
 								Branch(temp_916);
 								Label(temp_915);
 								TimestampInc(1);
@@ -3284,8 +3284,8 @@ namespace SharpStation {
 								/* COPzanonymous_26anonymous_11 */
 								Label temp_919 = Ilg.DefineLabel(), temp_920 = Ilg.DefineLabel();
 								Value temp_922 = ReadAbsorbWhichRef, temp_921 = RRA(temp_922);
-								BranchIf(Eq(temp_921, MakeValue<uint>(0)), temp_919);
-								WRA(temp_922, Sub(temp_921, MakeValue<uint>(1)));
+								BranchIf((temp_921) == (MakeValue<uint>(0)), temp_919);
+								WRA(temp_922, temp_921 - MakeValue<uint>(1));
 								Branch(temp_920);
 								Label(temp_919);
 								TimestampInc(1);
@@ -3301,8 +3301,8 @@ namespace SharpStation {
 								/* COPzanonymous_27anonymous_11 */
 								Label temp_923 = Ilg.DefineLabel(), temp_924 = Ilg.DefineLabel();
 								Value temp_926 = ReadAbsorbWhichRef, temp_925 = RRA(temp_926);
-								BranchIf(Eq(temp_925, MakeValue<uint>(0)), temp_923);
-								WRA(temp_926, Sub(temp_925, MakeValue<uint>(1)));
+								BranchIf((temp_925) == (MakeValue<uint>(0)), temp_923);
+								WRA(temp_926, temp_925 - MakeValue<uint>(1));
 								Branch(temp_924);
 								Label(temp_923);
 								TimestampInc(1);
@@ -3321,8 +3321,8 @@ namespace SharpStation {
 						/* LB */
 						Label temp_927 = Ilg.DefineLabel(), temp_928 = Ilg.DefineLabel();
 						Value temp_930 = ReadAbsorbWhichRef, temp_929 = RRA(temp_930);
-						BranchIf(Eq(temp_929, MakeValue<uint>(0)), temp_927);
-						WRA(temp_930, Sub(temp_929, MakeValue<uint>(1)));
+						BranchIf((temp_929) == (MakeValue<uint>(0)), temp_927);
+						WRA(temp_930, temp_929 - MakeValue<uint>(1));
 						Branch(temp_928);
 						Label(temp_927);
 						TimestampInc(1);
@@ -3335,7 +3335,7 @@ namespace SharpStation {
 						var temp_210 = (Gprs)[rs];
 						if(need_load) { DoLds(); }
 						var offset = (uint) (SignExt(0x10, imm));
-						DeferSet(rt, Unsigned(SignExt(8, Load(8, Add(temp_210, MakeValue<uint>(offset)), pc))));
+						DeferSet(rt, Unsigned(SignExt(8, Load(8, (temp_210) + (MakeValue<uint>(offset)), pc))));
 						has_load = true;
 						return(true);
 						break;
@@ -3344,8 +3344,8 @@ namespace SharpStation {
 						/* LH */
 						Label temp_931 = Ilg.DefineLabel(), temp_932 = Ilg.DefineLabel();
 						Value temp_934 = ReadAbsorbWhichRef, temp_933 = RRA(temp_934);
-						BranchIf(Eq(temp_933, MakeValue<uint>(0)), temp_931);
-						WRA(temp_934, Sub(temp_933, MakeValue<uint>(1)));
+						BranchIf((temp_933) == (MakeValue<uint>(0)), temp_931);
+						WRA(temp_934, temp_933 - MakeValue<uint>(1));
 						Branch(temp_932);
 						Label(temp_931);
 						TimestampInc(1);
@@ -3358,7 +3358,7 @@ namespace SharpStation {
 						var temp_211 = (Gprs)[rs];
 						if(need_load) { DoLds(); }
 						var offset = (uint) (SignExt(0x10, imm));
-						var addr = Add(temp_211, MakeValue<uint>(offset));
+						var addr = (temp_211) + (MakeValue<uint>(offset));
 						Alignment(addr, 16, false, pc);
 						DeferSet(rt, Unsigned(SignExt(16, Load(16, addr, pc))));
 						has_load = true;
@@ -3369,8 +3369,8 @@ namespace SharpStation {
 						/* LWL */
 						Label temp_935 = Ilg.DefineLabel(), temp_936 = Ilg.DefineLabel();
 						Value temp_938 = ReadAbsorbWhichRef, temp_937 = RRA(temp_938);
-						BranchIf(Eq(temp_937, MakeValue<uint>(0)), temp_935);
-						WRA(temp_938, Sub(temp_937, MakeValue<uint>(1)));
+						BranchIf((temp_937) == (MakeValue<uint>(0)), temp_935);
+						WRA(temp_938, temp_937 - MakeValue<uint>(1));
 						Branch(temp_936);
 						Label(temp_935);
 						TimestampInc(1);
@@ -3383,7 +3383,7 @@ namespace SharpStation {
 						var temp_212 = (Gprs)[rs];
 						var temp_213 = (Gprs)[rt];
 						Label temp_939 = Ilg.DefineLabel(), temp_940 = Ilg.DefineLabel();
-						BranchIf(Eq(LDWhichRef, MakeValue<uint>(rt)), temp_939);
+						BranchIf((LDWhichRef) == (MakeValue<uint>(rt)), temp_939);
 						DoLds();
 						Branch(temp_940);
 						Label(temp_939);
@@ -3391,27 +3391,27 @@ namespace SharpStation {
 						Store(temp_213, LDValueRef);
 						Label(temp_940);
 						var simm = (uint) (SignExt(0x10, imm));
-						var offset = Add(temp_212, MakeValue<uint>(simm));
-						var bottom = And(offset, MakeValue<uint>(0x3));
-						var moffset = And(offset, MakeValue<uint>(0xfffffffc));
+						var offset = (temp_212) + (MakeValue<uint>(simm));
+						var bottom = (offset) & (MakeValue<uint>(0x3));
+						var moffset = (offset) & (MakeValue<uint>(0xfffffffc));
 						Label temp_941 = Ilg.DefineLabel(), temp_942 = Ilg.DefineLabel();
-						BranchIf(Eq(bottom, MakeValue<uint>(0x0)), temp_941);
+						BranchIf((bottom) == (MakeValue<uint>(0x0)), temp_941);
 						Label temp_943 = Ilg.DefineLabel(), temp_944 = Ilg.DefineLabel();
-						BranchIf(Eq(bottom, MakeValue<uint>(0x1)), temp_943);
+						BranchIf((bottom) == (MakeValue<uint>(0x1)), temp_943);
 						Label temp_945 = Ilg.DefineLabel(), temp_946 = Ilg.DefineLabel();
-						BranchIf(Eq(bottom, MakeValue<uint>(0x2)), temp_945);
+						BranchIf((bottom) == (MakeValue<uint>(0x2)), temp_945);
 						DeferSet(rt, Load(32, moffset, pc));
 						Branch(temp_946);
 						Label(temp_945);
-						DeferSet(rt, Or(And(temp_213, MakeValue<uint>(0xff)), Shl(Load(24, moffset, pc), MakeValue<uint>(0x8))));
+						DeferSet(rt, ((temp_213) & (MakeValue<uint>(0xff))) | (Shl(Load(24, moffset, pc), MakeValue<uint>(0x8))));
 						Label(temp_946);
 						Branch(temp_944);
 						Label(temp_943);
-						DeferSet(rt, Or(And(temp_213, MakeValue<uint>(0xffff)), Shl(Load(16, moffset, pc), MakeValue<uint>(0x10))));
+						DeferSet(rt, ((temp_213) & (MakeValue<uint>(0xffff))) | (Shl(Load(16, moffset, pc), MakeValue<uint>(0x10))));
 						Label(temp_944);
 						Branch(temp_942);
 						Label(temp_941);
-						DeferSet(rt, Or(And(temp_213, MakeValue<uint>(0xffffff)), Shl(Load(8, moffset, pc), MakeValue<uint>(0x18))));
+						DeferSet(rt, ((temp_213) & (MakeValue<uint>(0xffffff))) | (Shl(Load(8, moffset, pc), MakeValue<uint>(0x18))));
 						Label(temp_942);
 						has_load = true;
 						return(true);
@@ -3421,8 +3421,8 @@ namespace SharpStation {
 						/* LW */
 						Label temp_947 = Ilg.DefineLabel(), temp_948 = Ilg.DefineLabel();
 						Value temp_950 = ReadAbsorbWhichRef, temp_949 = RRA(temp_950);
-						BranchIf(Eq(temp_949, MakeValue<uint>(0)), temp_947);
-						WRA(temp_950, Sub(temp_949, MakeValue<uint>(1)));
+						BranchIf((temp_949) == (MakeValue<uint>(0)), temp_947);
+						WRA(temp_950, temp_949 - MakeValue<uint>(1));
 						Branch(temp_948);
 						Label(temp_947);
 						TimestampInc(1);
@@ -3435,7 +3435,7 @@ namespace SharpStation {
 						var temp_214 = (Gprs)[rs];
 						if(need_load) { DoLds(); }
 						var offset = (uint) (SignExt(0x10, imm));
-						var addr = Add(temp_214, MakeValue<uint>(offset));
+						var addr = (temp_214) + (MakeValue<uint>(offset));
 						Alignment(addr, 32, false, pc);
 						DeferSet(rt, Load(32, addr, pc));
 						has_load = true;
@@ -3446,8 +3446,8 @@ namespace SharpStation {
 						/* LBU */
 						Label temp_951 = Ilg.DefineLabel(), temp_952 = Ilg.DefineLabel();
 						Value temp_954 = ReadAbsorbWhichRef, temp_953 = RRA(temp_954);
-						BranchIf(Eq(temp_953, MakeValue<uint>(0)), temp_951);
-						WRA(temp_954, Sub(temp_953, MakeValue<uint>(1)));
+						BranchIf((temp_953) == (MakeValue<uint>(0)), temp_951);
+						WRA(temp_954, temp_953 - MakeValue<uint>(1));
 						Branch(temp_952);
 						Label(temp_951);
 						TimestampInc(1);
@@ -3460,7 +3460,7 @@ namespace SharpStation {
 						var temp_215 = (Gprs)[rs];
 						if(need_load) { DoLds(); }
 						var offset = (uint) (SignExt(0x10, imm));
-						DeferSet(rt, Load(8, Add(temp_215, MakeValue<uint>(offset)), pc));
+						DeferSet(rt, Load(8, (temp_215) + (MakeValue<uint>(offset)), pc));
 						has_load = true;
 						return(true);
 						break;
@@ -3469,8 +3469,8 @@ namespace SharpStation {
 						/* LHU */
 						Label temp_955 = Ilg.DefineLabel(), temp_956 = Ilg.DefineLabel();
 						Value temp_958 = ReadAbsorbWhichRef, temp_957 = RRA(temp_958);
-						BranchIf(Eq(temp_957, MakeValue<uint>(0)), temp_955);
-						WRA(temp_958, Sub(temp_957, MakeValue<uint>(1)));
+						BranchIf((temp_957) == (MakeValue<uint>(0)), temp_955);
+						WRA(temp_958, temp_957 - MakeValue<uint>(1));
 						Branch(temp_956);
 						Label(temp_955);
 						TimestampInc(1);
@@ -3483,7 +3483,7 @@ namespace SharpStation {
 						var temp_216 = (Gprs)[rs];
 						if(need_load) { DoLds(); }
 						var offset = (uint) (SignExt(0x10, imm));
-						var addr = Add(temp_216, MakeValue<uint>(offset));
+						var addr = (temp_216) + (MakeValue<uint>(offset));
 						Alignment(addr, 16, false, pc);
 						DeferSet(rt, Load(16, addr, pc));
 						has_load = true;
@@ -3494,8 +3494,8 @@ namespace SharpStation {
 						/* LWR */
 						Label temp_959 = Ilg.DefineLabel(), temp_960 = Ilg.DefineLabel();
 						Value temp_962 = ReadAbsorbWhichRef, temp_961 = RRA(temp_962);
-						BranchIf(Eq(temp_961, MakeValue<uint>(0)), temp_959);
-						WRA(temp_962, Sub(temp_961, MakeValue<uint>(1)));
+						BranchIf((temp_961) == (MakeValue<uint>(0)), temp_959);
+						WRA(temp_962, temp_961 - MakeValue<uint>(1));
 						Branch(temp_960);
 						Label(temp_959);
 						TimestampInc(1);
@@ -3508,7 +3508,7 @@ namespace SharpStation {
 						var temp_217 = (Gprs)[rs];
 						var temp_218 = (Gprs)[rt];
 						Label temp_963 = Ilg.DefineLabel(), temp_964 = Ilg.DefineLabel();
-						BranchIf(Eq(LDWhichRef, MakeValue<uint>(rt)), temp_963);
+						BranchIf((LDWhichRef) == (MakeValue<uint>(rt)), temp_963);
 						DoLds();
 						Branch(temp_964);
 						Label(temp_963);
@@ -3516,22 +3516,22 @@ namespace SharpStation {
 						Store(temp_218, LDValueRef);
 						Label(temp_964);
 						var simm = (uint) (SignExt(0x10, imm));
-						var offset = Add(temp_217, MakeValue<uint>(simm));
-						var bottom = And(offset, MakeValue<uint>(0x3));
+						var offset = (temp_217) + (MakeValue<uint>(simm));
+						var bottom = (offset) & (MakeValue<uint>(0x3));
 						Label temp_965 = Ilg.DefineLabel(), temp_966 = Ilg.DefineLabel();
-						BranchIf(Eq(bottom, MakeValue<uint>(0x0)), temp_965);
+						BranchIf((bottom) == (MakeValue<uint>(0x0)), temp_965);
 						Label temp_967 = Ilg.DefineLabel(), temp_968 = Ilg.DefineLabel();
-						BranchIf(Eq(bottom, MakeValue<uint>(0x1)), temp_967);
+						BranchIf((bottom) == (MakeValue<uint>(0x1)), temp_967);
 						Label temp_969 = Ilg.DefineLabel(), temp_970 = Ilg.DefineLabel();
-						BranchIf(Eq(bottom, MakeValue<uint>(0x2)), temp_969);
-						DeferSet(rt, Or(And(temp_218, MakeValue<uint>(0xffffff00)), Load(8, offset, pc)));
+						BranchIf((bottom) == (MakeValue<uint>(0x2)), temp_969);
+						DeferSet(rt, ((temp_218) & (MakeValue<uint>(0xffffff00))) | (Load(8, offset, pc)));
 						Branch(temp_970);
 						Label(temp_969);
-						DeferSet(rt, Or(And(temp_218, MakeValue<uint>(0xffff0000)), Load(16, offset, pc)));
+						DeferSet(rt, ((temp_218) & (MakeValue<uint>(0xffff0000))) | (Load(16, offset, pc)));
 						Label(temp_970);
 						Branch(temp_968);
 						Label(temp_967);
-						DeferSet(rt, Or(And(temp_218, MakeValue<uint>(0xff000000)), Load(24, offset, pc)));
+						DeferSet(rt, ((temp_218) & (MakeValue<uint>(0xff000000))) | (Load(24, offset, pc)));
 						Label(temp_968);
 						Branch(temp_966);
 						Label(temp_965);
@@ -3545,8 +3545,8 @@ namespace SharpStation {
 						/* SB */
 						Label temp_971 = Ilg.DefineLabel(), temp_972 = Ilg.DefineLabel();
 						Value temp_974 = ReadAbsorbWhichRef, temp_973 = RRA(temp_974);
-						BranchIf(Eq(temp_973, MakeValue<uint>(0)), temp_971);
-						WRA(temp_974, Sub(temp_973, MakeValue<uint>(1)));
+						BranchIf((temp_973) == (MakeValue<uint>(0)), temp_971);
+						WRA(temp_974, temp_973 - MakeValue<uint>(1));
 						Branch(temp_972);
 						Label(temp_971);
 						TimestampInc(1);
@@ -3560,7 +3560,7 @@ namespace SharpStation {
 						var temp_220 = (Gprs)[rt];
 						if(need_load) { DoLds(); }
 						var offset = (uint) (SignExt(0x10, imm));
-						Store(8, Add(temp_219, MakeValue<uint>(offset)), temp_220, pc);
+						Store(8, (temp_219) + (MakeValue<uint>(offset)), temp_220, pc);
 						return(true);
 						break;
 					}
@@ -3568,8 +3568,8 @@ namespace SharpStation {
 						/* SH */
 						Label temp_975 = Ilg.DefineLabel(), temp_976 = Ilg.DefineLabel();
 						Value temp_978 = ReadAbsorbWhichRef, temp_977 = RRA(temp_978);
-						BranchIf(Eq(temp_977, MakeValue<uint>(0)), temp_975);
-						WRA(temp_978, Sub(temp_977, MakeValue<uint>(1)));
+						BranchIf((temp_977) == (MakeValue<uint>(0)), temp_975);
+						WRA(temp_978, temp_977 - MakeValue<uint>(1));
 						Branch(temp_976);
 						Label(temp_975);
 						TimestampInc(1);
@@ -3583,7 +3583,7 @@ namespace SharpStation {
 						var temp_222 = (Gprs)[rt];
 						if(need_load) { DoLds(); }
 						var offset = (uint) (SignExt(0x10, imm));
-						var addr = Add(temp_221, MakeValue<uint>(offset));
+						var addr = (temp_221) + (MakeValue<uint>(offset));
 						Alignment(addr, 16, true, pc);
 						Store(16, addr, temp_222, pc);
 						return(true);
@@ -3593,8 +3593,8 @@ namespace SharpStation {
 						/* SWL */
 						Label temp_979 = Ilg.DefineLabel(), temp_980 = Ilg.DefineLabel();
 						Value temp_982 = ReadAbsorbWhichRef, temp_981 = RRA(temp_982);
-						BranchIf(Eq(temp_981, MakeValue<uint>(0)), temp_979);
-						WRA(temp_982, Sub(temp_981, MakeValue<uint>(1)));
+						BranchIf((temp_981) == (MakeValue<uint>(0)), temp_979);
+						WRA(temp_982, temp_981 - MakeValue<uint>(1));
 						Branch(temp_980);
 						Label(temp_979);
 						TimestampInc(1);
@@ -3608,15 +3608,15 @@ namespace SharpStation {
 						var temp_224 = (Gprs)[rt];
 						if(need_load) { DoLds(); }
 						var simm = (uint) (SignExt(0x10, imm));
-						var offset = Add(temp_223, MakeValue<uint>(simm));
-						var bottom = And(offset, MakeValue<uint>(0x3));
-						var moffset = And(offset, MakeValue<uint>(0xfffffffc));
+						var offset = (temp_223) + (MakeValue<uint>(simm));
+						var bottom = (offset) & (MakeValue<uint>(0x3));
+						var moffset = (offset) & (MakeValue<uint>(0xfffffffc));
 						Label temp_983 = Ilg.DefineLabel(), temp_984 = Ilg.DefineLabel();
-						BranchIf(Eq(bottom, MakeValue<uint>(0x0)), temp_983);
+						BranchIf((bottom) == (MakeValue<uint>(0x0)), temp_983);
 						Label temp_985 = Ilg.DefineLabel(), temp_986 = Ilg.DefineLabel();
-						BranchIf(Eq(bottom, MakeValue<uint>(0x1)), temp_985);
+						BranchIf((bottom) == (MakeValue<uint>(0x1)), temp_985);
 						Label temp_987 = Ilg.DefineLabel(), temp_988 = Ilg.DefineLabel();
-						BranchIf(Eq(bottom, MakeValue<uint>(0x2)), temp_987);
+						BranchIf((bottom) == (MakeValue<uint>(0x2)), temp_987);
 						Store(32, moffset, temp_224, pc);
 						Branch(temp_988);
 						Label(temp_987);
@@ -3637,8 +3637,8 @@ namespace SharpStation {
 						/* SW */
 						Label temp_989 = Ilg.DefineLabel(), temp_990 = Ilg.DefineLabel();
 						Value temp_992 = ReadAbsorbWhichRef, temp_991 = RRA(temp_992);
-						BranchIf(Eq(temp_991, MakeValue<uint>(0)), temp_989);
-						WRA(temp_992, Sub(temp_991, MakeValue<uint>(1)));
+						BranchIf((temp_991) == (MakeValue<uint>(0)), temp_989);
+						WRA(temp_992, temp_991 - MakeValue<uint>(1));
 						Branch(temp_990);
 						Label(temp_989);
 						TimestampInc(1);
@@ -3652,7 +3652,7 @@ namespace SharpStation {
 						var temp_226 = (Gprs)[rt];
 						if(need_load) { DoLds(); }
 						var offset = (uint) (SignExt(0x10, imm));
-						var addr = Add(temp_225, MakeValue<uint>(offset));
+						var addr = (temp_225) + (MakeValue<uint>(offset));
 						Alignment(addr, 32, true, pc);
 						Store(32, addr, temp_226, pc);
 						return(true);
@@ -3662,8 +3662,8 @@ namespace SharpStation {
 						/* SWR */
 						Label temp_993 = Ilg.DefineLabel(), temp_994 = Ilg.DefineLabel();
 						Value temp_996 = ReadAbsorbWhichRef, temp_995 = RRA(temp_996);
-						BranchIf(Eq(temp_995, MakeValue<uint>(0)), temp_993);
-						WRA(temp_996, Sub(temp_995, MakeValue<uint>(1)));
+						BranchIf((temp_995) == (MakeValue<uint>(0)), temp_993);
+						WRA(temp_996, temp_995 - MakeValue<uint>(1));
 						Branch(temp_994);
 						Label(temp_993);
 						TimestampInc(1);
@@ -3677,14 +3677,14 @@ namespace SharpStation {
 						var temp_228 = (Gprs)[rt];
 						if(need_load) { DoLds(); }
 						var simm = (uint) (SignExt(0x10, imm));
-						var offset = Add(temp_227, MakeValue<uint>(simm));
-						var bottom = And(offset, MakeValue<uint>(0x3));
+						var offset = (temp_227) + (MakeValue<uint>(simm));
+						var bottom = (offset) & (MakeValue<uint>(0x3));
 						Label temp_997 = Ilg.DefineLabel(), temp_998 = Ilg.DefineLabel();
-						BranchIf(Eq(bottom, MakeValue<uint>(0x0)), temp_997);
+						BranchIf((bottom) == (MakeValue<uint>(0x0)), temp_997);
 						Label temp_999 = Ilg.DefineLabel(), temp_1000 = Ilg.DefineLabel();
-						BranchIf(Eq(bottom, MakeValue<uint>(0x1)), temp_999);
+						BranchIf((bottom) == (MakeValue<uint>(0x1)), temp_999);
 						Label temp_1001 = Ilg.DefineLabel(), temp_1002 = Ilg.DefineLabel();
-						BranchIf(Eq(bottom, MakeValue<uint>(0x2)), temp_1001);
+						BranchIf((bottom) == (MakeValue<uint>(0x2)), temp_1001);
 						Store(8, offset, temp_228, pc);
 						Branch(temp_1002);
 						Label(temp_1001);
@@ -3705,8 +3705,8 @@ namespace SharpStation {
 						/* LWC2 */
 						Label temp_1003 = Ilg.DefineLabel(), temp_1004 = Ilg.DefineLabel();
 						Value temp_1006 = ReadAbsorbWhichRef, temp_1005 = RRA(temp_1006);
-						BranchIf(Eq(temp_1005, MakeValue<uint>(0)), temp_1003);
-						WRA(temp_1006, Sub(temp_1005, MakeValue<uint>(1)));
+						BranchIf((temp_1005) == (MakeValue<uint>(0)), temp_1003);
+						WRA(temp_1006, temp_1005 - MakeValue<uint>(1));
 						Branch(temp_1004);
 						Label(temp_1003);
 						TimestampInc(1);
@@ -3718,9 +3718,9 @@ namespace SharpStation {
 						var temp_229 = (Gprs)[rs];
 						if(need_load) { DoLds(); }
 						var offset = (uint) (SignExt(0x10, imm));
-						var addr = Add(temp_229, MakeValue<uint>(offset));
+						var addr = (temp_229) + (MakeValue<uint>(offset));
 						Alignment(addr, 32, false, pc);
-						WriteCopreg(0x2, rt, Load(32, Add(temp_229, MakeValue<uint>(offset)), pc));
+						WriteCopreg(0x2, rt, Load(32, (temp_229) + (MakeValue<uint>(offset)), pc));
 						return(true);
 						break;
 					}
@@ -3728,8 +3728,8 @@ namespace SharpStation {
 						/* SWC2 */
 						Label temp_1007 = Ilg.DefineLabel(), temp_1008 = Ilg.DefineLabel();
 						Value temp_1010 = ReadAbsorbWhichRef, temp_1009 = RRA(temp_1010);
-						BranchIf(Eq(temp_1009, MakeValue<uint>(0)), temp_1007);
-						WRA(temp_1010, Sub(temp_1009, MakeValue<uint>(1)));
+						BranchIf((temp_1009) == (MakeValue<uint>(0)), temp_1007);
+						WRA(temp_1010, temp_1009 - MakeValue<uint>(1));
 						Branch(temp_1008);
 						Label(temp_1007);
 						TimestampInc(1);
@@ -3741,7 +3741,7 @@ namespace SharpStation {
 						var temp_230 = (Gprs)[rs];
 						if(need_load) { DoLds(); }
 						var offset = (uint) (SignExt(0x10, imm));
-						var addr = Add(temp_230, MakeValue<uint>(offset));
+						var addr = (temp_230) + (MakeValue<uint>(offset));
 						Alignment(addr, 32, true, pc);
 						Store(32, addr, GenReadCopreg(0x2, rt), pc);
 						return(true);
