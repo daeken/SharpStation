@@ -202,17 +202,7 @@ namespace SharpStation {
 			}
 		}
 
-		public int SignExt(int size, uint imm) {
-			unchecked {
-				switch(size) {
-					case 8: return (sbyte) (byte) imm;
-					case 16: return (short) (ushort) imm;
-					case 32: return (int) imm;
-					case int _ when (imm & (1 << (size - 1))) != 0: return (int) imm - (1 << size);
-					default: return (int) imm;
-				}
-			}
-		}
+		public static int SignExt(int size, uint imm) => imm.SignExt(size);
 
 		public uint LoadMemory(int size, uint addr, uint pc) {
 			//$"Load {size/8} bytes from {addr:X8} -- {Pc:X8}".Debug();

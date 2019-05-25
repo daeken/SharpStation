@@ -26,5 +26,17 @@ namespace SharpStation {
 
 		public static bool HasBit(this uint v, int bit) => (v & (1U << bit)) != 0;
 		public static uint ToBit(this bool v, int bit) => v ? 1U << bit : 0;
+		
+		public static int SignExt(this uint imm, int size) {
+			unchecked {
+				switch(size) {
+					case 8: return (sbyte) (byte) imm;
+					case 16: return (short) (ushort) imm;
+					case 32: return (int) imm;
+					case int _ when (imm & (1 << (size - 1))) != 0: return (int) imm - (1 << size);
+					default: return (int) imm;
+				}
+			}
+		}
 	}
 }

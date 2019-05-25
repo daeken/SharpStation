@@ -1,6 +1,8 @@
 namespace SharpStation {
 	public class Globals {
 		public static uint Timestamp;
+		
+		public static IRenderer Renderer = new OpenGLRasterizer();
 
 		public static readonly EventSystem Events = new EventSystem();
 		//public static readonly BaseCpu Cpu = new Interpreter();
@@ -12,9 +14,9 @@ namespace SharpStation {
 		public static readonly CoreIrq Irq = new CoreIrq();
 		public static readonly CoreMemory Memory = new CoreMemory();
 
-		public static void StartSystem() {
+		public static void StartSystem() => Renderer.KickOff(() => {
 			while(true)
 				Cpu.RunOneFrame();
-		}
+		});
 	}
 }

@@ -141,31 +141,34 @@ namespace SharpStation {
 			end:
 			LastTimestamp = Timestamp;
 		}
+
+		static Color ToColor(uint c) => new Color((byte) (c & 0xFF), (byte) ((c >> 8) & 0xFF), (byte) ((c >> 16) & 0xFF));
+		static Coord ToCoord(uint c) => new Coord((int) (c & 0xFFFF), (int) (c >> 16));
 		
 		[Gp0Command(0x00)] void Nop() {}
 		[Gp0Command(0x01)] void ClearCache() {}
 
 		[Gp0Command(0x28)]
-		void MonochromeOpaqueQuad(uint cmd, uint v1, uint v2, uint v3, uint v4) =>
-			$"MonochromeOpaqueQuad {cmd:X8} {v1:X8} {v2:X8} {v3:X8} {v4:X8}".Debug();
+		void MonochromeOpaqueQuad(uint color, uint v1, uint v2, uint v3, uint v4) {
+			$"MonochromeOpaqueQuad {color:X8} {v1:X8} {v2:X8} {v3:X8} {v4:X8}".Debug();
+			Renderer.DrawSolidQuad(ToColor(color), ToCoord(v1), ToCoord(v2), ToCoord(v3), ToCoord(v4));
+		}
 
 		[Gp0Command(0x2C)]
 		void TexturedOpaqueBlendedQuad(uint color, uint v1, uint t1, uint v2, uint t2, uint v3, uint t3, uint v4, uint t4) {
-			color &= 0xFFFFFF;
 			$"TexturedOpaqueBlendedQuad {color:X6} {v1:X8} {t1:X8} {v2:X8} {t2:X8} {v3:X8} {t3:X8} {v4:X8} {t4:X8}".Debug();
-			
 		}
 
 		[Gp0Command(0x30)]
 		void ShadedOpaqueTri(uint c1, uint v1, uint c2, uint v2, uint c3, uint v3) {
-			c1 &= 0xFFFFFF;
-			$"ShadedOpaqueTri {c1:X6} {v1:X8} {c2:X6} {v2:X8} {c2:X6} {v2:X8}".Debug();
+			$"ShadedOpaqueTri {c1:X6} {v1:X8} {c2:X6} {v2:X8} {c3:X6} {v3:X8}".Debug();
+			Renderer.DrawShadedTriangle(ToCoord(v1), ToColor(c1), ToCoord(v2), ToColor(c2), ToCoord(v3), ToColor(c3));
 		}
 
 		[Gp0Command(0x38)]
 		void ShadedOpaqueQuad(uint c1, uint v1, uint c2, uint v2, uint c3, uint v3, uint c4, uint v4) {
-			c1 &= 0xFFFFFF;
-			$"ShadedOpaqueQuad {c1:X6} {v1:X8} {c2:X6} {v2:X8} {c2:X6} {v2:X8}".Debug();
+			$"ShadedOpaqueQuad {c1:X6} {v1:X8} {c2:X6} {v2:X8} {c3:X6} {v3:X8} {c4:X6} {v4:X8}".Debug();
+			Renderer.DrawShadedQuad(ToCoord(v1), ToColor(c1), ToCoord(v2), ToColor(c2), ToCoord(v3), ToColor(c3), ToCoord(v4), ToColor(c4));
 		}
 
 		[Gp0Command(0xA0)]
@@ -180,14 +183,15 @@ namespace SharpStation {
 				cmd, xd, yd, width, height
 			};
 		}
-		void CopyRectCpuToVram(uint cmd, uint x, uint y, uint w, uint h, params object[] data) {
+		void CopyRectCpuToVram(uint cmd, uint x, uint y, uint w, uint h, object[] data) {
 			$"Copy rect! {x} . {y} -- {w} x {h}".Debug();
 		}
 
 		[Gp0Command(0xE1)]
 		void SetDrawMode(uint value) {
-			$"Setting draw mode to {value:X06}".Debug();
-			//Stat = 0xFFFFFFFF;
+			$"Setting draw mode to {value & 0xFFFFFF:X06}".Debug();
+			Cpu.Running = false;
+			Renderer.EndFrame();
 		}
 		
 		[Gp0Command(0xE2)] void SetTextureWindow(uint value) {}
@@ -200,7 +204,7 @@ namespace SharpStation {
 		void Reset() => "GPU reset!".Debug();
 
 		[Gp1Command(0x01)]
-		void ResetCmdBuffer() => "GPU reset command buffer".Debug();
+		void ResetCmdBuffer() => CurGp0 = CurGp1 = null;
 
 		[Gp1Command(0x02)]
 		void AckInterrupt() => "ACK interrupt".Debug();

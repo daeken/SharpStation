@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 
 namespace SharpStation {
 	public class CoreCdrom {
@@ -7,7 +8,8 @@ namespace SharpStation {
 			get => throw new NotImplementedException();
 			set {
 				"CD-ROM access!".Debug();
-				Environment.Exit(0);
+				while(true)
+					Thread.Sleep(500);
 			}
 		}
 	}
