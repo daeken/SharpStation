@@ -24,6 +24,8 @@ namespace SharpStation {
 			return 0;
 		}
 
+		public static bool HasBit(this byte v, int bit) => (v & (1U << bit)) != 0;
+		public static bool HasBit(this ushort v, int bit) => (v & (1U << bit)) != 0;
 		public static bool HasBit(this uint v, int bit) => (v & (1U << bit)) != 0;
 		public static uint ToBit(this bool v, int bit) => v ? 1U << bit : 0;
 		

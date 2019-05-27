@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -148,14 +149,13 @@ namespace SharpStation {
 		}
 
 		protected override void Run() {
-			//$"Running block {Pc:X}".Debug();
-			if(BranchToBlock != null) {
+			if(BranchToBlock != null && BranchToBlock.Addr == Pc) {
 				var func = LastBlock = BranchToBlock.Func;
 				Pc = LastBlockAddr = BranchToBlock.Addr;
 				BranchToBlock = null;
 				InterceptBlock(Pc);
 				if(func == null)
-					Pc = RecompileBlock(Pc);
+					Pc = RecompileBlock(Pc, BranchToBlock);
 				else {
 					func(this);
 					Pc = BranchTo;
@@ -180,8 +180,9 @@ namespace SharpStation {
 
 		string TtyBuf = "";
 		uint RecompileBlock(uint pc, Block? block = null) {
-			//$"Running block at {pc:X8}".Debug();
+			//$"Recompiling block at {pc:X8}".Debug();
 			if(pc == LastBlockAddr && LastBlock != null) {
+				BranchToBlock = null;
 				LastBlock(this);
 				return BranchTo;
 			}
@@ -190,6 +191,7 @@ namespace SharpStation {
 			if(block.Func != null) {
 				LastBlock = block.Func;
 				LastBlockAddr = pc;
+				BranchToBlock = null;
 				LastBlock(this);
 				return BranchTo;
 			}
@@ -212,8 +214,12 @@ namespace SharpStation {
 			var need_load = true;
 			var did_delay = false;
 			while(!did_delay) {
+				Memory.Store32(0x30654, Memory.Load32(0x30650));
 				var insn = Memory.Load32(pc);
-				//WriteLine($"{pc:X}:  {Disassemble(pc, insn)}");
+				//if(pc >= 0x8003D600 && pc <= 0x8003D7FC)
+				//	WriteLine($"{pc:X}:  {Disassemble(pc, insn)}");
+				if((pc & 0xFFFFFF) >= 0x30254 && (pc & 0xFFFFFF) <= 0x30680)
+					Call(nameof(TestTest), pc);
 
 				if(branched)
 					did_delay = true;
@@ -249,12 +255,27 @@ namespace SharpStation {
 			block.End = pc;
 			block.Func = LastBlock = func;
 			LastBlockAddr = opc;
+			BranchToBlock = null;
 			func(this);
 			return BranchTo;
 		}
 
+		public void TestTest(uint pc) {
+			//$"Hit {pc:X8}    {Gpr[31]:X8}".Debug();
+			/*using(var fp = File.OpenWrite("memdump.bin"))
+				for(var i = 0; i < 1024 * 1024 * 2; ++i)
+					fp.WriteByte(Memory.Load8((uint) i));*/
+			//Environment.Exit(0);
+		}
+
 		Block GetBlock(uint addr) =>
 			BlockCache.TryGetValue(addr, out var block) ? block : BlockCache[addr] = new Block(addr);
+
+		void BranchLink(Value target, uint pc) => Call(nameof(BranchLinkTo), target, pc);
+		void BranchLink(uint target, uint pc) => Call(nameof(BranchLinkTo), target, pc);
+		public void BranchLinkTo(uint target, uint pc) {
+			//$"Calling {target:X8} from {pc:X8}".Debug();
+		}
 
 		void Branch(Label label) => Ilg.Branch(label);
 		
@@ -264,7 +285,8 @@ namespace SharpStation {
 			Ilg.StoreField(typeof(Recompiler).GetField(nameof(BranchTo)));
 		}
 		void Branch(uint target) {
-			if(BlockStart <= target && target <= CurPc) {
+			// TODO: Add counter to prevent endless loops without checking interrupts
+			/*if(BlockStart <= target && target <= CurPc) {
 				Ilg.LoadConstant(true);
 				Ilg.StoreLocal(BranchToLabelLocal);
 				BranchToLabel = () => {
@@ -272,7 +294,7 @@ namespace SharpStation {
 					Ilg.BranchIfTrue(BlockInstLabels[target]);
 				};
 				return;
-			}
+			}*/
 			Ilg.LoadConstant(false);
 			Ilg.StoreLocal(BranchToLabelLocal);
 
@@ -289,6 +311,9 @@ namespace SharpStation {
 				Ilg.LoadField(fb);
 				Ilg.StoreField(typeof(Recompiler).GetField(nameof(BranchToBlock)));
 			}
+			CpuRef.Emit();
+			Ilg.LoadConstant(target);
+			Ilg.StoreField(typeof(Recompiler).GetField(nameof(BranchTo)));
 		}
 
 		void BranchIf(Value condition, Label label) => condition.EmitThen(() => Ilg.BranchIfTrue(label));

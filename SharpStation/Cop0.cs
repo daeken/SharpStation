@@ -88,6 +88,9 @@ namespace SharpStation {
 			}
 		}
 
+		public void Copcreg(uint reg, uint value) => throw new NotImplementedException();
+		public uint Copcreg(uint reg) => throw new NotImplementedException();
+
 		public void Call(uint func, uint inst) {
 			Debug.Assert(func == 16); // RFE
 			var mode = StatusRegister & 0x3FU;

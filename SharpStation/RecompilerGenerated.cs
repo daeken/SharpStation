@@ -192,6 +192,7 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								Gprs[rd] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 								Alignment(temp_126, 32, false, pc);
+								BranchLink(temp_126, pc);
 								if(!branched) Branch(temp_126);
 								branched = true;
 								return(true);
@@ -1592,6 +1593,7 @@ namespace SharpStation {
 						Gprs[0x1f] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 						var target = (((pc) + (0x4)) & (0xf0000000)) + ((imm) << ((int) 0x2));
 						if(!branched) Branch(target);
+						BranchLink(target, pc);
 						branched = true;
 						return(true);
 						break;

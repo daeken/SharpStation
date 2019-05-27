@@ -15,43 +15,56 @@ namespace SharpStation {
 	}
 	
 	public class CoreIrq {
-		static uint Status;
+		uint _Mask, Asserted, ToAssert, Status;
+		
 		[Port(0x1F801070)]
-		static ushort Status2 {
+		ushort Status2 {
 			get => (ushort) StatusPort;
 			set => StatusPort = value;
 		}
 		[Port(0x1F801070)]
-		static uint StatusPort {
+		uint StatusPort {
 			get => Status;
 			set => Status &= (value & 3) * 8;
 		}
 		
 		[Port(0x1F801074)]
-		static ushort Mask2 {
+		ushort Mask2 {
 			get => (ushort) Mask;
 			set => Mask = value;
 		}
-		[Port(0x1F801074)] static uint Mask;
 
-		uint Asserted;
-
-		void Recalc() => Cpu.AssertIrq(0, (Status & Mask) != 0);
+		[Port(0x1F801074)]
+		uint Mask {
+			get => _Mask;
+			set {
+				_Mask = value;
+				if((_Mask & ToAssert) != 0) {
+					"Flag turned on while IRQ flagged!".Debug();
+					Cpu.AssertIrq(true);
+					ToAssert &= ~_Mask;
+				}
+			}
+		}
 
 		public void Assert(IrqType type, bool status) {
-			$"Assert {type} {status} -- {Mask:X} {Asserted:X} {Status:X}".Debug();
 			var oldAsserted = Asserted;
 
 			var whichMask = 1U << (int) type;
+			if(status)
+				$"IRQ type {type} attempting to assert.  Masked: {Asserted & whichMask}".Debug();
 			Asserted &= ~whichMask;
 
 			if(status) {
 				Asserted |= whichMask;
 				Status |= (oldAsserted ^ Asserted) & Asserted;
+				if((Mask & whichMask) == 0) {
+					$"Couldn't assert irq {type} due to mask".Debug();
+					ToAssert |= whichMask;
+				}
 			}
-			$"Post {type} {status} -- {Mask:X} {Asserted:X} {Status:X}".Debug();
 
-			Recalc();
+			Cpu.AssertIrq((Status & Mask) != 0);
 		}
 	}
 }

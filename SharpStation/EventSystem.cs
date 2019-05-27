@@ -5,10 +5,10 @@ using static SharpStation.Globals;
 
 namespace SharpStation {
 	public class EventSystem {
-		readonly SortedList<uint, List<Action>> Upcoming = new SortedList<uint, List<Action>>();
-		public uint NextTimestamp = 0xFFFFFFFF;
+		readonly SortedList<ulong, List<Action>> Upcoming = new SortedList<ulong, List<Action>>();
+		public ulong NextTimestamp = 0xFFFFFFFFFFFFFFFF;
 
-		public void Add(uint time, Action func) {
+		public void Add(ulong time, Action func) {
 			if(Upcoming.TryGetValue(time, out var list))
 				list.Add(func);
 			else
@@ -20,7 +20,7 @@ namespace SharpStation {
 		public bool RunEvents() {
 			var changed = false;
 			// ReSharper disable once UseDeconstruction // Deconstruction fucks up nullable reference type stuff
-			foreach(var kv in Upcoming) {
+			foreach(var kv in Upcoming.ToArray()) {
 				if(kv.Key > Timestamp) break;
 				changed = true;
 				foreach(var func in kv.Value)
@@ -28,7 +28,7 @@ namespace SharpStation {
 				Upcoming.Remove(kv.Key);
 			}
 			if(changed)
-				NextTimestamp = Upcoming.Count == 0 ? 0xFFFFFFFF : Upcoming.First().Key;
+				NextTimestamp = Upcoming.Count == 0 ? 0xFFFFFFFFFFFFFFFF : Upcoming.First().Key;
 			return Cpu.Running;
 		}
 	}

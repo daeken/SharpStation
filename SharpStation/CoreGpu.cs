@@ -33,9 +33,16 @@ namespace SharpStation {
 			Fifo = new object[count];
 		}
 
-		public void Add(uint value) => Fifo[Off++] = value;
+		public void Add(object value) => Fifo[Off++] = value;
 
 		IEnumerator IEnumerable.GetEnumerator() => Fifo.GetEnumerator();
+	}
+
+	public enum DmaDirection {
+		Off, 
+		Fifo, 
+		CpuToGp0, 
+		VRamToCpu
 	}
 	
 	public class CoreGpu {
@@ -51,10 +58,32 @@ namespace SharpStation {
 			typeof(CoreGpu).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
 				.Select(x => (Method: x, Attr: x.GetCustomAttribute<Gp1Command>())).Where(x => x.Attr != null)
 				.ForEach(x => Gp1Commands[x.Attr.Command] = (x.Method.GetParameters().Length, x.Method));
+
+			// TODO: Handle this timing properly
+			/*void VBlank() {
+				Irq.Assert(IrqType.VBlank, true);
+				Events.Add(Timestamp + 100000000, VBlank);
+			}
+			Events.Add(Timestamp + 100000000, VBlank);*/
 		}
 
-		[Port(0x1F801810)] uint Read = 0xd0;
-		[Port(0x1F801814)] uint Stat = 0x1C000000;
+		bool ToggleLine;
+
+		[Port(0x1F801810)] public uint Read = 0xd0;
+		[Port(0x1F801814)] uint Stat =>
+			(DrawMode & 0x07FF) | 
+			((DrawMode >> 11) & 1) << 15 | 
+			true.ToBit(10) | 
+			ForceSetMaskBit.ToBit(11) | 
+			PreserveMaskedPixels.ToBit(12) | 
+			(!DisplayEnabled).ToBit(23) | 
+			Gp0Interrupt.ToBit(24) | 
+			true.ToBit(26) | 
+			true.ToBit(27) | 
+			true.ToBit(28) | 
+			((uint) DmaDirection << 29) | 
+			((DmaDirection switch { DmaDirection.Off => 0U, _ => 1U }) << 25) | 
+			(ToggleLine = !ToggleLine).ToBit(31);
 
 		[Port(0x1F801810)]
 		public void Gp0Incoming(uint value) {
@@ -109,14 +138,37 @@ namespace SharpStation {
 			}
 		}
 
-		uint LastTimestamp, LineClockCounter = 3412 - 200, DotClockCounter;
+		ulong LastTimestamp;
+		uint LineClockCounter = 3412 - 200, DotClockCounter;
 		ulong ClockCounter;
-
 		uint DisplayMode;
 
-		const ulong ClockRatio = 103896; // NTSC clock
+		uint DrawMode;
 
-		readonly uint[] DotClockRatios = {10, 8, 5, 4, 7};
+		DmaDirection DmaDirection;
+
+		bool ForceSetMaskBit, PreserveMaskedPixels, DisplayEnabled, Gp0Interrupt;
+
+		const ulong ClockRatio = 103_896; // NTSC clock
+		static readonly uint[] DotClockRatios = {10, 8, 5, 4, 7};
+
+		public FracCycles GpuToCpuClockRatio() {
+			var gpuClock = 53_690_000.0; // NTSC -- PAL is 53_222_000
+			var cpuClock = (double) BaseCpu.FreqHz;
+			return FracCycles.FromDouble(gpuClock / cpuClock);
+		}
+
+		public FracCycles DotclockPeriod() {
+			var gpuClockPeriod = GpuToCpuClockRatio();
+			var dotclockDivider = 10; // TODO: Make this dependent on resolution
+
+			return new FracCycles { FP = gpuClockPeriod.FP * (ulong) dotclockDivider };
+		}
+
+		public FracCycles HSyncPeriod() {
+			var ticksPerLine = 3412U; // NTSC -- PAL is 3404
+			return FracCycles.FromCycles(ticksPerLine) / GpuToCpuClockRatio();
+		}
 
 		public void Update() {
 			var sysClocks = Timestamp - LastTimestamp;
@@ -147,6 +199,10 @@ namespace SharpStation {
 		
 		[Gp0Command(0x00)] void Nop() {}
 		[Gp0Command(0x01)] void ClearCache() {}
+
+		[Gp0Command(0x02)]
+		void FillRect(uint color, uint topLeft, uint size) =>
+			$"Fill rect in VRAM: {color & 0xFFFFFF:X6} -- {topLeft:X8} {size:X8}".Debug();
 
 		[Gp0Command(0x28)]
 		void MonochromeOpaqueQuad(uint color, uint v1, uint v2, uint v3, uint v4) {
@@ -184,12 +240,18 @@ namespace SharpStation {
 			};
 		}
 		void CopyRectCpuToVram(uint cmd, uint x, uint y, uint w, uint h, object[] data) {
-			$"Copy rect! {x} . {y} -- {w} x {h}".Debug();
+			$"Copy rect to vram! {x} . {y} -- {w} x {h}".Debug();
+		}
+
+		[Gp0Command(0xC0)]
+		void CopyRectVramToCpu(uint cmd, uint src, uint size) {
+			"Copy rect to CPU!".Debug();
 		}
 
 		[Gp0Command(0xE1)]
 		void SetDrawMode(uint value) {
 			$"Setting draw mode to {value & 0xFFFFFF:X06}".Debug();
+			DrawMode = value & 0xFFFF;
 			Cpu.Running = false;
 			Renderer.EndFrame();
 		}
@@ -198,7 +260,11 @@ namespace SharpStation {
 		[Gp0Command(0xE3)] void SetDrawingAreaTopLeft(uint value) {}
 		[Gp0Command(0xE4)] void SetDrawingAreaBottomRight(uint value) {}
 		[Gp0Command(0xE5)] void SetDrawingOffset(uint value) {}
-		[Gp0Command(0xE6)] void SetMaskBit(uint value) {}
+		[Gp0Command(0xE6)]
+		void SetMaskBit(uint value) {
+			ForceSetMaskBit = value.HasBit(0);
+			PreserveMaskedPixels = value.HasBit(1);
+		}
 
 		[Gp1Command(0x00)]
 		void Reset() => "GPU reset!".Debug();
@@ -207,13 +273,13 @@ namespace SharpStation {
 		void ResetCmdBuffer() => CurGp0 = CurGp1 = null;
 
 		[Gp1Command(0x02)]
-		void AckInterrupt() => "ACK interrupt".Debug();
+		void AckInterrupt() => Gp0Interrupt = false;
 
 		[Gp1Command(0x03)]
-		void DisplayEnable(uint value) => $"Turn GPU {((value & 1) == 0 ? "on" : "off")}".Debug();
+		void DisplayEnable(uint value) => DisplayEnabled = value == 1;
 
 		[Gp1Command(0x04)]
-		void DmaDirectionDataRequest(uint value) => $"DMA direction {value & 3}".Debug();
+		void DmaDirectionDataRequest(uint value) => DmaDirection = (DmaDirection) value;
 
 		[Gp1Command(0x05)]
 		void StartDisplayArea(uint value) => $"Start display area {value & 0x3FF} {(value >> 10) & 0x1FF}".Debug();

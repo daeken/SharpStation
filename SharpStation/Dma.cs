@@ -95,10 +95,16 @@ namespace SharpStation {
 				} else {
 					uint src;
 					switch(Channel) {
+						case 2:
+							src = Gpu.Read;
+							break;
+						case 3:
+							src = 0; // TODO: DMA from CDROM
+							break;
 						case 6:
 							src = size == 0 ? 0xFFFFFFU : unchecked(addr - 4) & 0x1FFFFF;
 							break;
-						default: throw new NotSupportedException($"Transfer to RAM froom channel {Channel}");
+						default: throw new NotSupportedException($"Transfer to RAM from channel {Channel}");
 					}
 					Memory.Store32(maddr, src);
 				}
@@ -124,13 +130,18 @@ namespace SharpStation {
 			}
 		}
 
-		void Done() => ControlEnable = ManualTrigger = false;
+		void Done() {
+			ControlEnable = ManualTrigger = false;
+			//if(IrqEnable && !IrqFlag && Dma.MasterEnable)
+			//	Irq.Assert(IrqType.DMA, true);
+		}
 	}
 	
 	public class CoreDma {
 		readonly DmaChannel[] Channels = Enumerable.Range(0, 7).Select(i => new DmaChannel(i)).ToArray();
 
-		bool MasterEnable = true, ForceIrq;
+		public bool MasterEnable = true;
+		bool ForceIrq;
 
 		public CoreDma() {
 			Control = 0x07654321;

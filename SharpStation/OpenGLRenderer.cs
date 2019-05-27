@@ -6,7 +6,7 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 
 namespace SharpStation {
-	public class OpenGLRasterizer : IRenderer {
+	public class OpenGLRenderer : IRenderer {
 		bool Ready;
 		readonly Queue<Action> Commands = new Queue<Action>();
 		
@@ -36,7 +36,7 @@ namespace SharpStation {
 				}
 			};
 			window.Closing += (_, __) => Environment.Exit(0);
-			window.Run(60, 60);
+			window.Run(30, 30);
 		}
 
 		void Add(Action func) {

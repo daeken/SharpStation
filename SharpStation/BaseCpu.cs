@@ -38,6 +38,8 @@ namespace SharpStation {
 	}
 
 	public abstract partial class BaseCpu {
+		public const uint FreqHz = 33_868_500;
+		
 		public readonly uint[] Gpr = new uint[36];
 		public uint Lo, Hi;
 		public uint Pc = 0xBFC00000U;
@@ -53,16 +55,23 @@ namespace SharpStation {
 
 		public bool Running, Halted;
 
-		uint MuldivTsDone;
+		ulong MuldivTsDone;
 
 		public void RunOneFrame() {
 			Running = true;
 			
 			while(Timestamp < Events.NextTimestamp || Events.RunEvents())
 				try {
-					//$"Foo? {Pc:X}".Debug();
+					/*Memory.Store32(0x8BC, 0x4B68);
+					Memory.Store32(0x8C0, 0x4B68);
+					Memory.Store32(0x8C4, 0x4B68);
+					Memory.Store32(0x8C8, 0x4B68);
+					Memory.Store32(0x8CC, 0x4B68);
+
+					Memory.Store32(0x99C, 0x4B68);
+					Memory.Store32(0x9A0, 0x4B68);
+					Memory.Store32(0x9A4, 0x4B68);*/
 					if(IPCache != 0) {
-						//"IPCache != 0!".Debug();
 						if(Halted) {
 						} else if((CP0.StatusRegister & 1) != 0)
 							DispatchException(new CpuException(ExceptionType.INT, Pc, Pc, 0xFF, 0));
@@ -110,13 +119,9 @@ namespace SharpStation {
 				: 0;
 		}
 
-		public void AssertIrq(int which, bool asserted) {
-			$"Asserting {which} {asserted}".Debug();
-			Debug.Assert(which <= 5);
-			
-			var mask = 1U << (10 + which);
+		public void AssertIrq(bool asserted) {
+			const uint mask = 1U << 10;
 			CP0.Cause &= ~mask;
-
 			if(asserted)
 				CP0.Cause |= mask;
 
@@ -140,6 +145,8 @@ namespace SharpStation {
 			//WriteLine($"Read cop{cop}r{reg}");
 			if(cop == 0)
 				return CP0[reg];
+			if(cop == 2)
+				return CP2[reg];
 			throw new NotSupportedException($"Read from unknown coprocessor {cop}");
 		}
 
@@ -147,20 +154,35 @@ namespace SharpStation {
 			//WriteLine($"Write cop{cop}r{reg} <- 0x{value:X}");
 			if(cop == 0)
 				CP0[reg] = value;
+			else if(cop == 2)
+				CP2[reg] = value;
 			else
 				throw new NotSupportedException($"Write to unknown coprocessor {cop}");
 		}
 
 		public uint ReadCopcreg(uint cop, uint reg) {
-			return 0;
+			if(cop == 0)
+				return CP0.Copcreg(reg);
+			if(cop == 2)
+				CP2.Copcreg(reg);
+			throw new NotSupportedException($"CRead from unknown coprocessor {cop}");
 		}
 
-		public void WriteCopcreg(uint cop, uint reg, uint value) { }
+		public void WriteCopcreg(uint cop, uint reg, uint value) {
+			if(cop == 0)
+				CP0.Copcreg(reg, value);
+			else if(cop == 2)
+				CP2.Copcreg(reg, value);
+			else
+				throw new NotSupportedException($"CWrite to unknown coprocessor {cop}");
+		}
 
 		public void Copfun(uint cop, uint cofun, uint inst) {
 			//WriteLine($"Call cop{cop} function {cofun}");
 			if(cop == 0)
 				CP0.Call(cofun, inst);
+			else if(cop == 2)
+				CP2.Call(cofun, inst);
 			else
 				throw new NotSupportedException($"Call to unknown coprocessor {cop}");
 		}
@@ -204,8 +226,12 @@ namespace SharpStation {
 
 		public static int SignExt(int size, uint imm) => imm.SignExt(size);
 
+		public bool DebugMemory;
+
 		public uint LoadMemory(int size, uint addr, uint pc) {
-			//$"Load {size/8} bytes from {addr:X8} -- {Pc:X8}".Debug();
+			if(DebugMemory)
+				$"Load {size/8} bytes from {addr:X8} -- {Pc:X8}".Debug();
+			if(addr == 0x80083C58) return 0;
 			switch(size) {
 				case 8: return Memory.Load8(addr);
 				case 16: return Memory.Load16(addr);
@@ -218,7 +244,8 @@ namespace SharpStation {
 			if(IsolateCache)
 				return;
 			
-			//$"Store {size/8} bytes to {addr:X8} <- {value:X} -- {Pc:X8}".Debug();
+			if(DebugMemory)
+				$"Store {size/8} bytes to {addr:X8} <- {value:X} -- {Pc:X8}".Debug();
 			switch(size) {
 				case 8: Memory.Store8(addr, (byte) value); break;
 				case 16: Memory.Store16(addr, (ushort) value); break;

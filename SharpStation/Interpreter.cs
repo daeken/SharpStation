@@ -45,6 +45,7 @@ namespace SharpStation {
 		}
 
 		void RunOne(uint pc, uint inst) {
+			Timestamp++;
 			if(pc == 0x2C94 && Gpr[4] == 1) {
 				TtyBuf += string.Join("", Enumerable.Range(0, (int) Gpr[6]).Select(i => (char) Memory.Load8((uint) (Gpr[5] + i))));
 				if(TtyBuf.Contains('\n')) {
