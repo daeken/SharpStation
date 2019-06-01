@@ -1,3 +1,5 @@
+using static SharpStation.Globals;
+
 #pragma warning disable 169
 namespace SharpStation {
 	public static class MemoryControl {
@@ -11,5 +13,11 @@ namespace SharpStation {
 		[Port(0x1F80101C)] static uint Expansion2DelaySize;   // usually 00070777h; 128-bytes 8bit-bus
 		[Port(0x1F801020)] static uint ComDelay;              // usually 00031125h or 0000132Ch or 00001325h
 		[Port(0x1F801060)] static uint RamSize;               // usually 00000B88h; 2MB RAM mirrored in first 8MB
+
+		[Port(0xFFFE0130)]
+		static uint BIU {
+			get => Cpu.BIU;
+			set => Cpu.BIU = value;
+		}
 	}
 }

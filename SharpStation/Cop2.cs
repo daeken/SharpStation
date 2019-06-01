@@ -1,4 +1,5 @@
 using System;
+using static SharpStation.Globals;
 
 namespace SharpStation {
 	public class Cop2 : ICoprocessor {
@@ -20,7 +21,10 @@ namespace SharpStation {
 			set => throw new NotImplementedException();
 		}
 
-		public void Copcreg(uint reg, uint value) => $"Writing cop2 reg {reg:X} -- 0x{value:X}".Debug();
+		public void Copcreg(uint reg, uint value) {
+			$"Writing cop2 reg {reg:X} -- 0x{value:X}".Debug();
+		}
+
 		public uint Copcreg(uint reg) {
 			$"Reading cop2 reg {reg:X}".Debug();
 			return 0;

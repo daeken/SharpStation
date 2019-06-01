@@ -40,5 +40,10 @@ namespace SharpStation {
 				}
 			}
 		}
+
+		public static int FromBcd(this byte v) => (v >> 4) * 10 + (v & 0xF);
+		
+		public static (int, int, int) ToMsf(this uint v) =>
+			((int) v / (60 * 75), (int) v / 75 % 60, (int) v % 75);
 	}
 }

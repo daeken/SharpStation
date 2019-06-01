@@ -37,6 +37,10 @@ namespace SharpStation {
 		}
 	}
 
+	public struct ICacheEntry {
+		public uint TV, Data;
+	}
+
 	public abstract partial class BaseCpu {
 		public const uint FreqHz = 33_868_500;
 		
@@ -45,8 +49,9 @@ namespace SharpStation {
 		public uint Pc = 0xBFC00000U;
 		public uint LdWhich, LdValue, LdAbsorb;
 		public readonly uint[] ReadAbsorb = new uint[36];
-		public uint ReadAbsorbWhich, ReadFudge;
+		public uint ReadAbsorbWhich, ReadFudge, BIU;
 		public bool IsolateCache;
+		public readonly ICacheEntry[] ICache = new ICacheEntry[1024];
 
 		public const uint NoBranch = ~0U;
 		public uint BranchTo = NoBranch, DeferBranch = NoBranch;
@@ -62,19 +67,14 @@ namespace SharpStation {
 			
 			while(Timestamp < Events.NextTimestamp || Events.RunEvents())
 				try {
-					/*Memory.Store32(0x8BC, 0x4B68);
-					Memory.Store32(0x8C0, 0x4B68);
-					Memory.Store32(0x8C4, 0x4B68);
-					Memory.Store32(0x8C8, 0x4B68);
-					Memory.Store32(0x8CC, 0x4B68);
-
-					Memory.Store32(0x99C, 0x4B68);
-					Memory.Store32(0x9A0, 0x4B68);
-					Memory.Store32(0x9A4, 0x4B68);*/
+					if(DebugMemory)
+						$"Running block at {Pc:X8}".Debug();
+					
 					if(IPCache != 0) {
 						if(Halted) {
-						} else if((CP0.StatusRegister & 1) != 0)
+						} else if((CP0.StatusRegister & 1) != 0) {
 							DispatchException(new CpuException(ExceptionType.INT, Pc, Pc, 0xFF, 0));
+						}
 					}
 					Run();
 				} catch (CpuException ce) {

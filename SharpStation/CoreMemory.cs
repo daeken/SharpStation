@@ -342,7 +342,7 @@ namespace SharpStation {
 			if(rvaddr >= 0x1F800000 && rvaddr < 0x1F800400) return func(Scratchpad, rvaddr - 0x1F800000);
 			if(rvaddr >= 0x1F801000 && rvaddr < 0x1F803000) return func(IoPorts, rvaddr);
 			if(rvaddr >= 0x1FC00000U && rvaddr < 0x1FC80000U) return func(Bios, rvaddr - 0x1FC00000);
-			if(rvaddr >= 0xFFFE0000 && rvaddr < 0xFFFE0200) return func(IoPorts, rvaddr - 0xFFFE0000 + 0x1F801000);
+			if(rvaddr >= 0xFFFE0000 && rvaddr < 0xFFFE0200) return func(IoPorts, rvaddr);
 			throw new NotImplementedException($"Unknown memory region for addr {rvaddr:X08}h");
 		}
 		

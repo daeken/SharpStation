@@ -69,7 +69,7 @@ namespace SharpStation {
 		void TryTransfer() {
 			if(!ControlEnable || SyncMode == SyncMode.Manual && !ManualTrigger)
 				return;
-			$"Trying transfer on channel {Channel} with base address {Base:X8}".Debug();
+			$"Trying transfer on channel {Channel} with base address {Base:X8} -- 0x{TransferSize}".Debug();
 			
 			if(SyncMode == SyncMode.LinkedList) TransferLinkedList();
 			else TransferBlocks();
@@ -99,7 +99,8 @@ namespace SharpStation {
 							src = Gpu.Read;
 							break;
 						case 3:
-							src = 0; // TODO: DMA from CDROM
+							src = Cdrom.DataFifo.Dequeue() | ((uint) Cdrom.DataFifo.Dequeue() << 8) |
+							      ((uint) Cdrom.DataFifo.Dequeue() << 16) | ((uint) Cdrom.DataFifo.Dequeue() << 24);
 							break;
 						case 6:
 							src = size == 0 ? 0xFFFFFFU : unchecked(addr - 4) & 0x1FFFFF;
@@ -132,8 +133,7 @@ namespace SharpStation {
 
 		void Done() {
 			ControlEnable = ManualTrigger = false;
-			//if(IrqEnable && !IrqFlag && Dma.MasterEnable)
-			//	Irq.Assert(IrqType.DMA, true);
+			//if(IrqEnable && !IrqFlag && Dma.MasterEnable) Irq.Assert(IrqType.DMA, true);
 		}
 	}
 	

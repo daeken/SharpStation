@@ -1,6 +1,8 @@
 namespace SharpStation {
 	public class Globals {
 		public static ulong Timestamp;
+
+		public static CdImage Cd;
 		
 		//public static readonly IRenderer Renderer = new OpenGLRenderer();
 		public static readonly IRenderer Renderer = new NullRenderer();
@@ -17,7 +19,8 @@ namespace SharpStation {
 		public static readonly CoreIrq Irq = new CoreIrq();
 		public static readonly CoreMemory Memory = new CoreMemory();
 
-		public static void StartSystem() => Renderer.KickOff(() => {
+		public static void StartSystem(CdImage image) => Renderer.KickOff(() => {
+			Cd = image;
 			while(true)
 				Cpu.RunOneFrame();
 		});

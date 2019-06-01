@@ -213,6 +213,7 @@ namespace SharpStation {
 		[Gp0Command(0x2C)]
 		void TexturedOpaqueBlendedQuad(uint color, uint v1, uint t1, uint v2, uint t2, uint v3, uint t3, uint v4, uint t4) {
 			$"TexturedOpaqueBlendedQuad {color:X6} {v1:X8} {t1:X8} {v2:X8} {t2:X8} {v3:X8} {t3:X8} {v4:X8} {t4:X8}".Debug();
+			Renderer.DrawSolidQuad(ToColor(color), ToCoord(v1), ToCoord(v2), ToCoord(v3), ToCoord(v4));
 		}
 
 		[Gp0Command(0x30)]

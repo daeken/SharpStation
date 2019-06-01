@@ -40,7 +40,6 @@ namespace SharpStation {
 			set {
 				_Mask = value;
 				if((_Mask & ToAssert) != 0) {
-					"Flag turned on while IRQ flagged!".Debug();
 					Cpu.AssertIrq(true);
 					ToAssert &= ~_Mask;
 				}
@@ -51,17 +50,13 @@ namespace SharpStation {
 			var oldAsserted = Asserted;
 
 			var whichMask = 1U << (int) type;
-			if(status)
-				$"IRQ type {type} attempting to assert.  Masked: {Asserted & whichMask}".Debug();
 			Asserted &= ~whichMask;
 
 			if(status) {
 				Asserted |= whichMask;
 				Status |= (oldAsserted ^ Asserted) & Asserted;
-				if((Mask & whichMask) == 0) {
-					$"Couldn't assert irq {type} due to mask".Debug();
+				if((Mask & whichMask) == 0)
 					ToAssert |= whichMask;
-				}
 			}
 
 			Cpu.AssertIrq((Status & Mask) != 0);

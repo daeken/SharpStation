@@ -152,8 +152,6 @@ namespace SharpStation {
 	public static class Timing {
 		static readonly Timer[] Timers = { new Timer(0), new Timer(1), new Timer(2) };
 		
-		[Port(0x1F801130)] static uint NotTimer3CurrentValue; // TODO: This appears to be wrong but I have no idea what this is
-
 		[Port(0x1F801100, 3, 0x10)]
 		static uint GetCurrentValue(int timer) => Timers[timer].Counter;
 		[Port(0x1F801100, 3, 0x10)]

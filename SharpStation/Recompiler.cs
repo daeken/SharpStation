@@ -214,12 +214,62 @@ namespace SharpStation {
 			var need_load = true;
 			var did_delay = false;
 			while(!did_delay) {
-				Memory.Store32(0x30654, Memory.Load32(0x30650));
-				var insn = Memory.Load32(pc);
+				var insn = ICache[(pc & 0xFFC) >> 2].Data;
+				var timestep = 0U;
+				// TODO: Move all of the cache->timing logic into runtime to maximize accuracy
+				if(ICache[(pc & 0xFFC) >> 2].TV != pc) {
+					if(pc >= 0xA0000000 || !BIU.HasBit(11)) {
+						insn = Memory.Load32(pc);
+						timestep += 4;
+					} else {
+						var ICI = ((Span<ICacheEntry>) ICache).Slice((int) ((pc & 0xFF0) >> 2), 4);
+						ICI[0].TV = (pc & ~0xFU) | 0x00U | 0x02U;
+						ICI[1].TV = (pc & ~0xFU) | 0x04U | 0x02U;
+						ICI[2].TV = (pc & ~0xFU) | 0x08U | 0x02U;
+						ICI[3].TV = (pc & ~0xFU) | 0x0CU | 0x02U;
+
+						timestep += 3;
+
+						switch(pc & 0xC) {
+							case 0x0:
+								timestep++;
+								ICI[0].TV &= ~0x2U;
+								ICI[0].Data = Memory.Load32(pc);
+								goto case 0x4;
+							case 0x4:
+								timestep++;
+								ICI[1].TV &= ~0x2U;
+								ICI[1].Data = Memory.Load32((pc & ~0xFU) | 0x4U);
+								goto case 0x8;
+							case 0x8:
+								timestep++;
+								ICI[2].TV &= ~0x2U;
+								ICI[2].Data = Memory.Load32((pc & ~0xFU) | 0x8U);
+								goto case 0xC;
+							case 0xC:
+								timestep++;
+								ICI[3].TV &= ~0x2U;
+								ICI[3].Data = Memory.Load32((pc & ~0xFU) | 0xCU);
+								break;
+						}
+
+						insn = ICache[(pc & 0xFFCU) >> 2].Data;
+					}
+				}
+				
+				if(timestep != 0)
+					TimestampInc(timestep);
+
+				//if(insn >> 26 == 0b010010 && ((insn >> 21) & 0x1F & 0x10) != 0)
+				//	Call(nameof(TestTest), pc);
+
+				if((pc & 0xFFFFF) == 0x41fe8)
+					Call(nameof(TestTest), pc);
+					
 				//if(pc >= 0x8003D600 && pc <= 0x8003D7FC)
 				//	WriteLine($"{pc:X}:  {Disassemble(pc, insn)}");
-				if((pc & 0xFFFFFF) >= 0x30254 && (pc & 0xFFFFFF) <= 0x30680)
-					Call(nameof(TestTest), pc);
+				//if((pc & 0xFFFFFF) >= 0x30254 && (pc & 0xFFFFFF) <= 0x30680)
+				//	Call(nameof(TestTest), pc);
 
 				if(branched)
 					did_delay = true;
@@ -261,7 +311,8 @@ namespace SharpStation {
 		}
 
 		public void TestTest(uint pc) {
-			//$"Hit {pc:X8}    {Gpr[31]:X8}".Debug();
+			$"Hit {pc:X8}    {Gpr[31]:X8}".Debug();
+			//DebugMemory = true;
 			/*using(var fp = File.OpenWrite("memdump.bin"))
 				for(var i = 0; i < 1024 * 1024 * 2; ++i)
 					fp.WriteByte(Memory.Load8((uint) i));*/
