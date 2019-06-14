@@ -58,6 +58,7 @@ namespace SigilLite {
 		public Emit<DelegateT> BranchIfGreater(Label label) => Do(() => Ilg.Emit(OpCodes.Bgt, label.ILabel));
 		public Emit<DelegateT> BranchIfGreaterOrEqual(Label label) => Do(() => Ilg.Emit(OpCodes.Bge, label.ILabel));
 		public Emit<DelegateT> BranchIfLess(Label label)  => Do(() => Ilg.Emit(OpCodes.Blt, label.ILabel));
+		public Emit<DelegateT> UnsignedBranchIfLess(Label label)  => Do(() => Ilg.Emit(OpCodes.Blt_Un, label.ILabel));
 		public Emit<DelegateT> BranchIfLessOrEqual(Label label)  => Do(() => Ilg.Emit(OpCodes.Ble, label.ILabel));
 		public Emit<DelegateT> BranchIfTrue(Label label)  => Do(() => Ilg.Emit(OpCodes.Brtrue, label.ILabel));
 
@@ -84,6 +85,7 @@ namespace SigilLite {
 		public Local DeclareLocal<LocalT>() => new Local(Ilg.DeclareLocal(typeof(LocalT)));
 
 		public Emit<DelegateT> Divide() => Do(() => Ilg.Emit(OpCodes.Div));
+		public Emit<DelegateT> UnsignedDivide() => Do(() => Ilg.Emit(OpCodes.Div_Un));
 		
 		public Emit<DelegateT> Duplicate() => Do(() => Ilg.Emit(OpCodes.Dup));
 
@@ -102,8 +104,12 @@ namespace SigilLite {
 		}
 
 		public Emit<DelegateT> LoadConstant<ConstT>(ConstT value) {
-			Ilg.Emit(OpCodes.Ldc_I4, (uint) System.Convert.ChangeType(value, typeof(uint)));
-			
+			try {
+				Ilg.Emit(OpCodes.Ldc_I4, (uint) System.Convert.ChangeType(value, typeof(uint)));
+			} catch(Exception) {
+				Ilg.Emit(OpCodes.Ldc_I4, unchecked((uint) (int) System.Convert.ChangeType(value, typeof(int))));
+			}
+
 			return Convert<ConstT>();
 		}
 
@@ -131,6 +137,7 @@ namespace SigilLite {
 		public Emit<DelegateT> Or() => Do(() => Ilg.Emit(OpCodes.Or));
 
 		public Emit<DelegateT> Remainder() => Do(() => Ilg.Emit(OpCodes.Rem));
+		public Emit<DelegateT> UnsignedRemainder() => Do(() => Ilg.Emit(OpCodes.Rem_Un));
 		
 		public Emit<DelegateT> Return() => Do(() => Ilg.Emit(OpCodes.Ret));
 

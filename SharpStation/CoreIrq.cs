@@ -46,7 +46,15 @@ namespace SharpStation {
 			}
 		}
 
+		public void Set(IrqType type, bool value) {
+			if(value)
+				_Mask |= true.ToBit((int) type);
+			else
+				_Mask &= true.ToBit((int) type);
+		}
+
 		public void Assert(IrqType type, bool status) {
+			//if(type == IrqType.CD && status) $"Asserting CD {Timestamp}".Debug();
 			var oldAsserted = Asserted;
 
 			var whichMask = 1U << (int) type;

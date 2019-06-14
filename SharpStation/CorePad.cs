@@ -49,7 +49,7 @@ namespace SharpStation {
 		readonly Pad Pad1 = new Pad(), Pad2 = new Pad();
 		uint Unknown;
 		
-		[Port(0x1F801040, debug: true)]
+		[Port(0x1F801040)]
 		byte Data {
 			get {
 				var v = Response;
@@ -68,15 +68,15 @@ namespace SharpStation {
 			} 
 		}
 
-		[Port(0x1F801044, debug: true)] ushort Stat => (ushort) (
+		[Port(0x1F801044)] ushort Stat => (ushort) (
 			5 |
 			RxNotEmpty.ToBit(1) | 
 			Dsr.ToBit(7) | 
 			Interrupt.ToBit(9));
 			
-		[Port(0x1F801048, debug: true)] ushort Mode;
+		[Port(0x1F801048)] ushort Mode;
 
-		[Port(0x1F80104A, debug: true)]
+		[Port(0x1F80104A)]
 		ushort Control {
 			get => (ushort) (
 				Unknown | 
@@ -121,10 +121,10 @@ namespace SharpStation {
 				Events.Add(Timestamp + 1000000, () => Irq.Assert(IrqType.Sio, true));
 			}
 		}
-		[Port(0x1F80104E, debug: true)] ushort Baud;
+		[Port(0x1F80104E)] ushort Baud;
 
 		void Sync() {
-			$"CorePad sync {State.ToPrettyString()}".Debug();
+			//$"CorePad sync {State.ToPrettyString()}".Debug();
 			switch(State) {
 				case BusIdle _: break;
 				case Transfer transfer:

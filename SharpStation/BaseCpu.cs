@@ -67,6 +67,8 @@ namespace SharpStation {
 			
 			while(Timestamp < Events.NextTimestamp || Events.RunEvents())
 				try {
+					if(Pc == 0xBFC0D850)
+						Pc = Gpr[31];
 					if(DebugMemory)
 						$"Running block at {Pc:X8}".Debug();
 					
@@ -74,6 +76,7 @@ namespace SharpStation {
 						if(Halted) {
 						} else if((CP0.StatusRegister & 1) != 0) {
 							DispatchException(new CpuException(ExceptionType.INT, Pc, Pc, 0xFF, 0));
+							continue;
 						}
 					}
 					Run();
@@ -129,6 +132,7 @@ namespace SharpStation {
 		}
 
 		protected abstract void Run();
+		public abstract void Invalidate(uint addr);
 
 		public void Alignment(uint addr, int size, bool store, uint pc) {
 			if(size == 16 && (addr & 1) != 0 || size == 32 && (addr & 3) != 0)
@@ -164,7 +168,7 @@ namespace SharpStation {
 			if(cop == 0)
 				return CP0.Copcreg(reg);
 			if(cop == 2)
-				CP2.Copcreg(reg);
+				return CP2.Copcreg(reg);
 			throw new NotSupportedException($"CRead from unknown coprocessor {cop}");
 		}
 
@@ -235,6 +239,7 @@ namespace SharpStation {
 			switch(size) {
 				case 8: return Memory.Load8(addr);
 				case 16: return Memory.Load16(addr);
+				case 24: return Memory.Load32(addr) & 0xFFFFFF;
 				case 32: return Memory.Load32(addr);
 			}
 			return 0;
@@ -249,8 +254,26 @@ namespace SharpStation {
 			switch(size) {
 				case 8: Memory.Store8(addr, (byte) value); break;
 				case 16: Memory.Store16(addr, (ushort) value); break;
+				case 24:
+					Memory.Store16(addr, (ushort) value);
+					Memory.Store8(addr + 2, (byte) (value >> 16));
+					break;
 				case 32: Memory.Store32(addr, value); break;
 			}
+		}
+
+		public void RegisterDebug() {
+			$"$0  {Gpr[ 0]:X8}    $1  {Gpr[ 1]:X8}    $2  {Gpr[ 2]:X8}    $3  {Gpr[ 3]:X8}".Debug();
+			$"$4  {Gpr[ 4]:X8}    $5  {Gpr[ 5]:X8}    $6  {Gpr[ 6]:X8}    $7  {Gpr[ 7]:X8}".Debug();
+			$"$8  {Gpr[ 8]:X8}    $9  {Gpr[ 9]:X8}    $10 {Gpr[10]:X8}    $11 {Gpr[11]:X8}".Debug();
+			$"$12 {Gpr[12]:X8}    $13 {Gpr[13]:X8}    $14 {Gpr[14]:X8}    $15 {Gpr[15]:X8}".Debug();
+			
+			$"$16 {Gpr[16]:X8}    $17 {Gpr[17]:X8}    $18 {Gpr[18]:X8}    $19 {Gpr[19]:X8}".Debug();
+			$"$20 {Gpr[20]:X8}    $21 {Gpr[21]:X8}    $22 {Gpr[22]:X8}    $23 {Gpr[23]:X8}".Debug();
+			$"$24 {Gpr[24]:X8}    $25 {Gpr[25]:X8}    $26 {Gpr[26]:X8}    $27 {Gpr[27]:X8}".Debug();
+			$"$28 {Gpr[28]:X8}    $29 {Gpr[29]:X8}    $30 {Gpr[30]:X8}    $31 {Gpr[31]:X8}".Debug();
+			
+			$"LO  {Lo:X8}    HI  {Hi:X8}    PC  {Pc:X8}".Debug();
 		}
 	}
 }

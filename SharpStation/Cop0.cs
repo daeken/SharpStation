@@ -5,16 +5,17 @@ using static SharpStation.Globals;
 namespace SharpStation {
 	public class Cop0 : ICoprocessor {
 		enum Reg {
-			BPC   = 3,  // PC breakpoint address
-			BDA   = 5,  // Data load/store breakpoint address
-			TAR   = 6,  // Target address
-			DCIC  = 7,  // Cache control
-			BDAM  = 9,  // Data load/store address mask
-			BPCM  = 11, // PC breakpoint address mask
-			SR    = 12, 
-			CAUSE = 13, 
-			EPC   = 14, 
-			PRID  = 15  // Product ID
+			BPC      = 3,  // PC breakpoint address
+			BDA      = 5,  // Data load/store breakpoint address
+			TAR      = 6,  // Target address
+			DCIC     = 7,  // Cache control
+			BADVADDR = 8, // Bad virtual address
+			BDAM     = 9,  // Data load/store address mask
+			BPCM     = 11, // PC breakpoint address mask
+			SR       = 12, 
+			CAUSE    = 13, 
+			EPC      = 14, 
+			PRID     = 15  // Product ID
 		}
 		
 		public uint BreakpointAddress, DataBreakpointAddress, TargetAddress, CacheControl, DataAddressMask, 
@@ -31,6 +32,8 @@ namespace SharpStation {
 						return TargetAddress;
 					case Reg.DCIC:
 						return CacheControl;
+					case Reg.BADVADDR:
+						return 0;
 					case Reg.BDAM:
 						return DataAddressMask;
 					case Reg.BPCM:

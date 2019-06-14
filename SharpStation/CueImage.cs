@@ -39,7 +39,6 @@ namespace SharpStation {
 		public override bool ReadSector(Span<byte> data, (int M, int S, int F) msf) {
 			var (m, s, f) = msf;
 			var sectorIndex = 60 * 75 * m + 75 * s + f - 150;
-			$"Reading sector from index {sectorIndex}".Debug();
 			Fp.Seek(2352 * sectorIndex, SeekOrigin.Begin);
 			Fp.Read(data);
 			return true;

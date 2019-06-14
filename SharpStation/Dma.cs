@@ -69,7 +69,7 @@ namespace SharpStation {
 		void TryTransfer() {
 			if(!ControlEnable || SyncMode == SyncMode.Manual && !ManualTrigger)
 				return;
-			$"Trying transfer on channel {Channel} with base address {Base:X8} -- 0x{TransferSize}".Debug();
+			//if(Channel == 3) $"Trying transfer on channel {Channel} with base address {Base:X8} -- 0x{TransferSize * 4:X}".Debug();
 			
 			if(SyncMode == SyncMode.LinkedList) TransferLinkedList();
 			else TransferBlocks();

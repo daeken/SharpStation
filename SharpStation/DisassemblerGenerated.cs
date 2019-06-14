@@ -85,8 +85,8 @@ namespace SharpStation {
 							break;
 						}
 						case 0x11: {
-							var rd = ((inst) >> ((int) 0xb)) & (0x1f);
-							return($"mthi %{rd}");
+							var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+							return($"mthi %{rs}");
 							break;
 						}
 						case 0x12: {
@@ -95,8 +95,8 @@ namespace SharpStation {
 							break;
 						}
 						case 0x13: {
-							var rd = ((inst) >> ((int) 0xb)) & (0x1f);
-							return($"mtlo %{rd}");
+							var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+							return($"mtlo %{rs}");
 							break;
 						}
 						case 0x18: {

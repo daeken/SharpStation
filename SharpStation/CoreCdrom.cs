@@ -103,7 +103,7 @@ namespace SharpStation {
 				.ForEach(x => Commands[x.Attr.Command] = (x.Method.GetParameters().Length, x.Method));
 		}
 
-		[Port(0x1F801800, debug: true)]
+		[Port(0x1F801800)]
 		byte IndexStatus {
 			get => (byte) (
 				Index |
@@ -116,7 +116,8 @@ namespace SharpStation {
 			set => Index = value & 3U;
 		}
 
-		[Port(0x1F801801, debug: true)] byte Multiplex1 {
+		[Port(0x1F801801)]
+		byte Multiplex1 {
 			get => ResponseFifo.Dequeue();
 			set {
 				switch(Index) {
@@ -127,7 +128,7 @@ namespace SharpStation {
 			}
 		}
 
-		[Port(0x1F801802, debug: true)]
+		[Port(0x1F801802)]
 		byte Multiplex2 {
 			get => throw new NotImplementedException();
 			set {
@@ -146,7 +147,7 @@ namespace SharpStation {
 			}
 		}
 
-		[Port(0x1F801803, debug: true)]
+		[Port(0x1F801803)]
 		byte Multiplex3 {
 			get => (byte) (((Index & 1) == 0 ? InterruptEnable : InterruptFlag) | 0xE0);
 			set {
@@ -216,7 +217,7 @@ namespace SharpStation {
 				throw new Exception("ReadSector while read pending");
 			
 			var cdata = new byte[2352];
-			$"Reading sector from {ReadPosition.ToMsf().ToPrettyString()}".Debug();
+			//$"Reading sector from {ReadPosition.ToMsf().ToPrettyString()}".Debug();
 			Cd.ReadSector(cdata, ReadPosition.ToMsf());
 			if(ReadWholeSector)
 				for(var i = 12; i < 2352; ++i)
@@ -224,10 +225,10 @@ namespace SharpStation {
 			else
 				for(var i = 24; i < 24 + 2048; ++i)
 					DataFifo.Enqueue(cdata[i]);
-			if(ReadWholeSector)
+			/*if(ReadWholeSector)
 				$"Bytes at 0x20: {cdata.Skip(12 + 0x20).Take(8).ToArray().ToPrettyString()}".Debug();
 			else
-				$"PYTES at 0x20: {cdata.Skip(24 + 0x20).Take(8).ToArray().ToPrettyString()}".Debug();
+				$"PYTES at 0x20: {cdata.Skip(24 + 0x20).Take(8).ToArray().ToPrettyString()}".Debug();*/
 			ReadPosition++;
 			ReadPending = true;
 		}
@@ -395,6 +396,11 @@ namespace SharpStation {
 			ReadPending = false;
 			Sub.ResponseFifo.Enqueue(DriveStatus);
 			Sub.AsyncResponse = (900/*_000*/, () => {
+				ReadPosition = 0;
+				SeekTarget = null;
+				ReadWholeSector = true;
+				ReadingDelay = null;
+				ReadPending = false;
 				Sub.ResponseFifo.Enqueue(DriveStatus);
 				return 1_700;
 			});

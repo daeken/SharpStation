@@ -12,13 +12,14 @@ namespace SharpStation {
 		
 		public void KickOff(Action main) {
 			new Thread(() => main()).Start();
-			var window = new GameWindow(800, 600, GraphicsMode.Default, "SharpStation", GameWindowFlags.FixedWindow);
-			GL.Viewport(0, 0, 800, 600);
+			var window = new GameWindow(640, 480, GraphicsMode.Default, "SharpStation", GameWindowFlags.FixedWindow);
+			GL.Viewport(0, 0, 640, 480);
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadIdentity();
-			GL.Ortho(0, 800, 600, 0, 0, 1);
+			GL.Ortho(0, 640, 480, 0, 0, 1);
 			GL.MatrixMode(MatrixMode.Modelview);
 			
+			GL.Disable(EnableCap.CullFace);
 			GL.ClearColor(0, 0, 0, 1);
 			GL.Clear(ClearBufferMask.ColorBufferBit);
 			window.SwapBuffers();

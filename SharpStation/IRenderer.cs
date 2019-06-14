@@ -11,6 +11,10 @@ namespace SharpStation {
 
 		public static implicit operator Coord((int, int) coord) => new Coord(coord.Item1, coord.Item2);
 		public static implicit operator Coord((uint, uint) coord) => new Coord((int) coord.Item1, (int) coord.Item2);
+		
+		public static Coord operator +(Coord a, Coord b) => new Coord(a.X + b.X, a.Y + b.Y);
+
+		public override string ToString() => $"({X}, {Y})";
 	}
 
 	public struct Color {
@@ -22,6 +26,8 @@ namespace SharpStation {
 			B = b;
 			A = a;
 		}
+		
+		public override string ToString() => $"color({R}, {G}, {B}, {A})";
 	}
 	
 	public interface IRenderer {

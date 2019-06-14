@@ -154,9 +154,9 @@ namespace SharpStation {
 							}
 							case 0x11: {
 								/* MTHI */
-								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
-								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								var temp_12 = (Gpr)[rd];
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
+								var temp_12 = (Gpr)[rs];
 								DoLds();
 								Hi = temp_12;
 								return(true);
@@ -174,9 +174,9 @@ namespace SharpStation {
 							}
 							case 0x13: {
 								/* MTLO */
-								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
-								if((rd) != (0x0)) { (ReadAbsorb)[rd] = 0x0; }
-								var temp_13 = (Gpr)[rd];
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								if((rs) != (0x0)) { (ReadAbsorb)[rs] = 0x0; }
+								var temp_13 = (Gpr)[rs];
 								DoLds();
 								Lo = temp_13;
 								return(true);

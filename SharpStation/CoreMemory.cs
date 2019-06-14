@@ -30,11 +30,22 @@ namespace SharpStation {
 		protected BackedMemory() => Backing = (byte*) Marshal.AllocHGlobal(Size);
 		
 		public byte Load8(uint addr) => Backing[addr];
-		public void Store8(uint addr, byte value) => Backing[addr] = value;
-		public ushort Load16(uint addr) => *((ushort*) (Backing + addr));
-		public void Store16(uint addr, ushort value) => *((ushort*) (Backing + addr)) = value;
-		public uint Load32(uint addr) => *((uint*) (Backing + addr));
-		public void Store32(uint addr, uint value) => *((uint*) (Backing + addr)) = value;
+		public void Store8(uint addr, byte value) {
+			Backing[addr] = value;
+			Cpu.Invalidate(addr);
+		}
+
+		public ushort Load16(uint addr) => *(ushort*) (Backing + addr);
+		public void Store16(uint addr, ushort value) {
+			*(ushort*) (Backing + addr) = value;
+			Cpu.Invalidate(addr);
+		}
+
+		public uint Load32(uint addr) => *(uint*) (Backing + addr);
+		public void Store32(uint addr, uint value) {
+			*(uint*) (Backing + addr) = value;
+			Cpu.Invalidate(addr);
+		}
 	}
 	
 	public class Ram : BackedMemory {
@@ -84,7 +95,7 @@ namespace SharpStation {
 
 		public T Load() {
 			var v = _Load?.Invoke() ?? throw new NotImplementedException($"No load{BitSize} for 0x{Addr:X8} ({Name})");
-			if(Debug) $"[{Cpu.Pc:X8}] Load{BitSize} from 0x{Addr:X8} ({Name}) -- {ToHex(v)}".Debug();
+			if(Debug) $"[{Cpu.Pc:X8}] Load{BitSize} from 0x{Addr:X8} ({Name}) -- {ToHex(v)}   @ {Timestamp}".Debug();
 			return v;
 		}
 
@@ -96,7 +107,7 @@ namespace SharpStation {
 		}
 
 		public void Store(T value) {
-			if(Debug) $"[{Cpu.Pc:X8}] Store{BitSize} to 0x{Addr:X8} ({Name}) -- {ToHex(value)}".Debug();
+			if(Debug) $"[{Cpu.Pc:X8}] Store{BitSize} to 0x{Addr:X8} ({Name}) -- {ToHex(value)}   @ {Timestamp}".Debug();
 			if(_Store == null) throw new NotImplementedException($"No store{BitSize} for 0x{Addr:X8} ({Name})");
 			_Store(value);
 		}
@@ -358,6 +369,8 @@ namespace SharpStation {
 			return this;
 		}
 		CoreMemory LogStore(uint addr, uint value, int size) {
+			if((addr & 0xFFFFF) == 0x3F224)
+				$"Storing {size} bytes to {addr:X8} -- {value:X8} from PC {Cpu.Pc:X8}".Debug();
 			//WriteLine($"Store {size} bytes ({value:X}) to {addr:X}");
 			return this;
 		}

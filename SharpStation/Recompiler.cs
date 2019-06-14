@@ -20,9 +20,26 @@ namespace SharpStation {
 	public class Block {
 		public readonly uint Addr;
 		public uint End;
-		public Action<Recompiler>? Func;
+		Action<Recompiler>? _Func;
 
-		public Block(uint addr) => Addr = addr;
+		public Action<Recompiler>? Func {
+			get => _Func;
+			set {
+				if(_Func == value) return;
+				_Func = value;
+				var spage = Addr & 0x0FFFFC00;
+				var npages = (((End & 0x0FFFFFFF) - spage) >> 10) + 1;
+				var rc = (Recompiler) Cpu;
+				
+				for(var i = 0U; i < npages; ++i)
+					rc.GetBlockPage(Addr + (i << 10)).Remove(Addr);
+				if(_Func != null)
+					for(var i = 0U; i < npages; ++i)
+						rc.GetBlockPage(Addr + (i << 10)).Add(Addr, this);
+			}
+		}
+
+		public Block(uint addr) => Addr = End = addr;
 	}
 
 	public partial class Recompiler : BaseCpu {
@@ -37,7 +54,10 @@ namespace SharpStation {
 				Generate();
 				next();
 			}
-			
+
+			public Value DivUn(Value b) => new Value(() => EmitThen(() => b.EmitThen(() => Ilg.UnsignedDivide())));
+			public Value ModUn(Value b) => new Value(() => EmitThen(() => b.EmitThen(() => Ilg.UnsignedRemainder())));
+
 			public static Value operator +(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Add())));
 			public static Value operator -(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Subtract())));
 			public static Value operator *(Value a, Value b) => new Value(() => a.EmitThen(() => b.EmitThen(() => Ilg.Multiply())));
@@ -66,6 +86,7 @@ namespace SharpStation {
 			public static Value operator >(Value a, Value b) => Comp(a, b, l => Ilg.BranchIfGreater(l));
 			public static Value operator <=(Value a, Value b) => Comp(a, b, l => Ilg.BranchIfLessOrEqual(l));
 			public static Value operator >=(Value a, Value b) => Comp(a, b, l => Ilg.BranchIfGreaterOrEqual(l));
+			public Value LtUn(Value b) => Comp(this, b, l => Ilg.UnsignedBranchIfLess(l));
 
 			public override bool Equals(object obj) => throw new NotImplementedException();
 			public override int GetHashCode() => throw new NotImplementedException();
@@ -90,7 +111,11 @@ namespace SharpStation {
 
 		struct RGprs {
 			public Value this[uint reg] {
-				get => reg == 0 ? MakeValue(0U)
+				get => reg == 0
+					? new SettableValue(() => {
+						Ilg.LoadConstant(0);
+						Ilg.Convert<uint>();
+					}, _ => {})
 					: new SettableValue(() => {
 						GprRef.Emit();
 						Ilg.LoadConstant(reg);
@@ -134,26 +159,79 @@ namespace SharpStation {
 		Value HiRef { get => this[nameof(Hi)]; set => this[nameof(Hi)] = value; }
 		Value LoRef { get => this[nameof(Lo)]; set => this[nameof(Lo)] = value; }
 
-		void InterceptBlock(uint pc) {
-			switch(pc) {
+		uint InterceptBlock(uint pc) {
+			string ReadString(uint addr) {
+				var data = "";
+				while(true) {
+					var c = (char) Memory.Load8(addr++);
+					if(c == '\0') break;
+					data += c;
+				}
+				return data;
+			}
+
+			string Format(string fmt) {
+				var pi = 5;
+				uint GetArg() => pi <= 7 ? Gpr[pi++] : Memory.Load32((uint) (Gpr[29] + 0x10 + (pi++ - 8) * 4));
+
+				var ret = "";
+				for(var i = 0; i < fmt.Length; ++i) {
+					if(fmt[i] != '%') {
+						ret += fmt[i];
+						continue;
+					}
+
+					i++;
+					var length = -1;
+					while(fmt[i] >= '0' && fmt[i] <= '9')
+						length = length == -1 ? fmt[i++] - '0' : length * 10 + (fmt[i++] - '0');
+					switch(fmt[i]) {
+						case 'd': case 'u':
+							ret += GetArg().ToString().PadLeft(length == -1 ? 0 : length, '0');
+							break;
+						case 's':
+							ret += ReadString(GetArg());
+							break;
+						case 'x':
+							ret += GetArg().ToString("x").PadLeft(length == -1 ? 0 : length, '0');
+							break;
+						case 'X':
+							ret += GetArg().ToString("X").PadLeft(length == -1 ? 0 : length, '0');
+							break;
+						default:
+							throw new NotImplementedException($"Unknown format char '{fmt[i]}' in '{fmt}'");
+					}
+				}
+				return ret;
+			}
+			
+			switch(pc & 0x0FFFFFFF) {
 				case 0x2C94 when Gpr[4] == 1:
 					TtyBuf += string.Join("", Enumerable.Range(0, (int) Gpr[6]).Select(i => (char) Memory.Load8((uint) (Gpr[5] + i))));
 					if(TtyBuf.Contains('\n')) {
 						var lines = TtyBuf.Split('\n');
 						TtyBuf = lines.Last();
-						foreach(var line in lines.SkipLast(1))
-							WriteLine($"TTY: {line}");
+						foreach(var line in lines.SkipLast(1)) {
+							if(!line.Contains("VSync: timeout"))
+								WriteLine($"TTY: {line}");
+							//if(line.Contains("SCUS_949"))
+							//	DebugMemory = true;
+						}
 					}
 					break;
+				case 0x138EC:
+					$"Print: {Format(ReadString(Gpr[4])).Trim()}".Debug();
+					return Gpr[31];
 			}
+			return pc;
 		}
-
+		
 		protected override void Run() {
 			if(BranchToBlock != null && BranchToBlock.Addr == Pc) {
 				var func = LastBlock = BranchToBlock.Func;
 				Pc = LastBlockAddr = BranchToBlock.Addr;
 				BranchToBlock = null;
-				InterceptBlock(Pc);
+				Pc = InterceptBlock(Pc);
 				if(func == null)
 					Pc = RecompileBlock(Pc, BranchToBlock);
 				else {
@@ -166,6 +244,7 @@ namespace SharpStation {
 			}
 		}
 
+		readonly SortedList<uint, Block>[] BlockPages = new SortedList<uint, Block>[0x40000];
 		readonly Dictionary<uint, Block> BlockCache = new Dictionary<uint, Block>();
 
 		Action<Recompiler>? LastBlock;
@@ -176,11 +255,9 @@ namespace SharpStation {
 		public Block? BranchToBlock;
 		Action? BranchToLabel;
 		Local? BranchToLabelLocal;
-		uint BlockStart, CurPc;
 
 		string TtyBuf = "";
 		uint RecompileBlock(uint pc, Block? block = null) {
-			//$"Recompiling block at {pc:X8}".Debug();
 			if(pc == LastBlockAddr && LastBlock != null) {
 				BranchToBlock = null;
 				LastBlock(this);
@@ -195,7 +272,9 @@ namespace SharpStation {
 				LastBlock(this);
 				return BranchTo;
 			}
-			
+
+			if(DebugMemory)
+				$"Recompiling block at {pc:X8}".Debug();
 			CurBlockRefs = new Dictionary<string, (FieldBuilder, Block)>();
 			BlockInstLabels = new Dictionary<uint, Label>();
 
@@ -208,7 +287,7 @@ namespace SharpStation {
 			BranchToLabel = null;
 			BranchToLabelLocal = Ilg.DeclareLocal<bool>();
 			
-			var opc = BlockStart = pc;
+			var opc = pc;
 			var branched = false;
 			var no_delay = false;
 			var need_load = true;
@@ -256,27 +335,29 @@ namespace SharpStation {
 						insn = ICache[(pc & 0xFFCU) >> 2].Data;
 					}
 				}
+
+				var rinsn = Memory.Load32(pc);
+				if(insn != rinsn) {
+					$"Instruction mismatch! Cache fuckup?".Debug();
+					insn = rinsn;
+					for(var i = 0; i < ICache.Length; ++i)
+						ICache[i].TV = ICache[i].Data = 0;
+				}
 				
 				if(timestep != 0)
 					TimestampInc(timestep);
 
-				//if(insn >> 26 == 0b010010 && ((insn >> 21) & 0x1F & 0x10) != 0)
-				//	Call(nameof(TestTest), pc);
-
-				if((pc & 0xFFFFF) == 0x41fe8)
-					Call(nameof(TestTest), pc);
-					
-				//if(pc >= 0x8003D600 && pc <= 0x8003D7FC)
-				//	WriteLine($"{pc:X}:  {Disassemble(pc, insn)}");
-				//if((pc & 0xFFFFFF) >= 0x30254 && (pc & 0xFFFFFF) <= 0x30680)
-				//	Call(nameof(TestTest), pc);
+				if(DebugMemory)
+					WriteLine($"{pc:X}:  {Disassemble(pc, insn)}");
 
 				if(branched)
 					did_delay = true;
 				
-				CurPc = pc;
 				var has_load = false;
 				Ilg.MarkLabel(BlockInstLabels[pc] = Ilg.DefineLabel());
+				
+				this[nameof(Pc)] = MakeValue(pc);
+				
 				if(!Recompile(pc, insn, ref branched, ref no_delay, ref has_load, need_load))
 					throw new NotSupportedException($"Unknown instruction at 0x{pc:X8}");
 				
@@ -310,17 +391,32 @@ namespace SharpStation {
 			return BranchTo;
 		}
 
-		public void TestTest(uint pc) {
-			$"Hit {pc:X8}    {Gpr[31]:X8}".Debug();
-			//DebugMemory = true;
-			/*using(var fp = File.OpenWrite("memdump.bin"))
-				for(var i = 0; i < 1024 * 1024 * 2; ++i)
-					fp.WriteByte(Memory.Load8((uint) i));*/
-			//Environment.Exit(0);
+		public void DebugMtMfLoHi(int i, int b, int r) {
+			var name = i switch { 0 => "MFHI", 1 => "MTHI", 2 => "MFLO", 3 => "MTLO", _ => throw new NotSupportedException() };
+			$"{(b == 0 ? "Before" : "After ")} {name} ${r}".Debug();
+			RegisterDebug();
 		}
 
-		Block GetBlock(uint addr) =>
-			BlockCache.TryGetValue(addr, out var block) ? block : BlockCache[addr] = new Block(addr);
+		public override void Invalidate(uint addr) {
+			addr &= 0x0FFFFFFF;
+			var page = GetBlockPage(addr);
+			var toClear = new List<Block>();
+			foreach(var block in page.Values)
+				if(block.Func != null && (block.Addr & 0x0FFFFFFF) <= addr && (block.End & 0x0FFFFFFF) > addr)
+					toClear.Add(block);
+			foreach(var block in toClear) {
+				block.Func = null;
+				//$"Invalidating {block.Addr:X}-{block.End:X}".Debug();
+			}
+		}
+
+		Block GetBlock(uint addr) {
+			if(BlockCache.TryGetValue(addr, out var block)) return block;
+			block = BlockCache[addr] = new Block(addr);
+			return block;
+		}
+
+		public SortedList<uint, Block> GetBlockPage(uint addr) => BlockPages[(addr & 0x0FFFFFFFU) >> 10] ??= new SortedList<uint, Block>();
 
 		void BranchLink(Value target, uint pc) => Call(nameof(BranchLinkTo), target, pc);
 		void BranchLink(uint target, uint pc) => Call(nameof(BranchLinkTo), target, pc);

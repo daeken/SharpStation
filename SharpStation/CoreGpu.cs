@@ -11,13 +11,13 @@ using static SharpStation.Globals;
 #pragma warning disable 414
 
 namespace SharpStation {
-	[AttributeUsage(AttributeTargets.Method)]
+	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 	class Gp0Command : Attribute {
 		public readonly byte Command;
 		public Gp0Command(byte command) => Command = command;
 	}
 	
-	[AttributeUsage(AttributeTargets.Method)]
+	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 	class Gp1Command : Attribute {
 		public readonly byte Command;
 		public Gp1Command(byte command) => Command = command;
@@ -53,11 +53,12 @@ namespace SharpStation {
 
 		public CoreGpu() {
 			typeof(CoreGpu).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
-				.Select(x => (Method: x, Attr: x.GetCustomAttribute<Gp0Command>())).Where(x => x.Attr != null)
-				.ForEach(x => Gp0Commands[x.Attr.Command] = (x.Method.GetParameters().Length, x.Method));
-			typeof(CoreGpu).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
-				.Select(x => (Method: x, Attr: x.GetCustomAttribute<Gp1Command>())).Where(x => x.Attr != null)
-				.ForEach(x => Gp1Commands[x.Attr.Command] = (x.Method.GetParameters().Length, x.Method));
+				.ForEach(x => {
+					x.GetCustomAttributes<Gp0Command>()
+						.ForEach(attr => Gp0Commands[attr.Command] = (x.GetParameters().Length, x));
+					x.GetCustomAttributes<Gp1Command>()
+						.ForEach(attr => Gp1Commands[attr.Command] = (x.GetParameters().Length, x));
+				});
 
 			// TODO: Handle this timing properly
 			/*void VBlank() {
@@ -201,31 +202,41 @@ namespace SharpStation {
 		[Gp0Command(0x01)] void ClearCache() {}
 
 		[Gp0Command(0x02)]
-		void FillRect(uint color, uint topLeft, uint size) =>
-			$"Fill rect in VRAM: {color & 0xFFFFFF:X6} -- {topLeft:X8} {size:X8}".Debug();
-
+		void FillRect(uint color, uint topLeft, uint size) {
+			//$"Fill rect in VRAM: {color & 0xFFFFFF:X6} -- {topLeft:X8} {size:X8}".Debug();
+		}
+		
 		[Gp0Command(0x28)]
 		void MonochromeOpaqueQuad(uint color, uint v1, uint v2, uint v3, uint v4) {
-			$"MonochromeOpaqueQuad {color:X8} {v1:X8} {v2:X8} {v3:X8} {v4:X8}".Debug();
+			//$"MonochromeOpaqueQuad {color:X8} {v1:X8} {v2:X8} {v3:X8} {v4:X8}".Debug();
 			Renderer.DrawSolidQuad(ToColor(color), ToCoord(v1), ToCoord(v2), ToCoord(v3), ToCoord(v4));
 		}
 
 		[Gp0Command(0x2C)]
 		void TexturedOpaqueBlendedQuad(uint color, uint v1, uint t1, uint v2, uint t2, uint v3, uint t3, uint v4, uint t4) {
-			$"TexturedOpaqueBlendedQuad {color:X6} {v1:X8} {t1:X8} {v2:X8} {t2:X8} {v3:X8} {t3:X8} {v4:X8} {t4:X8}".Debug();
+			//$"TexturedOpaqueBlendedQuad {color:X6} {v1:X8} {t1:X8} {v2:X8} {t2:X8} {v3:X8} {t3:X8} {v4:X8} {t4:X8}".Debug();
 			Renderer.DrawSolidQuad(ToColor(color), ToCoord(v1), ToCoord(v2), ToCoord(v3), ToCoord(v4));
 		}
 
 		[Gp0Command(0x30)]
 		void ShadedOpaqueTri(uint c1, uint v1, uint c2, uint v2, uint c3, uint v3) {
-			$"ShadedOpaqueTri {c1:X6} {v1:X8} {c2:X6} {v2:X8} {c3:X6} {v3:X8}".Debug();
+			//$"ShadedOpaqueTri {c1:X6} {v1:X8} {c2:X6} {v2:X8} {c3:X6} {v3:X8}".Debug();
 			Renderer.DrawShadedTriangle(ToCoord(v1), ToColor(c1), ToCoord(v2), ToColor(c2), ToCoord(v3), ToColor(c3));
 		}
 
 		[Gp0Command(0x38)]
 		void ShadedOpaqueQuad(uint c1, uint v1, uint c2, uint v2, uint c3, uint v3, uint c4, uint v4) {
-			$"ShadedOpaqueQuad {c1:X6} {v1:X8} {c2:X6} {v2:X8} {c3:X6} {v3:X8} {c4:X6} {v4:X8}".Debug();
+			//$"ShadedOpaqueQuad {c1:X6} {v1:X8} {c2:X6} {v2:X8} {c3:X6} {v3:X8} {c4:X6} {v4:X8}".Debug();
 			Renderer.DrawShadedQuad(ToCoord(v1), ToColor(c1), ToCoord(v2), ToColor(c2), ToCoord(v3), ToColor(c3), ToCoord(v4), ToColor(c4));
+		}
+
+		[Gp0Command(0x68)]
+		void MonochromeOpaqueRectangle(uint color, uint v) {
+			var c = ToCoord(v);
+			//$"rect {ToColor(color)} {c}".Debug();
+			if(c.X == 497 && c.Y == 221)
+				Renderer.EndFrame();
+			Renderer.DrawSolidQuad(ToColor(color), c, c + (1, 0), c + (0, 1), c + (1, 1));
 		}
 
 		[Gp0Command(0xA0)]
@@ -241,17 +252,17 @@ namespace SharpStation {
 			};
 		}
 		void CopyRectCpuToVram(uint cmd, uint x, uint y, uint w, uint h, object[] data) {
-			$"Copy rect to vram! {x} . {y} -- {w} x {h}".Debug();
+			//$"Copy rect to vram! {x} . {y} -- {w} x {h}".Debug();
 		}
 
 		[Gp0Command(0xC0)]
 		void CopyRectVramToCpu(uint cmd, uint src, uint size) {
-			"Copy rect to CPU!".Debug();
+			//"Copy rect to CPU!".Debug();
 		}
 
 		[Gp0Command(0xE1)]
 		void SetDrawMode(uint value) {
-			$"Setting draw mode to {value & 0xFFFFFF:X06}".Debug();
+			//$"Setting draw mode to {value & 0xFFFFFF:X06}".Debug();
 			DrawMode = value & 0xFFFF;
 			Cpu.Running = false;
 			Renderer.EndFrame();
@@ -283,15 +294,28 @@ namespace SharpStation {
 		void DmaDirectionDataRequest(uint value) => DmaDirection = (DmaDirection) value;
 
 		[Gp1Command(0x05)]
-		void StartDisplayArea(uint value) => $"Start display area {value & 0x3FF} {(value >> 10) & 0x1FF}".Debug();
+		void StartDisplayArea(uint value) {
+			//$"Start display area {value & 0x3FF} {(value >> 10) & 0x1FF}".Debug();
+		}
 
 		[Gp1Command(0x06)]
-		void HorizontalDisplayRange(uint value) => $"Horizontal display range {value & 0xFFF} {(value >> 12) & 0xFFF}".Debug();
+		void HorizontalDisplayRange(uint value) {
+			//$"Horizontal display range {value & 0xFFF} {(value >> 12) & 0xFFF}".Debug();
+		}
 
 		[Gp1Command(0x07)]
-		void VerticalDisplayRange(uint value) => $"Vertical display range {value & 0x3FF} {(value >> 10) & 0x3FF}".Debug();
+		void VerticalDisplayRange(uint value) {
+			//$"Vertical display range {value & 0x3FF} {(value >> 10) & 0x3FF}".Debug();
+		}
 
 		[Gp1Command(0x08)]
 		void SetDisplayMode(uint value) => DisplayMode = value & 0xFF;
+
+		[Gp1Command(0x10)] [Gp1Command(0x11)] [Gp1Command(0x12)] [Gp1Command(0x13)]
+		[Gp1Command(0x14)] [Gp1Command(0x15)] [Gp1Command(0x16)] [Gp1Command(0x17)]
+		[Gp1Command(0x18)] [Gp1Command(0x19)] [Gp1Command(0x1A)] [Gp1Command(0x1B)]
+		[Gp1Command(0x1C)] [Gp1Command(0x1D)] [Gp1Command(0x1E)] [Gp1Command(0x1F)]
+		void GetGpuInfo() {
+		}
 	}
 }

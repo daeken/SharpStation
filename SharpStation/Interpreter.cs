@@ -61,5 +61,7 @@ namespace SharpStation {
 			if(Gpr[0] != 0) throw new Exception($"R0 != 0 ?! {pc:X}");
 			//$"Interpret: {res}".Debug();
 		}
+
+		public override void Invalidate(uint addr) {}
 	}
 }

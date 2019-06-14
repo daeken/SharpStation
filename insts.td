@@ -10,7 +10,9 @@ def mul : DagOp; // word * word -> word
 def mul64 : DagOp; // word * word -> dword
 def umul64 : DagOp; // word * word -> dword
 def div : DagOp; // word / word -> word
+def udiv : DagOp; // word / word -> word
 def mod : DagOp; // word % word -> word
+def umod : DagOp; // word % word -> word
 def shl : DagOp;
 def shra : DagOp;
 def shrl : DagOp;
@@ -23,6 +25,7 @@ def ge : DagOp;
 def gt : DagOp;
 def le : DagOp;
 def lt : DagOp;
+def ltu : DagOp;
 def neq : DagOp;
 
 def bool2uint : DagOp;
@@ -297,8 +300,8 @@ def DIVU : RType<0b011011, "divu %$rs, %$rt",
 			(set (lo), 0xFFFFFFFF),
 			(set (hi), (gpr $rs))),
 		(block
-			(set (lo), (div (gpr $rs), (gpr $rt))),
-			(set (hi), (mod (gpr $rs), (gpr $rt))),
+			(set (lo), (udiv (gpr $rs), (gpr $rt))),
+			(set (hi), (umod (gpr $rs), (gpr $rt))),
 			(div_delay)))
 >;
 
@@ -420,12 +423,12 @@ defm MTCz : CFDef<0b010000, 0b00100, "mtc$cop %$rt, $rd",
 	(set (copreg $cop, $rd), (gpr $rt))
 >;
 
-def MTHI : RType<0b010001, "mthi %$rd",
-	(set (hi), (gpr $rd))
+def MTHI : RType<0b010001, "mthi %$rs",
+	(set (hi), (gpr $rs))
 >;
 
-def MTLO : RType<0b010011, "mtlo %$rd",
-	(set (lo), (gpr $rd))
+def MTLO : RType<0b010011, "mtlo %$rs",
+	(set (lo), (gpr $rs))
 >;
 
 def MULT : RType<0b011000, "mult %$rs, %$rt",
@@ -486,11 +489,11 @@ def SLTI : IType<0b001010, "slti %$rt, %$rs, $eimm",
 
 def SLTIU : IType<0b001011, "sltiu %$rt, %$rs, $eimm",
 	(let $eimm, (unsigned (signext 16, $imm)),
-		(set (gpr $rt), (bool2uint (lt (gpr $rs), $eimm))))
+		(set (gpr $rt), (bool2uint (ltu (gpr $rs), $eimm))))
 >;
 
 def SLTU : RType<0b101011, "sltu %$rd, %$rs, %$rt",
-	(set (gpr $rd), (bool2uint (lt (gpr $rs), (gpr $rt))))
+	(set (gpr $rd), (bool2uint (ltu (gpr $rs), (gpr $rt))))
 >;
 
 def SRA : RType<0b000011, "sra %$rd, %$rt, $shamt",

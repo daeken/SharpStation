@@ -192,7 +192,6 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								Gprs[rd] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 								Alignment(temp_126, 32, false, pc);
-								BranchLink(temp_126, pc);
 								if(!branched) Branch(temp_126);
 								branched = true;
 								return(true);
@@ -258,9 +257,9 @@ namespace SharpStation {
 								Label(temp_275);
 								TimestampInc(1);
 								Label(temp_276);
-								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
-								DEP(rd);
-								var temp_127 = (Gprs)[rd];
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								DEP(rs);
+								var temp_127 = (Gprs)[rs];
 								if(need_load) { DoLds(); }
 								HiRef = temp_127;
 								return(true);
@@ -294,9 +293,9 @@ namespace SharpStation {
 								Label(temp_283);
 								TimestampInc(1);
 								Label(temp_284);
-								var rd = ((inst) >> ((int) 0xb)) & (0x1f);
-								DEP(rd);
-								var temp_128 = (Gprs)[rd];
+								var rs = ((inst) >> ((int) 0x15)) & (0x1f);
+								DEP(rs);
+								var temp_128 = (Gprs)[rs];
 								if(need_load) { DoLds(); }
 								LoRef = temp_128;
 								return(true);
@@ -412,8 +411,8 @@ namespace SharpStation {
 								if(need_load) { DoLds(); }
 								Label temp_309 = Ilg.DefineLabel(), temp_310 = Ilg.DefineLabel();
 								BranchIf((temp_136) == (MakeValue<uint>(0x0)), temp_309);
-								LoRef = (temp_135) / (temp_136);
-								HiRef = (temp_135) % (temp_136);
+								LoRef = (temp_135).DivUn(temp_136);
+								HiRef = (temp_135).ModUn(temp_136);
 								GenDivDelay();
 								Branch(temp_310);
 								Label(temp_309);
@@ -651,7 +650,7 @@ namespace SharpStation {
 								var temp_155 = (Gprs)[rs];
 								var temp_156 = (Gprs)[rt];
 								if(need_load) { DoLds(); }
-								Gprs[rd] = (temp_155) < (temp_156);
+								Gprs[rd] = (temp_155).LtUn(temp_156);
 								return(true);
 								break;
 							}
@@ -1593,7 +1592,6 @@ namespace SharpStation {
 						Gprs[0x1f] = ((MakeValue<uint>(pc)) + (MakeValue<uint>(0x4))) + (MakeValue<uint>(0x4));
 						var target = (((pc) + (0x4)) & (0xf0000000)) + ((imm) << ((int) 0x2));
 						if(!branched) Branch(target);
-						BranchLink(target, pc);
 						branched = true;
 						return(true);
 						break;
@@ -1807,7 +1805,7 @@ namespace SharpStation {
 						var temp_198 = (Gprs)[rs];
 						if(need_load) { DoLds(); }
 						var eimm = (uint) (SignExt(0x10, imm));
-						Gprs[rt] = (temp_198) < (MakeValue<uint>(eimm));
+						Gprs[rt] = (temp_198).LtUn(MakeValue<uint>(eimm));
 						return(true);
 						break;
 					}

@@ -164,7 +164,9 @@ gops = {
 	'mul64': lambda a, b: ('*', ('signed', ('signed', a, 32), 64), ('signed', ('signed', b, 32), 64)),
 	'umul64': lambda a, b: ('*', ('cast', 64, a), ('cast', 64, b)),
 	'div': lambda a, b: ('/', a, b),
+	'udiv': lambda a, b: ('/', a, b),
 	'mod': lambda a, b: ('%', a, b),
+	'umod': lambda a, b: ('%', a, b),
 	'shl': lambda a, b: ('<<', a, b),
 	'shra': lambda a, b: ('>>', ('signed', a), ('signed', b)),
 	'shrl': lambda a, b: ('>>', a, b),
@@ -174,6 +176,7 @@ gops = {
 	'gt': lambda a, b: ('>', a, b),
 	'le': lambda a, b: ('<=', a, b),
 	'lt': lambda a, b: ('<', a, b),
+	'ltu': lambda a, b: ('<', a, b),
 	'neq': lambda a, b: ('!=', a, b),
 }
 
@@ -188,7 +191,9 @@ eops = {
 	'mul64': lambda a, b: ('call', 'Mul64', ('cast-signed', 64, ('cast-signed', 32, a)), ('cast-signed', 64, ('cast-signed', 32, b))),
 	'umul64': lambda a, b: ('call', 'UMul64', ('cast', 64, a), ('cast', 64, b)),
 	'div': lambda a, b: ('/', a, b),
+	'udiv': lambda a, b: ('u/', a, b),
 	'mod': lambda a, b: ('%', a, b),
+	'umod': lambda a, b: ('u%', a, b),
 	'shl': lambda a, b: ('call', 'Shl', a, b),
 	'shra': lambda a, b: ('call', 'SShr', a, b),
 	'shrl': lambda a, b: ('call', 'UShr', a, b),
@@ -198,6 +203,7 @@ eops = {
 	'gt': lambda a, b: ('>', a, b),
 	'le': lambda a, b: ('<=', a, b),
 	'lt': lambda a, b: ('<', a, b),
+	'ltu': lambda a, b: ('u<', a, b),
 	'neq': lambda a, b: ('!=', a, b),
 }
 
@@ -466,6 +472,12 @@ def _emitter(sexp, storing=False, locals=None):
 			return '%s(%s)' % (op, to_val(emitter(sexp[1])))
 		else:
 			return '(%s) %s (%s)' % (to_val(emitter(sexp[1])), op, to_val(emitter(sexp[2])))
+	elif op == 'u/':
+		return '(%s).DivUn(%s)' % (to_val(emitter(sexp[1])), to_val(emitter(sexp[2])))
+	elif op == 'u%':
+		return '(%s).ModUn(%s)' % (to_val(emitter(sexp[1])), to_val(emitter(sexp[2])))
+	elif op == 'u<':
+		return '(%s).LtUn(%s)' % (to_val(emitter(sexp[1])), to_val(emitter(sexp[2])))
 	else:
 		print 'Unknown', sexp
 	sys.exit(1)
