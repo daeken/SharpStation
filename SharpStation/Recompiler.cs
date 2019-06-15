@@ -17,6 +17,38 @@ using Label = SigilLite.Label;
 using static System.Console;
 
 namespace SharpStation {
+	public class BlockPage {
+		public readonly uint Base;
+		public readonly SortedList<uint, Block> Blocks = new SortedList<uint, Block>();
+		public readonly byte[] Occupancy = new byte[32];
+
+		public BlockPage(uint @base) => Base = @base;
+
+		public void Add(Block block) {
+			Blocks.Add(block.Addr, block);
+			Occupy(block);
+		}
+
+		public void Remove(Block block) {
+			Blocks.Remove(block.Addr);
+			var end = block.End & 0x0FFFFFFF;
+			// TODO: This can be a lot more performant; most of the time, blocks are going to cover whole occupancy zones
+			for(var i = block.Addr & 0x0FFFFFFF; i < end; i += 4)
+				Occupancy[(i & 0x3FF) >> 5] ^= (byte) (1 << ((int) (i >> 2) & 7));
+			foreach(var oblock in Blocks.Values)
+				Occupy(oblock);
+		}
+
+		void Occupy(Block block) {
+			var end = block.End & 0x0FFFFFFF;
+			// TODO: This can be a lot more performant; most of the time, blocks are going to cover whole occupancy zones
+			for(var i = block.Addr & 0x0FFFFFFF; i < end; i += 4)
+				Occupancy[(i & 0x3FF) >> 5] |= (byte) (1 << ((int) (i >> 2) & 7));
+		}
+
+		public bool Occupied(uint addr) => (Occupancy[(addr & 0x3FF) >> 5] & (1 << ((int) (addr >> 2) & 7))) != 0;
+	}
+	
 	public class Block {
 		public readonly uint Addr;
 		public uint End;
@@ -26,16 +58,17 @@ namespace SharpStation {
 			get => _Func;
 			set {
 				if(_Func == value) return;
-				_Func = value;
 				var spage = Addr & 0x0FFFFC00;
 				var npages = (((End & 0x0FFFFFFF) - spage) >> 10) + 1;
 				var rc = (Recompiler) Cpu;
 				
-				for(var i = 0U; i < npages; ++i)
-					rc.GetBlockPage(Addr + (i << 10)).Remove(Addr);
 				if(_Func != null)
 					for(var i = 0U; i < npages; ++i)
-						rc.GetBlockPage(Addr + (i << 10)).Add(Addr, this);
+						rc.GetBlockPage(Addr + (i << 10)).Remove(this);
+				if(value != null)
+					for(var i = 0U; i < npages; ++i)
+						rc.GetBlockPage(Addr + (i << 10)).Add(this);
+				_Func = value;
 			}
 		}
 
@@ -244,7 +277,7 @@ namespace SharpStation {
 			}
 		}
 
-		readonly SortedList<uint, Block>[] BlockPages = new SortedList<uint, Block>[0x40000];
+		readonly BlockPage[] BlockPages = Enumerable.Range(0, 0x40000).Select(i => new BlockPage((uint) i << 10)).ToArray();
 		readonly Dictionary<uint, Block> BlockCache = new Dictionary<uint, Block>();
 
 		Action<Recompiler>? LastBlock;
@@ -398,16 +431,12 @@ namespace SharpStation {
 		}
 
 		public override void Invalidate(uint addr) {
-			addr &= 0x0FFFFFFF;
+			addr &= 0x0FFFFFFC;
 			var page = GetBlockPage(addr);
-			var toClear = new List<Block>();
-			foreach(var block in page.Values)
-				if(block.Func != null && (block.Addr & 0x0FFFFFFF) <= addr && (block.End & 0x0FFFFFFF) > addr)
-					toClear.Add(block);
-			foreach(var block in toClear) {
+			if(!page.Occupied(addr)) return;
+			var toClear = page.Blocks.Values.Where(block => block.Func != null && (block.Addr & 0x0FFFFFFF) <= addr && (block.End & 0x0FFFFFFF) > addr).ToList();
+			foreach(var block in toClear)
 				block.Func = null;
-				//$"Invalidating {block.Addr:X}-{block.End:X}".Debug();
-			}
 		}
 
 		Block GetBlock(uint addr) {
@@ -416,7 +445,7 @@ namespace SharpStation {
 			return block;
 		}
 
-		public SortedList<uint, Block> GetBlockPage(uint addr) => BlockPages[(addr & 0x0FFFFFFFU) >> 10] ??= new SortedList<uint, Block>();
+		public BlockPage GetBlockPage(uint addr) => BlockPages[(addr & 0x0FFFFFFFU) >> 10];
 
 		void BranchLink(Value target, uint pc) => Call(nameof(BranchLinkTo), target, pc);
 		void BranchLink(uint target, uint pc) => Call(nameof(BranchLinkTo), target, pc);
