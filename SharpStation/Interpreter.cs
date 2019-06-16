@@ -25,8 +25,6 @@ namespace SharpStation {
 			LdValue = value;
 		}
 		
-		string TtyBuf = "";
-
 		protected override void Run() {
 			var insn = Memory.Load32(Pc);
 			//$"{Pc:X}:  {Disassemble(Pc, insn)}".Debug();
@@ -46,15 +44,7 @@ namespace SharpStation {
 
 		void RunOne(uint pc, uint inst) {
 			Timestamp++;
-			if(pc == 0x2C94 && Gpr[4] == 1) {
-				TtyBuf += string.Join("", Enumerable.Range(0, (int) Gpr[6]).Select(i => (char) Memory.Load8((uint) (Gpr[5] + i))));
-				if(TtyBuf.Contains('\n')) {
-					var lines = TtyBuf.Split('\n');
-					TtyBuf = lines.Last();
-					foreach(var line in lines.SkipLast(1))
-						$"TTY: {line}".Debug();
-				}
-			}
+			pc = Intercept(pc);
 
 			var res = Interpret(pc, inst);
 			if(!res) throw new Exception($"Unknown instruction @ {pc:X}");

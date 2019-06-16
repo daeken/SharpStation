@@ -369,8 +369,6 @@ namespace SharpStation {
 			return this;
 		}
 		CoreMemory LogStore(uint addr, uint value, int size) {
-			if((addr & 0xFFFFF) == 0x3F224)
-				$"Storing {size} bytes to {addr:X8} -- {value:X8} from PC {Cpu.Pc:X8}".Debug();
 			//WriteLine($"Store {size} bytes ({value:X}) to {addr:X}");
 			return this;
 		}

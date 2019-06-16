@@ -55,6 +55,7 @@ namespace SharpStation {
 
 		public void Assert(IrqType type, bool status) {
 			//if(type == IrqType.CD && status) $"Asserting CD {Timestamp}".Debug();
+			$"Asserting IRQ {type}".Debug();
 			var oldAsserted = Asserted;
 
 			var whichMask = 1U << (int) type;

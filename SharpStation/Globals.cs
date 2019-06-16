@@ -17,6 +17,7 @@ namespace SharpStation {
 		public static readonly CorePad Pads = new CorePad();
 		public static readonly CoreDma Dma = new CoreDma();
 		public static readonly CoreIrq Irq = new CoreIrq();
+		public static readonly CoreSerial Serial = new CoreSerial();
 		public static readonly CoreMemory Memory = new CoreMemory();
 
 		public static void StartSystem(CdImage image) => Renderer.KickOff(() => {

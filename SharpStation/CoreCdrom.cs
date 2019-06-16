@@ -395,7 +395,7 @@ namespace SharpStation {
 			ReadingDelay = null;
 			ReadPending = false;
 			Sub.ResponseFifo.Enqueue(DriveStatus);
-			Sub.AsyncResponse = (900/*_000*/, () => {
+			Sub.AsyncResponse = (900_000, () => {
 				ReadPosition = 0;
 				SeekTarget = null;
 				ReadWholeSector = true;

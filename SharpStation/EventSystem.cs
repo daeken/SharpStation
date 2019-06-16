@@ -59,14 +59,17 @@ namespace SharpStation {
 		}
 
 		public bool RunEvents() {
+			if(NextTimestamp > Timestamp) return Cpu.Running;
+			
 			var changed = false;
 			// ReSharper disable once UseDeconstruction // Deconstruction fucks up nullable reference type stuff
+			var toRemove = new List<ulong>();
 			foreach(var kv in Upcoming.ToArray()) {
 				if(kv.Key > Timestamp) break;
 				changed = true;
+				Upcoming.Remove(kv.Key);
 				foreach(var func in kv.Value)
 					func();
-				Upcoming.Remove(kv.Key);
 			}
 			foreach(var syncer in Syncers)
 				if(syncer.NextTimestamp <= Timestamp) {

@@ -127,9 +127,9 @@ namespace SharpStation {
 			if(Counter <= Target && count > Target)
 				targetPassed = TargetReached = true;
 
-			var wrap = TargetWrap ? Target + 1 : 0x10000;
+			var wrap = TargetWrap ? Target + 1UL : 0x10000;
 			var overflow = false;
-			if(count > wrap) {
+			if(count >= wrap) {
 				count %= wrap;
 				if(wrap == 0x10000)
 					overflow = OverflowReached = true;
@@ -147,24 +147,29 @@ namespace SharpStation {
 
 			SetupEvent();
 		}
+
+		public T UpdateThen<T>(Func<Timer, T> func) {
+			Update();
+			return func(this);
+		}
 	}
 	
 	public static class Timing {
 		static readonly Timer[] Timers = { new Timer(0), new Timer(1), new Timer(2) };
 		
 		[Port(0x1F801100, 3, 0x10)]
-		static uint GetCurrentValue(int timer) => Timers[timer].Counter;
-		[Port(0x1F801100, 3, 0x10)]
-		static void SetCurrentValue(int timer, uint value) => Timers[timer].Counter = value;
+		static uint CurrentValue(int timer) => Timers[timer].UpdateThen(x => x.Counter);
+		[Port(0x1F801100, 3, 0x10, debug: true)]
+		static void CurrentValue(int timer, uint value) => Timers[timer].Counter = value;
 
 		[Port(0x1F801104, 3, 0x10)]
-		static uint GetCounterMode(int timer) => Timers[timer].CounterMode;
-		[Port(0x1F801104, 3, 0x10)]
-		static void SetCounterMode(int timer, uint value) => Timers[timer].CounterMode = value;
+		static uint CounterMode(int timer) => Timers[timer].UpdateThen(x => x.CounterMode);
+		[Port(0x1F801104, 3, 0x10, debug: true)]
+		static void CounterMode(int timer, uint value) => Timers[timer].CounterMode = value;
 
 		[Port(0x1F801108, 3, 0x10)]
-		static uint GetCounterTargetValue(int timer) => Timers[timer].Target;
-		[Port(0x1F801108, 3, 0x10)]
-		static void SetCounterTargetValue(int timer, uint value) => Timers[timer].Target = value;
+		static uint CounterTargetValue(int timer) => Timers[timer].UpdateThen(x => x.Target);
+		[Port(0x1F801108, 3, 0x10, debug: true)]
+		static void CounterTargetValue(int timer, uint value) => Timers[timer].Target = value;
 	}
 }
